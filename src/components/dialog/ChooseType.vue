@@ -16,11 +16,14 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="3" for="item in d_coinTypeList">
-        <div class="d-flex flex-center align-items-center">
-          <img src="../../assets/cointype/BTC.png" alt="" />
-        </div>
-      </v-col>
+      <template v-for="(item, index) in d_coinTypeList">
+        <v-col cols="3" :key="index">
+          <div class="d-flex flex-row flex-center justify-content-center  align-items-sm-center">
+            <div><v-img src="../../assets/cointype/BTC.png" height="40" width="46" style="border:1px solid red" contain></v-img></div>
+            <span>{{ `${item.name}(${item.briefName})` }}</span>
+          </div>
+        </v-col>
+      </template>
     </v-row>
   </v-dialog>
 </template>
