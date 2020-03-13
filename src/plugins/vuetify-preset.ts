@@ -1,8 +1,7 @@
 // Styles
-import '../../styles/main.sass'
+import '@/styles/theme.scss'
 
 // Locale
-// import { en } from '../../locale'
 import zhHans from 'vuetify/es5/locale/zh-Hans'
 
 export const preset = {

@@ -1,4 +1,5 @@
 export default {
+  connect: false,
   vendorId: 0,
   productId: 0,
   manufacturer: '',

@@ -1,29 +1,53 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <div class="app" @click="connect()">connect</div>
-      <app-language></app-language>
-      <span>{{ $t('app.name') }}</span>
-      <div @click="changeLanguage('zhHans')">中文</div>
-      <div @click="changeLanguage('en')">Enlish</div>
-      <div>
-        <v-input></v-input>
-        <v-text-field append-icon="phone" prepend-icon="close" label="input"></v-text-field>
+    <v-app>
+      <v-content>
+        <v-container fluid>
+          <v-row>
+            <dialog-choose-type />
+          </v-row>
+        </v-container>
+      </v-content>
+    </v-app>
+
+    <!--  <v-app>
+      <div id="nav">
+        <v-row>
+          <v-col cols="6" sm="24">
+            <v-btn class="app" small @click="connect()">connect</v-btn>
+          </v-col>
+          <v-col cols="6" sm="24">DeviceName ：{{ this.usb.connect ? this.usb.product : 'Please choose device' }}</v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="6" sm="24">
+            <v-btn class="app" small @click="getPbk()">getPublickKey</v-btn>
+          </v-col>
+          <v-col cols="6" sm="24">publickey ：{{ this.d_response }}</v-col>
+        </v-row>
+
+        <app-language></app-language>
+        <span>{{ $t('app.name') }}</span>
+        <div @click="changeLanguage('zhHans')">中文</div>
+        <div @click="changeLanguage('en')">Enlish</div>
+        <div>
+          <v-input></v-input>
+          <v-text-field append-icon="phone" prepend-icon="close" label="input"></v-text-field>
+        </div>
+        <v-btn color="#0000ff" :text="true" to="bitcoin">hello</v-btn>
+        <router-link to="/">Home</router-link>|
+        <router-link to="/about">About</router-link>
+        <router-link to="/bitcoin">bitcoin</router-link>
+        <br />
+        <router-link to="/bitcoin/a">b-a</router-link>
+        <br />
+        <router-link to="/bitcoin/b">b-b</router-link>
+        <br />
+        <router-link to="/settings">setting</router-link>
+        <br />
+        <router-link to="/settings/a">setting-a</router-link>
+        <div @click="changeApp">change</div>
       </div>
-      <v-btn color="#0000ff" :text="true" to="bitcoin">hello</v-btn>
-      <router-link to="/">Home</router-link>|
-      <router-link to="/about">About</router-link>
-      <router-link to="/bitcoin">bitcoin</router-link>
-      <br />
-      <router-link to="/bitcoin/a">b-a</router-link>
-      <br />
-      <router-link to="/bitcoin/b">b-b</router-link>
-      <br />
-      <router-link to="/settings">setting</router-link>
-      <br />
-      <router-link to="/settings/a">setting-a</router-link>
-      <div @click="changeApp">change</div>
-    </div>
+    </v-app> -->
     <router-view />
   </div>
 </template>
@@ -35,26 +59,55 @@ export default {
   name: 'App',
   data() {
     return {
-      name: 'nihao'
+      name: 'nihao',
+      d_publicKey: '',
+      d_scriptType: 'SPENDP2SHWITNESS',
+      d_purpose: 49,
+      d_request: '',
+      d_response: '',
+      d_showDisplay: false
     }
   },
   computed: {
-    ...mapState(['version', 'app'])
+    ...mapState(['version', 'app', 'usb'])
   },
   mounted() {
     this.initLanguage()
   },
+  watch: {
+    $route() {
+      window.document.title = this.$route.meta.title
+    }
+  },
   methods: {
+    /**
+     * @method  getPublicKey
+     * @return void
+     */
+    async getPbk() {
+      /*  const proto = {
+        address_n: [(this.d_purpose | 0x80000000) >>> 0, (this.d_coinType | 0x80000000) >>> 0, (this.d_account | 0x80000000) >>> 0],
+        script_type: this.d_scriptType,
+        show_display: false
+      }
+      const result = await this.$usb.cmd('GetPublicKey', proto) */
+      const result = await this.$usb.cmd('GetPublicKey', {
+        address_n: [2147483697, 2147483648, 2147483648],
+        script_type: 'SPENDP2SHWITNESS',
+        show_display: false
+      })
+      // this.d_request = `abckey.cmd('GetPublicKey', ` + JSON.stringify(proto, null, 4) + ')'
+      this.d_response = JSON.stringify(result, null, 4)
+    },
+
     /**
      * @method  connect - usbdevice
      * @return void
      */
     connect() {
       console.log(this.$usb)
-      this.$usb.requestDevice([]).then(res => {
+      this.$usb.add(res => {
         console.log('you have already choose device')
-        console.log('device info:')
-        console.log(res)
         this.$usb.syncVuex(res)
       })
     },
@@ -95,7 +148,7 @@ export default {
 
 <style lang="less">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: '微软雅黑', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

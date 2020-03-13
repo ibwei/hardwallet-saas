@@ -2,14 +2,9 @@ import Vue from 'vue'
 import Store from '@/store'
 import Usb from '@abckey/webusb'
 
-//
-function method(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-  console.log(propertyKey, descriptor)
-  console.log(target)
-}
 class UsbDevice extends Usb {
-  @method
   syncVuex(e?: any): void {
+    Store.__s('usb.connect', Boolean(e))
     Store.__s('usb.vendorId', e ? e.vendorId : 0)
     Store.__s('usb.productId', e ? e.productId : 0)
     Store.__s('usb.manufacturer', e ? e.manufacturerName : '')
@@ -43,6 +38,14 @@ webusb.onConnect(e => {
  */
 webusb.onErr(e => {
   console.log('something wrong with usb device', e)
+  webusb.syncVuex()
+})
+
+/**
+ * @method onErr - device has something wrong
+ */
+webusb.onDisconnect(e => {
+  console.log('Usb device disconnect', e)
   webusb.syncVuex()
 })
 
