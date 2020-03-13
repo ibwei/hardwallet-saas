@@ -15,7 +15,7 @@ export const preset = {
     }
   },
   icons: {
-    iconfont: 'midSvg',
+    iconfont: 'mdiSvg',
     values: {}
   },
   lang: {

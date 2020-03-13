@@ -9,7 +9,6 @@
         </v-container>
       </v-content>
     </v-app>
-
     <!--  <v-app>
       <div id="nav">
         <v-row>

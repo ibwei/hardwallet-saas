@@ -1,6 +1,5 @@
 import VueRouter, { Route } from 'vue-router'
 import { AxiosInstance } from 'axios'
-import { UsbType } from './interface/usbType'
 import { Store } from 'vuex'
 
 declare module 'vue/types/vue' {
@@ -9,7 +8,7 @@ declare module 'vue/types/vue' {
     $router: VueRouter
     $route: Route
     $axios: AxiosInstance
-    $usb: UsbType
+    $usb: any
     $store: Store<any>
   }
 }
