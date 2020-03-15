@@ -19,12 +19,16 @@
     <v-divider></v-divider>
     <v-row>
       <v-col cols="4" class="offset-sm-4">
-        <v-text-field placeholder="enter keywords to search" hide-details="auto"></v-text-field>
+        <v-text-field
+          placeholder="enter keywords to search"
+          @input="m_filterTypeList"
+          hide-details="auto"
+        ></v-text-field>
       </v-col>
     </v-row>
     <v-container id="scroll-target" style="max-height: 400px" class="overflow-y-auto">
       <v-row align="center" justify="center">
-        <template v-for="(item, index) in d_coinTypeList">
+        <template v-for="(item, index) in d_filterTypeList">
           <v-col class="d-flex" justify="center" cols="12" :key="index">
             <v-sheet
               v-if="item.selected"
@@ -49,9 +53,9 @@
             <v-sheet
               v-else
               width="100%"
-              class="d-flex flex-row justify-center justify-content-center align-items-center"
+              class="d-flex flex-row pa-2 justify-center justify-content-center align-items-center"
               style="cursor:pointer"
-              @click="displaySelect(item.id)"
+              @click="m_displaySelect(item.id)"
             >
               <v-col cols="1">
                 <div class="d-flex justify-center">
@@ -88,6 +92,7 @@ export default {
       d_preSelectedIndex: 0,
       d_selectType: '',
       d_dialog: true,
+      d_filterTypeList: [],
       d_coinTypeList: [
         {
           name: 'Bitcoin',
@@ -162,6 +167,7 @@ export default {
       item.seleted = false
       return item
     })
+    this.d_filterTypeList = this.d_coinTypeList
   },
   methods: {
     /**
@@ -169,13 +175,27 @@ export default {
      * @param {number} index - the index when you choose
      * @return void
      */
-    displaySelect (index) {
-      const seletedType = this.d_coinTypeList[index]
-      this.d_coinTypeList.splice(this.d_preSelectedIndex, 1, { ...this.d_coinTypeList[this.d_preSelectedIndex], selected: false })
-      this.d_coinTypeList.splice(index, 1, { ...this.d_coinTypeList[index], selected: true })
+    m_displaySelect (index) {
+      const seletedType = this.d_filterTypeList[index]
+      this.d_filterTypeList.splice(this.d_preSelectedIndex, 1, { ...this.d_filterTypeList[this.d_preSelectedIndex], selected: false })
+      this.d_filterTypeList.splice(index, 1, { ...this.d_filterTypeList[index], selected: true })
       this.d_preSelectedIndex = index
       this.d_selectType = `${seletedType.name}(${seletedType.briefName})`
+    },
+
+    /**
+     * @method filterTypeList - when you select one of coin type,the target will be highlightbundleRenderer.renderToStream
+     * @param {string} keywords - the keywords by user input
+     */
+    m_filterTypeList (keywords) {
+      const key = keywords.toLowerCase()
+      this.d_filterTypeList = this.d_coinTypeList.filter(item => {
+        const name = item.name.toLowerCase()
+        const briefName = item.briefName.toLowerCase()
+        return name.includes(key) || briefName.includes(key)
+      })
     }
+
   }
 }
 </script>
