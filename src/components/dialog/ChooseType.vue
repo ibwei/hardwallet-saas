@@ -1,16 +1,18 @@
 <template>
   <v-dialog justify="center" light overlay-opacity="0" v-model="d_dialog" width="800" persistent>
     <template v-slot:activator="{ on }">
-      <v-btn color="" v-on="on">
-        Select Coin Type
-      </v-btn>
+      <v-btn color v-on="on">Select Coin Type</v-btn>
     </template>
     <v-card-title class="headline">
       <template v-if="!d_selectType">
-        <span class="subtitle-2 blue-grey lighten-5  pl-2 pr-2"> <i class="icon pr-3">&#xe666;</i>Choose A Coin Type</span>
+        <span class="subtitle-2 blue-grey lighten-5 pl-2 pr-2">
+          <i class="icon pr-3">&#xe666;</i>Choose A Coin Type
+        </span>
       </template>
       <template v-else>
-        <span class="subtitle-2 blue-grey lighten-5 pl-2 pr-2"> <i class="icon pr-1">&#xe666;</i>Seleted:</span>
+        <span class="subtitle-2 blue-grey lighten-5 pl-2 pr-2">
+          <i class="icon pr-1">&#xe666;</i>Selected:
+        </span>
         <span class="green white--text subtitle-2 pl-2 pr-2">{{ d_selectType }}</span>
       </template>
     </v-card-title>
@@ -24,22 +26,42 @@
       <v-row align="center" justify="center">
         <template v-for="(item, index) in d_coinTypeList">
           <v-col class="d-flex" justify="center" cols="12" :key="index">
-            <v-card v-if="item.selected" width="100%" class="d-flex justify-center  pa-2 justify-content-center align-items-sm-center">
+            <v-sheet
+              v-if="item.selected"
+              width="100%"
+              color="grey lighten-3"
+              class="d-flex justify-center pa-2 justify-content-center align-items-sm-center"
+            >
               <v-col cols="1">
-                <div class="d-flex justify-center"><img src="../../assets/cointype/BTC.png" height="25" width="auto" /></div>
+                <div class="d-flex justify-center">
+                  <img src="../../assets/cointype/BTC.png" height="25" width="auto" />
+                </div>
               </v-col>
               <v-col cols="4" justify="left">
-                <div class="subtitle-2 pl-2 green--text text-left">{{ `${item.name}(${item.briefName})` }}</div>
+                <div class="d-flex subtitle-2 pl-2 green--text text-left">
+                  {{ `${item.name}(${item.briefName})` }}
+                  <div class="pl-5">
+                    <i class="icon" style="font-size:26px">&#xe75c;</i>
+                  </div>
+                </div>
               </v-col>
-            </v-card>
-            <v-btn v-else large text width="100%" class="d-flex flex-row justify-center justify-content-center align-items-center" @click="displaySelect(index)">
+            </v-sheet>
+            <v-sheet
+              v-else
+              width="100%"
+              class="d-flex flex-row justify-center justify-content-center align-items-center"
+              style="cursor:pointer"
+              @click="displaySelect(item.id)"
+            >
               <v-col cols="1">
-                <div class="d-flex justify-center"><img src="../../assets/cointype/BTC.png" height="25" width="auto" /></div>
+                <div class="d-flex justify-center">
+                  <img src="../../assets/cointype/BTC.png" height="25" width="auto" />
+                </div>
               </v-col>
               <v-col cols="4" class="justify-start text-left">
                 <div class="subtitle-2 pl-2">{{ `${item.name}(${item.briefName})` }}</div>
               </v-col>
-            </v-btn>
+            </v-sheet>
           </v-col>
         </template>
       </v-row>
@@ -48,11 +70,11 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn color="default darken-1" text @click="d_dialog = false">
-        <span class="subtitle-2 blue-grey--text  pl-2 pr-2">Cancel</span>
+        <span class="subtitle-2 blue-grey--text pl-2 pr-2">Cancel</span>
       </v-btn>
 
       <v-btn color="green darken-1" text @click="d_dialog = false">
-        <span class="subtitle-2  success--text  pl-2 pr-2">Confirm</span>
+        <span class="subtitle-2 success--text pl-2 pr-2">Confirm</span>
       </v-btn>
     </v-card-actions>
   </v-dialog>
@@ -61,7 +83,7 @@
 <script>
 export default {
   name: 'chooseType',
-  data() {
+  data () {
     return {
       d_preSelectedIndex: 0,
       d_selectType: '',
@@ -134,8 +156,9 @@ export default {
       ]
     }
   },
-  created() {
-    this.d_coinTypeList.forEach(item => {
+  created () {
+    this.d_coinTypeList.forEach((item, index) => {
+      item.id = index
       item.seleted = false
       return item
     })
@@ -146,7 +169,7 @@ export default {
      * @param {number} index - the index when you choose
      * @return void
      */
-    displaySelect(index) {
+    displaySelect (index) {
       const seletedType = this.d_coinTypeList[index]
       this.d_coinTypeList.splice(this.d_preSelectedIndex, 1, { ...this.d_coinTypeList[this.d_preSelectedIndex], selected: false })
       this.d_coinTypeList.splice(index, 1, { ...this.d_coinTypeList[index], selected: true })

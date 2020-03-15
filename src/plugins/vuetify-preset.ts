@@ -4,7 +4,7 @@ import '@/styles/theme.scss'
 // Locale
 import zhHans from 'vuetify/es5/locale/zh-Hans'
 
-export const preset = {
+export const preset: any = {
   breakpoint: {
     scrollBarWidth: 16,
     thresholds: {

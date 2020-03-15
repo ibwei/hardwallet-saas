@@ -29,17 +29,17 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       d_language: '',
       d_show: false
     }
   },
-  created() {
+  created () {
     this.d_language = this.$store.__s('app.language')
   },
   methods: {
-    saveLanguage() {
+    saveLanguage () {
       this.$store.__s('app.language', this.d_language)
     }
   }
