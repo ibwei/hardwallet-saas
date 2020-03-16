@@ -24,6 +24,10 @@
   color                  : #2c3e50;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 #nav {
   padding: 30px;
 
@@ -35,4 +39,9 @@
       color: #42b983;
     }
   }
+}
+
+.row {
+  margin-left : 0;
+  margin-right: 0;
 }
