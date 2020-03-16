@@ -3,12 +3,23 @@
     <v-app>
       <v-content>
         <v-container fluid>
-          <v-row>
-            <dialog-choose-type />
-          </v-row>
-          <v-row>
-            <dialog-connect-device />
-          </v-row>
+          <!-- drawer -->
+          <v-navigation-drawer v-model="drawer" app>
+            <v-sheet class="primary">{{c_deviceName}}</v-sheet>
+            <v-list dense>
+              <v-list-item link>
+                <v-list-item-action>
+                  <v-icon>mdi-home</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title>Home</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-navigation-drawer>
+          <v-content>
+            <v-container class="fill-height" fluid>content</v-container>
+          </v-content>
         </v-container>
       </v-content>
     </v-app>
@@ -33,7 +44,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(['version', 'app', 'usb'])
+    ...mapState(['version', 'app', 'usb']),
+    c_deviceName () {
+      return this.app.product ? this.app.product : 'CHECK FOR DEVICE'
+    }
   },
   mounted () {
     this.initLanguage()

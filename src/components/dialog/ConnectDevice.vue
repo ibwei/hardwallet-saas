@@ -45,10 +45,6 @@ export default {
       this.$usb.add(res => {
         console.log('you have already choose device')
         this.$usb.syncVuex(res)
-        console.log('hahahh')
-        console.log(res)
-        console.log('------------')
-        console.log(this.usb)
       })
     }
   }
