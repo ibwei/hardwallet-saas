@@ -6,6 +6,9 @@
           <v-row>
             <dialog-choose-type />
           </v-row>
+          <v-row>
+            <dialog-connect-device />
+          </v-row>
         </v-container>
       </v-content>
     </v-app>
@@ -100,17 +103,6 @@ export default {
     },
 
     /**
-     * @method  connect - usbdevice
-     * @return void
-     */
-    connect() {
-      console.log(this.$usb)
-      this.$usb.add(res => {
-        console.log('you have already choose device')
-        this.$usb.syncVuex(res)
-      })
-    },
-    /**
      * @method - init the application's language
      * @return {void}
      */
@@ -138,7 +130,6 @@ export default {
 
     changeApp() {
       console.log('change')
-      this.$store.__s('app.language', 'ja_JP')
       this.$store.__s('version', '0.0.3')
     }
   }

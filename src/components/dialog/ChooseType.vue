@@ -1,70 +1,71 @@
 <template>
-  <v-dialog justify="center" light overlay-opacity="0" v-model="d_dialog" width="800" persistent>
+  <v-dialog justify="center" light overlay-opacity="0.1" v-model="d_dialog" width="800" persistent>
     <template v-slot:activator="{ on }">
       <v-btn color v-on="on">Select Coin Type</v-btn>
     </template>
-    <v-card-title class="headline">
-      <template v-if="!d_selectType">
-        <span class="subtitle-2 blue-grey lighten-5 pl-2 pr-2"> <i class="icon pr-3">&#xe666;</i>Choose A Coin Type </span>
-      </template>
-      <template v-else>
-        <span class="subtitle-2 blue-grey lighten-5 pl-2 pr-2"> <i class="icon pr-1">&#xe666;</i>Selected: </span>
-        <span class="green white--text subtitle-2 pl-2 pr-2">{{ d_selectType }}</span>
-      </template>
-    </v-card-title>
-    <v-divider></v-divider>
-    <v-row>
-      <v-col cols="4" class="offset-sm-4">
-        <v-text-field placeholder="enter keywords to search" @input="m_filterTypeList" hide-details="auto"></v-text-field>
-      </v-col>
-    </v-row>
-    <v-container id="scroll-target" style="height:400px;" class="overflow-y-auto">
-      <v-row align="center" justify="center">
-        <template v-for="(item, index) in d_filterTypeList">
-          <v-col class="d-flex" justify="center" cols="12" :key="index">
-            <v-sheet v-if="item.selected" width="100%" color="grey lighten-3" class="d-flex justify-center pa-2 justify-content-center align-items-sm-center">
-              <v-col cols="1">
-                <div class="d-flex justify-center">
-                  <img src="../../assets/cointype/BTC.png" height="25" width="auto" />
-                </div>
-              </v-col>
-              <v-col cols="4" justify="left">
-                <div class="d-flex subtitle-2 pl-2 green--text text-left">
-                  {{ `${item.name}(${item.briefName})` }}
-                  <div class="pl-5">
-                    <i class="icon" style="font-size:26px">&#xe75c;</i>
-                  </div>
-                </div>
-              </v-col>
-            </v-sheet>
-            <v-sheet v-else width="100%" class="d-flex flex-row pa-2 justify-center justify-content-center align-items-center" style="cursor:pointer" @click="m_displaySelect(item.id)">
-              <v-col cols="1">
-                <div class="d-flex justify-center">
-                  <img src="../../assets/cointype/BTC.png" height="25" width="auto" />
-                </div>
-              </v-col>
-              <v-col cols="4" class="justify-start text-left">
-                <div class="subtitle-2 pl-2">{{ `${item.name}(${item.briefName})` }}</div>
-              </v-col>
-            </v-sheet>
-          </v-col>
+    <v-sheet color="white">
+      <v-card-title class="headline">
+        <template v-if="!d_selectType">
+          <span class="subtitle-2 blue-grey lighten-5 pl-2 pr-2"> <i class="icon pr-3">&#xe666;</i>Choose A Coin Type </span>
         </template>
-        <template v-if="d_filterTypeList.length === 0">
-          <span class="darken-1--text">No match items</span>
+        <template v-else>
+          <span class="subtitle-2 blue-grey lighten-5 pl-2 pr-2"> <i class="icon pr-1">&#xe666;</i>Selected: </span>
+          <span class="green white--text subtitle-2 pl-2 pr-2">{{ d_selectType }}</span>
         </template>
+      </v-card-title>
+      <v-divider></v-divider>
+      <v-row>
+        <v-col cols="4" class="offset-sm-4">
+          <v-text-field placeholder="enter keywords to search" @input="m_filterTypeList" hide-details="auto"></v-text-field>
+        </v-col>
       </v-row>
-    </v-container>
-    <v-divider></v-divider>
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn color="default darken-1" text @click="d_dialog = false">
-        <span class="subtitle-2 blue-grey--text pl-2 pr-2">Cancel</span>
-      </v-btn>
-
-      <v-btn color="green darken-1" text @click="d_dialog = false">
-        <span class="subtitle-2 success--text pl-2 pr-2">Confirm</span>
-      </v-btn>
-    </v-card-actions>
+      <v-container id="scroll-target" style="height:400px;" class="overflow-y-auto">
+        <v-row align="center" justify="center">
+          <template v-for="(item, index) in d_filterTypeList">
+            <v-col class="d-flex" justify="center" cols="12" :key="index">
+              <v-sheet v-if="item.selected" width="100%" color="grey lighten-3" class="d-flex justify-center pa-2 justify-content-center align-items-sm-center">
+                <v-col cols="1">
+                  <div class="d-flex justify-center">
+                    <img src="../../assets/cointype/BTC.png" height="25" width="auto" />
+                  </div>
+                </v-col>
+                <v-col cols="4" justify="left">
+                  <div class="d-flex subtitle-2 pl-2 green--text text-left">
+                    {{ `${item.name}(${item.briefName})` }}
+                    <div class="pl-5">
+                      <i class="icon" style="font-size:26px">&#xe75c;</i>
+                    </div>
+                  </div>
+                </v-col>
+              </v-sheet>
+              <v-sheet v-else width="100%" class="d-flex flex-row pa-2 justify-center justify-content-center align-items-center" style="cursor:pointer" @click="m_displaySelect(item.id)">
+                <v-col cols="1">
+                  <div class="d-flex justify-center">
+                    <img src="../../assets/cointype/BTC.png" height="25" width="auto" />
+                  </div>
+                </v-col>
+                <v-col cols="4" class="justify-start text-left">
+                  <div class="subtitle-2 pl-2">{{ `${item.name}(${item.briefName})` }}</div>
+                </v-col>
+              </v-sheet>
+            </v-col>
+          </template>
+          <template v-if="d_filterTypeList.length === 0">
+            <span class="subtitle-2 darken-1--text">No match items</span>
+          </template>
+        </v-row>
+      </v-container>
+      <v-divider></v-divider>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="default darken-1" text @click="d_dialog = false">
+          <span class="subtitle-2 blue-grey--text pl-2 pr-2">Cancel</span>
+        </v-btn>
+        <v-btn color="green darken-1" text @click="d_dialog = false">
+          <span class="subtitle-2 success--text pl-2 pr-2">Confirm</span>
+        </v-btn>
+      </v-card-actions>
+    </v-sheet>
   </v-dialog>
 </template>
 
