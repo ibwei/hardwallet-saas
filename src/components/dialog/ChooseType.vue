@@ -1,8 +1,5 @@
 <template>
   <v-dialog justify="center" light overlay-opacity="0.1" v-model="d_dialog" width="800" persistent>
-    <template v-slot:activator="{ on }">
-      <v-btn color v-on="on">Select Coin Type</v-btn>
-    </template>
     <v-sheet color="white" class="pa-2">
       <v-card-title class="headline">
         <template v-if="!d_selectType">

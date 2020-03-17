@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <dialog-connect-device />
     <v-app>
       <v-content class="blue lighten-5">
         <v-container fluid class="pa-0">
@@ -33,6 +32,13 @@
           <!-- router end -->
         </v-container>
       </v-content>
+      <dialog-choose-type />
+      <!-- <dialog-connect-device /> -->
+      <dialog-button-ack />
+      <dialog-pin-ack />
+      <dialog-pass-ack />
+      <dialog-word-ack />
+      <dialog-failure />
     </v-app>
   </div>
 </template>
