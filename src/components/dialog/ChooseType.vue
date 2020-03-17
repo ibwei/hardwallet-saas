@@ -3,27 +3,40 @@
     <template v-slot:activator="{ on }">
       <v-btn color v-on="on">Select Coin Type</v-btn>
     </template>
-    <v-sheet color="white">
+    <v-sheet color="white" class="pa-2">
       <v-card-title class="headline">
         <template v-if="!d_selectType">
-          <span class="subtitle-2 blue-grey lighten-5 pl-2 pr-2"> <i class="icon pr-3">&#xe666;</i>Choose A Coin Type </span>
+          <span class="subtitle-2 blue-grey lighten-5 pl-2 pr-2">
+            <i class="icon pr-3">&#xe666;</i>Choose A Coin Type
+          </span>
         </template>
         <template v-else>
-          <span class="subtitle-2 blue-grey lighten-5 pl-2 pr-2"> <i class="icon pr-1">&#xe666;</i>Selected: </span>
+          <span class="subtitle-2 blue-grey lighten-5 pl-2 pr-2">
+            <i class="icon pr-1">&#xe666;</i>Selected:
+          </span>
           <span class="green white--text subtitle-2 pl-2 pr-2">{{ d_selectType }}</span>
         </template>
       </v-card-title>
       <v-divider></v-divider>
       <v-row>
         <v-col cols="4" class="offset-sm-4">
-          <v-text-field placeholder="enter keywords to search" @input="m_filterTypeList" hide-details="auto"></v-text-field>
+          <v-text-field
+            placeholder="enter keywords to search"
+            @input="m_filterTypeList"
+            hide-details="auto"
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-container id="scroll-target" style="height:400px;" class="overflow-y-auto">
         <v-row align="center" justify="center">
           <template v-for="(item, index) in d_filterTypeList">
             <v-col class="d-flex" justify="center" cols="12" :key="index">
-              <v-sheet v-if="item.selected" width="100%" color="grey lighten-3" class="d-flex justify-center pa-2 justify-content-center align-items-sm-center">
+              <v-sheet
+                v-if="item.selected"
+                width="100%"
+                color="grey lighten-3"
+                class="d-flex justify-center pa-2 justify-content-center align-items-sm-center"
+              >
                 <v-col cols="1">
                   <div class="d-flex justify-center">
                     <img src="../../assets/cointype/BTC.png" height="25" width="auto" />
@@ -38,7 +51,13 @@
                   </div>
                 </v-col>
               </v-sheet>
-              <v-sheet v-else width="100%" class="d-flex flex-row pa-2 justify-center justify-content-center align-items-center" style="cursor:pointer" @click="m_displaySelect(item.id)">
+              <v-sheet
+                v-else
+                width="100%"
+                class="d-flex flex-row pa-2 justify-center justify-content-center align-items-center"
+                style="cursor:pointer"
+                @click="m_displaySelect(item.id)"
+              >
                 <v-col cols="1">
                   <div class="d-flex justify-center">
                     <img src="../../assets/cointype/BTC.png" height="25" width="auto" />
@@ -72,7 +91,7 @@
 <script>
 export default {
   name: 'chooseType',
-  data() {
+  data () {
     return {
       d_preSelectedIndex: 0,
       d_selectType: '',
@@ -146,7 +165,7 @@ export default {
       ]
     }
   },
-  created() {
+  created () {
     this.d_coinTypeList.forEach((item, index) => {
       item.id = index
       item.seleted = false
@@ -160,7 +179,7 @@ export default {
      * @param {number} index - this unique id of the selected type  when user choose
      * @return void
      */
-    m_displaySelect(index) {
+    m_displaySelect (index) {
       const seletedType = this.d_filterTypeList[index]
       this.d_filterTypeList.splice(this.d_preSelectedIndex, 1, { ...this.d_filterTypeList[this.d_preSelectedIndex], selected: false })
       this.d_filterTypeList.splice(index, 1, { ...this.d_filterTypeList[index], selected: true })
@@ -172,7 +191,7 @@ export default {
      * @method filterTypeList - when you input a keywords of coin type,the coinTypeList will be filter
      * @param {string} keywords - the keywords by user input
      */
-    m_filterTypeList(keywords) {
+    m_filterTypeList (keywords) {
       const key = keywords.toLowerCase()
       this.d_filterTypeList = this.d_coinTypeList.filter(item => {
         const name = item.name.toLowerCase()

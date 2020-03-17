@@ -1,3 +1,8 @@
+const vueServe = require('./vue.serve')
+const vueBuild = require('./vue.build')
+
+const IS_DEV = process.env.NODE_ENV === 'production' ? false : true
+
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 module.exports = {
   publicPath: './',
@@ -18,5 +23,8 @@ module.exports = {
   },
   configureWebpack: {
     plugins: [new VuetifyLoaderPlugin()]
+  },
+  chainWebpack: webpackConfig => {
+    IS_DEV ? vueServe(webpackConfig) : vueBuild(webpackConfig)
   }
 }

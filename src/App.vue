@@ -22,7 +22,7 @@ import { loadLanguageAsync } from '@/i18n/index'
 import { mapState } from 'vuex'
 export default {
   name: 'App',
-  data() {
+  data () {
     return {
       name: 'nihao',
       d_publicKey: '',
@@ -36,11 +36,11 @@ export default {
   computed: {
     ...mapState(['version', 'app', 'usb'])
   },
-  mounted() {
+  mounted () {
     this.initLanguage()
   },
   watch: {
-    $route() {
+    $route () {
       window.document.title = this.$route.meta.title
     }
   },
@@ -49,7 +49,7 @@ export default {
      * @method  getPublicKey
      * @return void
      */
-    async getPbk() {
+    async getPbk () {
       /*  const proto = {
         address_n: [(this.d_purpose | 0x80000000) >>> 0, (this.d_coinType | 0x80000000) >>> 0, (this.d_account | 0x80000000) >>> 0],
         script_type: this.d_scriptType,
@@ -69,7 +69,7 @@ export default {
      * @method - init the application's language
      * @return {void}
      */
-    initLanguage() {
+    initLanguage () {
       const store = JSON.parse(localStorage.getItem('vuex'))
       if (store.app.language) {
         loadLanguageAsync(store.app.language).then(lang => {
@@ -82,7 +82,7 @@ export default {
      * @method - change the application's language
      * @return {void}
      */
-    changeLanguage(type) {
+    changeLanguage (type) {
       loadLanguageAsync(type).then(res => {
         const html = document.getElementsByTagName('html')[0]
         if (html) {
@@ -91,31 +91,10 @@ export default {
       })
     },
 
-    changeApp() {
+    changeApp () {
       console.log('change')
       this.$store.__s('version', '0.0.3')
     }
   }
 }
 </script>
-
-<style lang="less">
-#app {
-  font-family: '微软雅黑', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
-</style>

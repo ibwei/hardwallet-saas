@@ -17,7 +17,7 @@
     "strict": true,
     "suppressImplicitAnyIndexErrors": true,
     "target": "esnext",
-    "types": ["chai", "mocha", "webpack-env", "vuetify"]
+    "types": ["webpack-env", "vuetify"]
   },
   "exclude": ["dist", "node_modules"],
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx"]

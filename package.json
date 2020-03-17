@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@abckey/webusb": "*",
-    "@types/w3c-web-usb": "^1.0.4",
     "@types/webpack-env": "^1.15.1",
     "axios": "^0.19.2",
     "commitizen": "^4.0.3",

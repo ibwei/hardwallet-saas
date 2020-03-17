@@ -9,7 +9,7 @@ export function HtmlEncode(text) {
     .replace(/>/g, '>')
 }
 // @param {Array.<DOMString>} templateData
-// @param {...} ..vals 果tokens
+// @param {...} ..vals tokens
 export function SaferHTML(templateData) {
   let s = templateData[0]
   for (let i = 1; i < arguments.length; i++) {
@@ -334,13 +334,13 @@ export function getScreenWidth() {
 export function getScrollXY() {
   return document.body.scrollTop
     ? {
-      x: document.body.scrollLeft,
-      y: document.body.scrollTop
-    }
+        x: document.body.scrollLeft,
+        y: document.body.scrollTop
+      }
     : {
-      x: document.documentElement.scrollLeft,
-      y: document.documentElement.scrollTop
-    }
+        x: document.documentElement.scrollLeft,
+        y: document.documentElement.scrollTop
+      }
 }
 
 // is valid url
@@ -614,7 +614,7 @@ export function setSort() {
   K1.value = K1.value != text ? text : test
 }
 
-export function * sleepGenerator(time) {
+export function* sleepGenerator(time) {
   yield new Promise(function(resolve, reject) {
     setTimeout(resolve, time)
   })
@@ -672,11 +672,7 @@ export function toCDB(str) {
   }
   return result
 }
-
-String.prototype.trim = function() {
-  const reExtraSpace = /^\s*(.*?)\s+$/
-  return this.replace(reExtraSpace, '$1')
-}
+å
 
 export function uniqueId(): number {
   const a: any = Math.random
