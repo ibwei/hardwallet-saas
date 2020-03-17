@@ -1,5 +1,5 @@
 <template>
-  <v-dialog justify="center" light overlay-opacity="0.1" v-model="d_dialog" width="800" persistent>
+  <v-dialog justify="center" light overlay-opacity="0.1" v-model="c_show" width="800" persistent>
     <v-sheet color="white" class="pa-2">
       <v-card-title class="headline">
         <template v-if="!d_selectType">
@@ -161,6 +161,9 @@ export default {
         }
       ]
     }
+  },
+  computed: {
+    c_show: vm => vm.$store.__s('dialog.chooseType')
   },
   created () {
     this.d_coinTypeList.forEach((item, index) => {

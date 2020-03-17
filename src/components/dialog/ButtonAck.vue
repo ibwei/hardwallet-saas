@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="d_show" max-width="450" persistent scrollable>
+  <v-dialog v-model="c_show" max-width="450" persistent scrollable>
     <v-card>
       <v-card-title class="headline">ButtonAck</v-card-title>
       <v-card-text class="headline">Confirm the action on your device!</v-card-text>
@@ -9,11 +9,10 @@
 
 <script>
 export default {
-  data: () => ({
-    d_show: false
-  }),
+  data: () => ({}),
   computed: {
-    c_msg: vm => vm.$store.__s('usb.msg')
+    c_msg: vm => vm.$store.__s('usb.msg'),
+    c_show: vm => vm.$store.__s('dialog.buttonAck')
   },
   watch: {
     c_msg(msg) {

@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="d_show" max-width="333" persistent scrollable>
+    <v-dialog v-model="c_show" max-width="333" persistent scrollable>
       <template v-slot:activator="{ on }">
         <v-btn color="primary" dark v-on="on">Open Dialog</v-btn>
       </template>
@@ -31,9 +31,11 @@
 export default {
   data() {
     return {
-      d_language: '',
-      d_show: false
+      d_language: ''
     }
+  },
+  computed: {
+    c_show: vm => vm.$store.__s('dialog.language')
   },
   created() {
     this.d_language = this.$store.__s('app.language')
