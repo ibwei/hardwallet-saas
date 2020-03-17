@@ -27,12 +27,12 @@
 import { mapState } from 'vuex'
 export default {
   name: 'ConnectDevice',
-  data () {
+  data() {
     return {}
   },
   computed: {
     ...mapState(['usb']),
-    c_connect () {
+    c_connect() {
       return !this.usb.connect
     }
   },
@@ -41,7 +41,7 @@ export default {
      * @method  connect - usbdevice
      * @return void
      */
-    m_connect () {
+    m_connect() {
       this.$usb.add(res => {
         console.log('you have already choose device')
         this.$usb.syncVuex(res)
