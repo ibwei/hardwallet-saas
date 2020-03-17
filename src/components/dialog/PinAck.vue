@@ -1,62 +1,62 @@
 <template>
-  <v-dialog v-model="d_show" max-width="333" persistent scrollable>
+  <v-dialog v-model="d_show" max-width="450" persistent scrollable>
     <v-card>
       <v-card-title class="headline">{{ d_title }}</v-card-title>
       <v-card-text>
         <v-row>
           <v-col>
-            <v-btn @click="deletePin()" outlined large block>
+            <v-btn @click="deletePin()" outlined block>
               <v-icon v-for="n in d_pin.length" :key="n">mdi-lock</v-icon>
             </v-btn>
           </v-col>
         </v-row>
         <v-row>
           <v-col>
-            <v-btn @click="inputPin(7)" outlined large>
+            <v-btn @click="inputPin(7)" outlined>
               <v-icon>mdi-key</v-icon>
             </v-btn>
           </v-col>
           <v-col>
-            <v-btn @click="inputPin(8)" outlined large>
+            <v-btn @click="inputPin(8)" outlined>
               <v-icon>mdi-key</v-icon>
             </v-btn>
           </v-col>
           <v-col>
-            <v-btn @click="inputPin(9)" outlined large>
-              <v-icon>mdi-key</v-icon>
-            </v-btn>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <v-btn @click="inputPin(4)" outlined large>
-              <v-icon>mdi-key</v-icon>
-            </v-btn>
-          </v-col>
-          <v-col>
-            <v-btn @click="inputPin(5)" outlined large>
-              <v-icon>mdi-key</v-icon>
-            </v-btn>
-          </v-col>
-          <v-col>
-            <v-btn @click="inputPin(6)" outlined large>
+            <v-btn @click="inputPin(9)" outlined>
               <v-icon>mdi-key</v-icon>
             </v-btn>
           </v-col>
         </v-row>
         <v-row>
           <v-col>
-            <v-btn @click="inputPin(1)" outlined large>
+            <v-btn @click="inputPin(4)" outlined>
               <v-icon>mdi-key</v-icon>
             </v-btn>
           </v-col>
           <v-col>
-            <v-btn @click="inputPin(2)" outlined large>
+            <v-btn @click="inputPin(5)" outlined>
               <v-icon>mdi-key</v-icon>
             </v-btn>
           </v-col>
           <v-col>
-            <v-btn @click="inputPin(3)" outlined large>
+            <v-btn @click="inputPin(6)" outlined>
+              <v-icon>mdi-key</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-btn @click="inputPin(1)" outlined>
+              <v-icon>mdi-key</v-icon>
+            </v-btn>
+          </v-col>
+          <v-col>
+            <v-btn @click="inputPin(2)" outlined>
+              <v-icon>mdi-key</v-icon>
+            </v-btn>
+          </v-col>
+          <v-col>
+            <v-btn @click="inputPin(3)" outlined>
               <v-icon>mdi-key</v-icon>
             </v-btn>
           </v-col>
