@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="d_show" max-width="333" persistent scrollable>
+  <v-dialog v-model="d_show" max-width="450" persistent scrollable>
     <v-card>
       <v-card-title class="headline">ButtonAck</v-card-title>
       <v-card-text class="headline">Confirm the action on your device!</v-card-text>
