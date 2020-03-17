@@ -3,54 +3,17 @@
     <v-app>
       <v-content>
         <v-container fluid>
-          <v-row>
-            <dialog-choose-type />
-          </v-row>
-          <v-row>
-            <dialog-connect-device />
-          </v-row>
+          <router-view />
         </v-container>
       </v-content>
+      <dialog-choose-type />
+      <dialog-connect-device />
+      <dialog-button-ack />
+      <dialog-pin-ack />
+      <dialog-pass-ack />
+      <dialog-word-ack />
+      <dialog-failure />
     </v-app>
-    <!--  <v-app>
-      <div id="nav">
-        <v-row>
-          <v-col cols="6" sm="24">
-            <v-btn class="app" small @click="connect()">connect</v-btn>
-          </v-col>
-          <v-col cols="6" sm="24">DeviceName ：{{ this.usb.connect ? this.usb.product : 'Please choose device' }}</v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="6" sm="24">
-            <v-btn class="app" small @click="getPbk()">getPublickKey</v-btn>
-          </v-col>
-          <v-col cols="6" sm="24">publickey ：{{ this.d_response }}</v-col>
-        </v-row>
-
-        <app-language></app-language>
-        <span>{{ $t('app.name') }}</span>
-        <div @click="changeLanguage('zhHans')">中文</div>
-        <div @click="changeLanguage('en')">Enlish</div>
-        <div>
-          <v-input></v-input>
-          <v-text-field append-icon="phone" prepend-icon="close" label="input"></v-text-field>
-        </div>
-        <v-btn color="#0000ff" :text="true" to="bitcoin">hello</v-btn>
-        <router-link to="/">Home</router-link>|
-        <router-link to="/about">About</router-link>
-        <router-link to="/bitcoin">bitcoin</router-link>
-        <br />
-        <router-link to="/bitcoin/a">b-a</router-link>
-        <br />
-        <router-link to="/bitcoin/b">b-b</router-link>
-        <br />
-        <router-link to="/settings">setting</router-link>
-        <br />
-        <router-link to="/settings/a">setting-a</router-link>
-        <div @click="changeApp">change</div>
-      </div>
-    </v-app> -->
-    <router-view />
   </div>
 </template>
 
