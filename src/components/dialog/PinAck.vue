@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="d_show" max-width="450" persistent scrollable>
+  <v-dialog v-model="c_show" max-width="450" persistent scrollable>
     <v-card>
       <v-card-title class="headline">{{ d_title }}</v-card-title>
       <v-card-text>
@@ -80,12 +80,12 @@
 export default {
   data: () => ({
     d_title: 'PIN',
-    d_show: false,
     d_loading: false,
     d_pin: ''
   }),
   computed: {
-    c_msg: vm => vm.$store.__s('usb.msg')
+    c_msg: vm => vm.$store.__s('usb.msg'),
+    c_show: vm => vm.$store.__s('dialog.pinAck')
   },
   watch: {
     async c_msg(msg) {

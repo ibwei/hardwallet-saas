@@ -33,7 +33,8 @@
         </v-container>
       </v-content>
       <dialog-choose-type />
-      <!-- <dialog-connect-device /> -->
+      <dialog-connect-device />
+      <dialog-language />
       <dialog-button-ack />
       <dialog-pin-ack />
       <dialog-pass-ack />
