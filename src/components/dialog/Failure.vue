@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="d_show" max-width="333" persistent scrollable>
+  <v-dialog v-model="d_show" max-width="450" persistent scrollable>
     <v-card>
       <v-card-title class="headline">Failure</v-card-title>
       <v-card-text class="headline">{{ this.d_msg }}</v-card-text>
@@ -15,7 +15,7 @@
 export default {
   data: () => ({
     d_msg: null,
-    d_show: false
+    d_show: true
   }),
   computed: {
     c_msg: vm => vm.$store.__s('usb.msg')
