@@ -15,7 +15,7 @@
 export default {
   data: () => ({
     d_msg: null,
-    d_show: true
+    d_show: false
   }),
   computed: {
     c_msg: vm => vm.$store.__s('usb.msg')
