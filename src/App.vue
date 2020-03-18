@@ -6,27 +6,26 @@
           <!-- drawer -->
           <v-navigation-drawer value="true" class="elevation-2" app>
             <v-row justify="center">
-              <div class="d-flex pa-2 mt-4 justify-center align-center blue lighten-5" style="border-radius:20px;width:80%;">
+              <div
+                class="d-flex pa-2 mt-4 justify-center align-center blue lighten-5"
+                style="border-radius:20px;width:80%;"
+              >
                 <div class="body-2">{{ c_deviceName }}</div>
                 <i class="icon pl-2">&#xe606;</i>
               </div>
+              <side-navbar :routerList="d_routerList" class="mt-4" />
             </v-row>
-            <v-list class="mt-4" dense>
-              <v-list-item v-for="(item, index) in d_routerList" :key="index" :class="item.selected ? 'blue lighten-5' : ''" link>
-                <v-list-item-content @click="m_menuClick(index)">
-                  <div class="d-flex justify-start align-center" :class="item.selected ? 'blue--text lighten-3--text' : 'black--text'">
-                    <div class="dot mr-4" :class="item.selected ? 'blue lighten-3' : 'white'"></div>
-                    <i class="icon pr-3" v-html="item.icon"></i>
-                    <div class="body-2">{{ item.name }}</div>
-                  </div>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
           </v-navigation-drawer>
           <!-- drawer end -->
           <!-- router display -->
-          <div class="blue lighten-4" style="height:60px;border:1px solid red;"></div>
-          <div class="d-flex  flex-column justify-center align-center white ma-auto mt-10" style="width:960px;">
+          <div
+            class="blue lighten-4 elevation-3"
+            style="height:60px;border-bottom-right-radius:4px;border-bottom-left-radius:4px;"
+          ></div>
+          <div
+            class="white ma-auto mt-10 pa-6 elevation-1"
+            style="width:960px;min-height:300px;border-radius:2px;"
+          >
             <router-view />
           </div>
           <!-- router end -->
@@ -45,14 +44,17 @@
 
 <script>
 import { loadLanguageAsync } from '@/i18n/index'
+import SideNavbar from '@/views/components/SideNavBar'
 import { mapState } from 'vuex'
 export default {
   name: 'App',
-  data() {
+  components: {
+    SideNavbar
+  },
+  data () {
     return {
       name: 'nihao',
       d_publicKey: '',
-      d_preSelectedIndex: 0,
       d_scriptType: 'SPENDP2SHWITNESS',
       d_purpose: 49,
       d_request: '',
@@ -60,66 +62,57 @@ export default {
       d_showDisplay: false,
       d_routerList: [
         {
-          name: 'Wallet',
+          name: 'wallet',
           icon: '&#xea03;',
-          url: 'Wallet',
-          children: [],
-          selected: true
+          url: '/wallet',
+          children: [{
+            name: 'Account',
+            icon: '&#xea03;',
+            url: '/wallet/account'
+          }, {
+            name: 'Receive',
+            icon: '&#xea03;',
+            url: '/wallet/receive'
+          }]
         },
         {
           name: 'Send',
           icon: '&#xea06;',
-          url: 'send',
-          children: [],
-          selected: false
+          url: '/send'
         },
         {
           name: 'Device Setting',
           icon: '&#xe9f2;',
-          url: 'setting',
-          children: [],
-          selected: false
+          url: 'setting'
         },
         {
           name: 'ABC1 Extension',
           icon: '&#xe9fb;',
-          url: 'extension',
-          children: [],
-          selected: false
+          url: 'extension'
         }
       ]
     }
   },
   computed: {
     ...mapState(['version', 'app', 'usb']),
-    c_deviceName() {
+    c_deviceName () {
       return this.app.product ? this.app.product : 'Waiting for connect'
     }
   },
-  mounted() {
+  mounted () {
     this.initLanguage()
   },
   watch: {
-    $route() {
+    $route () {
       window.document.title = this.$route.meta.title
     }
   },
   methods: {
-    m_menuClick(index) {
-      if (index === this.d_preSelectedIndex) {
-        return false
-      }
-      this.d_routerList.splice(this.d_preSelectedIndex, 1, { ...this.d_routerList[this.d_preSelectedIndex], selected: false })
-      this.d_routerList.splice(index, 1, { ...this.d_routerList[index], selected: true })
-      this.d_preSelectedIndex = index
-      this.$router.push(this.d_routerList[index].url)
-    },
-
     /**
      * @method - init the application's language
      * @return {void}
      */
-    initLanguage() {
+    initLanguage () {
       const store = JSON.parse(localStorage.getItem('vuex'))
       if (store?.app?.language) {
         loadLanguageAsync(store.app.language).then(lang => {
@@ -132,7 +125,7 @@ export default {
      * @method - change the application's language
      * @return {void}
      */
-    changeLanguage(type) {
+    changeLanguage (type) {
       loadLanguageAsync(type).then(res => {
         const html = document.getElementsByTagName('html')[0]
         if (html) {
@@ -144,12 +137,4 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 100%;
-}
-.icon {
-  font-size: 20px;
-}
 </style>
