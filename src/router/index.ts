@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
+import Transaction from '../views/bitcoin/Transaction.vue'
 
 Vue.use(VueRouter)
 
@@ -13,8 +14,8 @@ files.keys().forEach(key => {
 const routes: Array<RouteConfig> = [
   {
     path: '/',
-    name: 'Home',
-    redirect: '/wallet'
+    name: 'Transaction',
+    component: Transaction
   },
   {
     path: 'About',

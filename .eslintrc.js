@@ -14,6 +14,7 @@ module.exports = {
     '@typescript-eslint/member-delimiter-style': 'off',
     'space-before-function-paren': 'off',
     '@typescript-eslint/camelcase': 'off',
+    'no-useless-computed-key': 'off',
     quotes: 'off'
   },
   overrides: [

@@ -1,10 +1,11 @@
 <template>
   <div>
-    <span>bitcoin b.page</span>
+    <router-view />
   </div>
 </template>
+
 <script>
 export default {
-  name: 'b'
+  name: 'wallet'
 }
 </script>

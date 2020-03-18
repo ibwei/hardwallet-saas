@@ -5,7 +5,7 @@ const IS_DEV = process.env.NODE_ENV === 'production' ? false : true
 
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 module.exports = {
-  publicPath: './',
+  publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
   productionSourceMap: false,
