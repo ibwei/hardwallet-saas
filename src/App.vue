@@ -26,7 +26,7 @@
           <!-- drawer end -->
           <!-- router display -->
           <div class="blue lighten-4" style="height:60px;border:1px solid red;"></div>
-          <div class="d-flex  flex-column justify-center align-center white ma-auto mt-10" style="width:960px;">
+          <div class="d-flex flex-column justify-center align-center white ma-auto mt-10 transparent" style="width:960px;">
             <router-view />
           </div>
           <!-- router end -->
@@ -75,7 +75,7 @@ export default {
           selected: false
         },
         {
-          name: 'Device Setting',
+          name: 'Setting',
           icon: '&#xe9f2;',
           url: 'setting',
           children: [],
