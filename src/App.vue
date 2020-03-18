@@ -82,7 +82,7 @@ export default {
           url: '/send'
         },
         {
-          name: 'Device Setting',
+          name: 'Setting',
           icon: '&#xe9f2;',
           url: 'setting'
         },
