@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="d_show" max-width="450" persistent scrollable>
+  <v-dialog v-model="c_show" max-width="450" persistent scrollable>
     <v-card>
       <v-card-title class="headline">Failure</v-card-title>
       <v-card-text class="headline">{{ this.d_msg }}</v-card-text>
@@ -14,11 +14,11 @@
 <script>
 export default {
   data: () => ({
-    d_msg: null,
-    d_show: false
+    d_msg: null
   }),
   computed: {
-    c_msg: vm => vm.$store.__s('usb.msg')
+    c_msg: vm => vm.$store.__s('usb.msg'),
+    c_show: vm => vm.$store.__s('dialog.failure')
   },
   watch: {
     c_msg(msg) {

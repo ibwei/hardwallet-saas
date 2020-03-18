@@ -1,5 +1,5 @@
 <template>
-  <v-dialog justify="center" overlay-opacity="0.1" v-model="c_connect" width="500" persistent>
+  <v-dialog justify="center" overlay-opacity="0.1" v-model="c_show" width="500" persistent>
     <v-sheet color="white" class="pa-5">
       <v-row>
         <v-col cols="12">
@@ -32,9 +32,8 @@ export default {
   },
   computed: {
     ...mapState(['usb']),
-    c_connect() {
-      return !this.usb.connect
-    }
+    c_connect: vm => vm.$store.__s('usb.connect'),
+    c_show: vm => vm.$store.__s('dialog.connectDevice')
   },
   methods: {
     /**
