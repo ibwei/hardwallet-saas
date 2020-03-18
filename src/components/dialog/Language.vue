@@ -5,12 +5,12 @@
         <v-card-title>{{ $t('Languages') }}</v-card-title>
         <v-divider></v-divider>
         <v-card-text style="height: 300px;">
-          <v-radio-group v-model="c_language" column>
-            <v-radio label="English" value="enUS"></v-radio>
-            <v-radio label="中文 (简体)" value="zhCN"></v-radio>
-            <v-radio label="中文 (繁体)" value="zhTW"></v-radio>
-            <v-radio label="한국어" value="koKR"></v-radio>
-            <v-radio label="日本語" value="jaJP"></v-radio>
+          <v-radio-group v-model="d_language" column>
+            <v-radio label="English" value="en"></v-radio>
+            <v-radio label="中文 (简体)" value="zhHans"></v-radio>
+            <v-radio label="中文 (繁体)" value="zhHant"></v-radio>
+            <v-radio label="한국어" value="ko"></v-radio>
+            <v-radio label="日本語" value="ja"></v-radio>
           </v-radio-group>
         </v-card-text>
         <v-divider></v-divider>
@@ -28,7 +28,7 @@
 export default {
   data() {
     return {
-      // d_language: ''
+      d_language: ''
     }
   },
   computed: {
@@ -39,6 +39,9 @@ export default {
     saveLanguage() {
       this.$store.__s('app.language', this.d_language)
     }
+  },
+  created() {
+    this.d_language = this.c_language
   }
 }
 </script>
