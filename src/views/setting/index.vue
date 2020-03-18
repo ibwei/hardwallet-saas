@@ -4,7 +4,7 @@
       <v-card-title>常规</v-card-title>
       <v-card-text class="d-flex">
         <v-btn color="primary">修改标签</v-btn>
-        <v-btn class="ml-5" color="primary">修改语言</v-btn>
+        <v-btn class="ml-5" color="primary" @click="onClickLanguage">修改语言</v-btn>
         <v-menu offset-y>
           <template v-slot:activator="{ on }">
             <v-btn color="primary" outlined dark v-on="on" class="ml-5">
@@ -54,6 +54,9 @@ export default {
   methods: {
     onClickCashUnitItem(index) {
       this.d_cashUnitIndex = index
+    },
+    onClickLanguage() {
+      this.$store.__s('dialog.language', true)
     }
   }
 }
