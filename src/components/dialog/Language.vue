@@ -1,14 +1,11 @@
 <template>
   <v-row justify="center">
     <v-dialog v-model="c_show" max-width="333" persistent scrollable>
-      <template v-slot:activator="{ on }">
-        <v-btn color="primary" dark v-on="on">Open Dialog</v-btn>
-      </template>
       <v-card>
         <v-card-title>{{ $t('Languages') }}</v-card-title>
         <v-divider></v-divider>
         <v-card-text style="height: 300px;">
-          <v-radio-group v-model="d_language" column>
+          <v-radio-group v-model="c_language" column>
             <v-radio label="English" value="enUS"></v-radio>
             <v-radio label="中文 (简体)" value="zhCN"></v-radio>
             <v-radio label="中文 (繁体)" value="zhTW"></v-radio>
@@ -31,14 +28,12 @@
 export default {
   data() {
     return {
-      d_language: ''
+      // d_language: ''
     }
   },
   computed: {
-    c_show: vm => vm.$store.__s('dialog.language')
-  },
-  created() {
-    this.d_language = this.$store.__s('app.language')
+    c_language: vm => vm.$store.__s('app.language'),
+    c_show: vm => !vm.$store.__s('app.language')
   },
   methods: {
     saveLanguage() {

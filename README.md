@@ -32,3 +32,4 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 ### The display of Dialog
 For the convenience of development, some dialog boxes do not control the display or not through this store. Dialogs not controlled by this store: 
 - ConnectDevice.vue
+- Language.vue
