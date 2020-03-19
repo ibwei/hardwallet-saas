@@ -10,10 +10,12 @@ class UsbDevice extends Usb {
     Store.__s('usb.manufacturer', e ? e.manufacturerName : '')
     Store.__s('usb.product', e ? e.productName : '')
     Store.__s('usb.serialNumber', e ? e.serialNumber : 0)
+    Store.__s('usb.xpub', e ? e.data.xpub : e)
+    Store.__s('usb.msg', e ? e.msg : null)
   }
 }
 
-const webusb = new UsbDevice({
+const webusb: any = new UsbDevice({
   debug: true
 })
 
@@ -54,7 +56,16 @@ webusb.onDisconnect(e => {
  */
 webusb.onMsg(e => {
   console.log('onMsg', e)
-  Store.__s('usb.msg', JSON.parse(JSON.stringify(e)))
+  // Store.__s('usb.msg', JSON.parse(JSON.stringify(e)))
+  webusb.syncVuex(e)
 })
+
+const newCmd = async (type, proto) => {
+  if (type !== 'Initialize') {
+    await webusb.cmd('Initialize')
+  }
+  console.log(`${type} is running`)
+  return webusb.cmd(type, proto)
+}
 
 Vue.prototype.$usb = webusb
