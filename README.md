@@ -33,6 +33,8 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 For the convenience of development, some dialog boxes do not control the display or not through this store. 
 - Not controlled by this store: 
   - ConnectDevice.vue
+  - Failure.vue
+  - ButtonAck.vue
 - Specially
   - Language.vue
     - Displayed if app.language's store is FALSE or dialog.language is TRUE.

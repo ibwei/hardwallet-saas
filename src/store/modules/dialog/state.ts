@@ -5,5 +5,6 @@ export default {
   language: false,
   passAck: false,
   pinAck: false,
-  wordAck: false
+  wordAck: false,
+  setLabel: false
 }
