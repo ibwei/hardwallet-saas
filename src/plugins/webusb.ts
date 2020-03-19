@@ -10,7 +10,6 @@ class UsbDevice extends Usb {
     Store.__s('usb.manufacturer', e ? e.manufacturerName : '')
     Store.__s('usb.product', e ? e.productName : '')
     Store.__s('usb.serialNumber', e ? e.serialNumber : 0)
-    Store.__s('usb.xpub', e ? e.data.xpub : e)
     Store.__s('usb.msg', e ? e.msg : null)
   }
 }
