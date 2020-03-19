@@ -98,7 +98,7 @@ export default {
   computed: {
     ...mapState(['version', 'app', 'usb']),
     c_deviceName () {
-      return this.app.product ? this.app.product : 'Waiting for connect'
+      return this.usb.connect ? this.usb.product : 'Waiting for connect'
     }
   },
   mounted () {
