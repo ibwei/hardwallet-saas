@@ -53,7 +53,7 @@ export default {
   components: {
     SideNavbar
   },
-  data () {
+  data() {
     return {
       name: 'nihao',
       d_publicKey: '',
@@ -67,15 +67,18 @@ export default {
           name: 'wallet',
           icon: '&#xea03;',
           url: '/wallet',
-          children: [{
-            name: 'Account',
-            icon: '&#xea03;',
-            url: '/wallet/account'
-          }, {
-            name: 'Receive',
-            icon: '&#xea03;',
-            url: '/wallet/receive'
-          }]
+          children: [
+            {
+              name: 'Account',
+              icon: '&#xea03;',
+              url: '/wallet/account'
+            },
+            {
+              name: 'Receive',
+              icon: '&#xea03;',
+              url: '/wallet/receive'
+            }
+          ]
         },
         {
           name: 'Send',
@@ -97,16 +100,22 @@ export default {
   },
   computed: {
     ...mapState(['version', 'app', 'usb']),
-    c_deviceName () {
+    c_deviceName() {
       return this.usb.connect ? this.usb.product : 'Waiting for connect'
-    }
+    },
+    isDeviceConnect: vm => vm.usb.connect
   },
-  mounted () {
+  mounted() {
     this.initLanguage()
   },
   watch: {
-    $route () {
+    $route() {
       window.document.title = this.$route.meta.title
+    },
+    isDeviceConnect(e) {
+      if (e === true) {
+        this.initDevice()
+      }
     }
   },
   methods: {
@@ -114,7 +123,7 @@ export default {
      * @method - init the application's language
      * @return {void}
      */
-    initLanguage () {
+    initLanguage() {
       const store = JSON.parse(localStorage.getItem('vuex'))
       if (store?.app?.language) {
         loadLanguageAsync(store.app.language).then(lang => {
@@ -127,13 +136,18 @@ export default {
      * @method - change the application's language
      * @return {void}
      */
-    changeLanguage (type) {
+    changeLanguage(type) {
       loadLanguageAsync(type).then(res => {
         const html = document.getElementsByTagName('html')[0]
         if (html) {
           html.lang = res
         }
       })
+    },
+    async initDevice() {
+      const result = await this.$usb.cmd('Initialize')
+      console.log('Initialize', result)
+      this.$store.__s('usb.deviceInitData', result.data)
     }
   }
 }

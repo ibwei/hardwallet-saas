@@ -35,7 +35,7 @@
     <v-card min-width="900" class="mt-5">
       <v-card-title>版本信息</v-card-title>
       <v-card-text class="d-flex">
-        <div>固件版本号：{{c_FirmVersion}}</div>
+        <div>固件版本号：{{c_firmVersion}}</div>
         <div class="ml-10">软件版本号：{{c_softVersion}}</div>
       </v-card-text>
     </v-card>
@@ -53,10 +53,10 @@ export default {
   },
   computed: {
     c_isDeviceConnect: vm => vm.$store.__s('usb.connect'),
-    c_FirmVersion() {
-      const major = this.$store.__s('usb.majorVersion')
-      const minor = this.$store.__s('usb.minorVersion')
-      const patch = this.$store.__s('usb.patchVersion')
+    c_firmVersion() {
+      const major = this.$store.__s('usb.initDeviceData.major_version')
+      const minor = this.$store.__s('usb.initDeviceData.minor_version')
+      const patch = this.$store.__s('usb.initDeviceData.patch_version')
       return `${major}.${minor}.${patch}`
     },
     c_softVersion: vm => vm.$store.__s('app.version')
