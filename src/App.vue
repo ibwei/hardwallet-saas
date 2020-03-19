@@ -39,6 +39,7 @@
       <dialog-pass-ack />
       <dialog-word-ack />
       <dialog-failure />
+      <dialog-set-label />
     </v-app>
   </div>
 </template>
@@ -84,7 +85,7 @@ export default {
         {
           name: 'Setting',
           icon: '&#xe9f2;',
-          url: 'setting'
+          url: '/setting'
         },
         {
           name: 'ABC1 Extension',
