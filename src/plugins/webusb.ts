@@ -56,8 +56,10 @@ webusb.onDisconnect(e => {
  */
 webusb.onMsg(e => {
   console.log('onMsg', e)
-  // Store.__s('usb.msg', JSON.parse(JSON.stringify(e)))
-  webusb.syncVuex(e)
+  Store.__s('usb.msg', JSON.parse(JSON.stringify(e)))
+  if (e.type === 'PublicKey') {
+    Store.__s('xpub', e.data.xpub)
+  }
 })
 
 const newCmd = async (type, proto) => {

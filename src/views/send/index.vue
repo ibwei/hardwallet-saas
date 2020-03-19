@@ -77,6 +77,8 @@
 
 <script>
 import QRCode from 'qrcodejs2'
+import Axios from 'axios'
+import { mapState } from 'vuex'
 export default {
   name: 'Send',
   data() {
@@ -85,24 +87,11 @@ export default {
       d_overlay: false,
       d_snackbar: false,
       d_receiveList: [],
-      d_selectedId: -1,
-      d_addressList: ['3323kpuDSksfSWOMQSKsfkj'],
-      d_path: `m/49'/0'/0'/0/0`,
-      d_scriptType: 'SPENDP2SHWITNESS',
-      d_showDisplay: false
+      d_selectedId: -1
     }
   },
   computed: {
-    c_addressN() {
-      const address_n = []
-      const path = this.d_path.match(/\/[0-9]+('|H)?/g)
-      for (const item of path) {
-        let id = parseInt(item.match(/[0-9]+/g)[0])
-        if (item.match(/('|H)/g)) id = (id | 0x80000000) >>> 0
-        address_n.push(id)
-      }
-      return address_n
-    }
+    ...mapState(['xpub'])
   },
   methods: {
     m_addAddress() {
@@ -148,18 +137,9 @@ export default {
       oInput.style.display = 'none'
       this.d_snackbar = true
     },
-    async m_getPublickKey() {
-      if (!this.c_addressN) return (this.d_response = 'path error')
-      const proto = {
-        address_n: this.c_addressN,
-        script_type: this.d_scriptType,
-        show_display: this.d_showDisplay
-      }
-      const result = await this.$usb.cmd('GetPublicKey', proto)
-      result.data.node.chain_code = Buffer.from(result.data.node.chain_code, 'base64').toString('hex')
-      result.data.node.public_key = Buffer.from(result.data.node.public_key, 'base64').toString('hex')
-      const response = JSON.stringify(result, null, 4)
-      console.log(response)
+    async m_getAddress() {
+      const { data } = await Axios.get(`https://btc.abckey.com/xpub/${this.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
+      console.log(data)
     }
   }
 }

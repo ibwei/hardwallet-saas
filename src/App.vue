@@ -46,12 +46,11 @@ export default {
   },
   data() {
     return {
-      d_publicKey: '',
+      d_addressList: ['3323kpuDSksfSWOMQSKsfkj'],
+      d_path: `m/49'/0'/0'/0/0`,
       d_scriptType: 'SPENDP2SHWITNESS',
-      d_purpose: 49,
-      d_request: '',
-      d_response: '',
       d_showDisplay: false,
+      d_purpose: 49,
       d_routerList: [
         {
           name: 'wallet',
@@ -88,7 +87,17 @@ export default {
     c_deviceName() {
       return this.usb.connect ? this.usb.product : 'Waiting for connect'
     },
-    isDeviceConnect: vm => vm.usb.connect
+    isDeviceConnect: vm => vm.usb.connect,
+    c_addressN() {
+      const address_n = []
+      const path = this.d_path.match(/\/[0-9]+('|H)?/g)
+      for (const item of path) {
+        let id = parseInt(item.match(/[0-9]+/g)[0])
+        if (item.match(/('|H)/g)) id = (id | 0x80000000) >>> 0
+        address_n.push(id)
+      }
+      return address_n
+    }
   },
   mounted() {
     this.initLanguage()
@@ -100,6 +109,7 @@ export default {
     isDeviceConnect(e) {
       if (e === true) {
         this.initDevice()
+        this.m_getPublickKey()
       }
     }
   },
@@ -134,6 +144,16 @@ export default {
       this.$store.__s('usb.majorVersion', result.data.major_version)
       this.$store.__s('usb.minorVersion', result.data.minor_version)
       this.$store.__s('usb.patchVersion', result.data.patch_version)
+    },
+    async m_getPublickKey() {
+      if (!this.c_addressN) return (this.d_response = 'path error')
+      const proto = {
+        address_n: this.c_addressN,
+        script_type: this.d_scriptType,
+        show_display: this.d_showDisplay
+      }
+      await this.$usb.cmd('Initialize')
+      await this.$usb.cmd('GetPublicKey', proto)
     }
   }
 }
