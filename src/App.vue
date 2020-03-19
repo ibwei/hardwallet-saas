@@ -18,10 +18,7 @@
           </v-navigation-drawer>
           <!-- drawer end -->
           <!-- router display -->
-          <div
-            class="blue lighten-4 elevation-3"
-            style="height:60px;border-bottom-right-radius:4px;border-bottom-left-radius:4px;"
-          ></div>
+          <div class="blue lighten-3 shadow" style="height:60px"></div>
           <div
             class="white ma-auto mt-10 pa-6 elevation-1"
             style="width:960px;min-height:300px;border-radius:2px;"
@@ -54,7 +51,6 @@ export default {
   },
   data () {
     return {
-      name: 'nihao',
       d_publicKey: '',
       d_scriptType: 'SPENDP2SHWITNESS',
       d_purpose: 49,
@@ -66,15 +62,18 @@ export default {
           name: 'wallet',
           icon: '&#xea03;',
           url: '/wallet',
-          children: [{
-            name: 'Account',
-            icon: '&#xea03;',
-            url: '/wallet/account'
-          }, {
-            name: 'Receive',
-            icon: '&#xea03;',
-            url: '/wallet/receive'
-          }]
+          children: [
+            {
+              name: 'Account',
+              icon: '&#xea03;',
+              url: '/wallet/account'
+            },
+            {
+              name: 'Receive',
+              icon: '&#xea03;',
+              url: '/wallet/receive'
+            }
+          ]
         },
         {
           name: 'Send',
@@ -84,7 +83,7 @@ export default {
         {
           name: 'Device Setting',
           icon: '&#xe9f2;',
-          url: 'setting'
+          url: '/setting'
         },
         {
           name: 'ABC1 Extension',
@@ -105,7 +104,7 @@ export default {
   },
   watch: {
     $route () {
-      window.document.title = this.$route.meta.title
+      window.document.title = this.$route.meta.title ? this.$route.meta.title : 'abckey-webusb'
     }
   },
   methods: {
@@ -121,7 +120,6 @@ export default {
         })
       }
     },
-
     /**
      * @method - change the application's language
      * @return {void}
@@ -137,5 +135,8 @@ export default {
   }
 }
 </script>
-<style lang="less" scoped>
+<style lang="scss" scoped>
+.shadow {
+  box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.2);
+}
 </style>

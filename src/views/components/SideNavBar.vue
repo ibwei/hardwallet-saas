@@ -1,34 +1,18 @@
 <template>
   <div class="side-navbar">
     <div v-for="(item, index) in d_routerList" :key="index" link class="pa-0">
-      <div
-        class="d-flex flex-row justify-start align-center pt-3 pb-3 pl-4"
-        :class="item.id===d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'black--text'"
-        @click="m_menuClick(item.id)"
-      >
-        <div class="dot mr-4" :class="item.id===d_selectedId ? '' : 'white'"></div>
+      <div class="d-flex flex-row justify-start align-center pt-3 pb-3 pl-4" :class="item.id === d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'black--text'" @click="m_menuClick(item.id)">
+        <div class="dot mr-4" :class="item.id === d_selectedId ? '' : 'white'"></div>
         <i class="icon pr-2" v-html="item.icon"></i>
         <div class="body-2">{{ item.name }}</div>
         <div class="icon text-right flex-grow-1 pr-4">
-          <i
-            class="icon text-right"
-            style="font-size:26px;"
-            :class="item.id===c_currentRootLevel?'':'black--text'"
-            v-if="item.children"
-            v-html="item.id===c_currentRootLevel?'&#xe625;':'&#xe664;'"
-          ></i>
+          <i class="icon text-right" style="font-size:26px;" :class="item.id === c_currentRootLevel ? '' : 'black--text'" v-if="item.children" v-html="item.id === c_currentRootLevel ? '&#xe625;' : '&#xe664;'"></i>
         </div>
       </div>
       <transition-group name="fade">
-        <template v-if="index==c_currentRootLevel">
-          <div
-            v-for="(child, childId) in d_routerList[index].children"
-            :key="childId"
-            @click="m_menuClick(child.id)"
-            class="d-flex justify-start align-center pt-3 pb-3 pl-6"
-            :class="child.id=== d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'black--text'"
-          >
-            <div class="dot mr-4" :class="child.id===d_selectedId ? 'blue' : 'white'"></div>
+        <template v-if="index == c_currentRootLevel">
+          <div v-for="(child, childId) in d_routerList[index].children" :key="childId" @click="m_menuClick(child.id)" class="d-flex justify-start align-center pt-3 pb-3 pl-6" :class="child.id === d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'black--text'">
+            <div class="dot mr-4" :class="child.id === d_selectedId ? 'blue' : 'white'"></div>
             <i class="icon pr-3" v-html="child.icon"></i>
             <div class="body-2">{{ child.name }}</div>
           </div>
@@ -46,7 +30,7 @@ export default {
       default: () => []
     }
   },
-  data () {
+  data() {
     return {
       d_preSelectedIndex: 0,
       d_routerList: [],
@@ -54,15 +38,15 @@ export default {
     }
   },
   computed: {
-    c_currentRootLevel () {
+    c_currentRootLevel() {
       return this.d_selectedId.split('-')[0]
     }
   },
-  created () {
+  created() {
     this.m_handleProps()
   },
   methods: {
-    m_handleProps () {
+    m_handleProps() {
       this.d_routerList = this.$props.routerList
       this.d_routerList.forEach((parent, parentId) => {
         parent.id = String(parentId)
@@ -74,7 +58,7 @@ export default {
       })
       this.d_selectedId = '0'
     },
-    m_menuClick (id) {
+    m_menuClick(id) {
       const isRootLevel = !id.includes('-')
       const [parentId, childId] = id.split('-')
       if (id === this.d_selectedId) {
@@ -96,7 +80,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .side-navbar {
   width: 100%;
   padding: 0;

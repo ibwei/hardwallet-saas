@@ -1,9 +1,6 @@
 <template>
   <v-row justify="center">
     <v-dialog v-model="c_show" max-width="333" persistent scrollable>
-      <template v-slot:activator="{ on }">
-        <v-btn color="primary" dark v-on="on">Open Dialog</v-btn>
-      </template>
       <v-card>
         <v-card-title>{{ $t('Languages') }}</v-card-title>
         <v-divider></v-divider>
@@ -29,7 +26,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       d_language: ''
     }
@@ -37,11 +34,11 @@ export default {
   computed: {
     c_show: vm => vm.$store.__s('dialog.language')
   },
-  created() {
+  created () {
     this.d_language = this.$store.__s('app.language')
   },
   methods: {
-    saveLanguage() {
+    saveLanguage () {
       this.$store.__s('app.language', this.d_language)
     }
   }
