@@ -11,6 +11,5 @@ export default {
   bootloaderMode: false,
   firmwarePresent: false,
   model: '',
-  msg: null,
-  initDeviceData: null
+  msg: null
 }

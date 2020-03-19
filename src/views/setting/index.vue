@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'setting',
   data() {
@@ -52,12 +53,10 @@ export default {
     }
   },
   computed: {
+    ...mapState(['usb']),
     c_isDeviceConnect: vm => vm.$store.__s('usb.connect'),
     c_firmVersion() {
-      const major = this.$store.__s('usb.initDeviceData.major_version')
-      const minor = this.$store.__s('usb.initDeviceData.minor_version')
-      const patch = this.$store.__s('usb.initDeviceData.patch_version')
-      return `${major}.${minor}.${patch}`
+      return `${this.usb.majorVersion}.${this.usb.minorVersion}.${this.usb.patchVersion}`
     },
     c_softVersion: vm => vm.$store.__s('app.version')
   },

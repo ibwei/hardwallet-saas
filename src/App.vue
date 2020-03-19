@@ -147,7 +147,9 @@ export default {
     async initDevice() {
       const result = await this.$usb.cmd('Initialize')
       console.log('Initialize', result)
-      this.$store.__s('usb.deviceInitData', result.data)
+      this.$store.__s('usb.majorVersion', result.data.major_version)
+      this.$store.__s('usb.minorVersion', result.data.minor_version)
+      this.$store.__s('usb.patchVersion', result.data.patch_version)
     }
   }
 }
