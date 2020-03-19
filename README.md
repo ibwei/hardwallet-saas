@@ -34,6 +34,7 @@ For the convenience of development, some dialog boxes do not control the display
 - Not controlled by this store: 
   - ConnectDevice.vue
   - Failure.vue
+  - ButtonAck.vue
 - Specially
   - Language.vue
     - Displayed if app.language's store is FALSE or dialog.language is TRUE.
