@@ -131,7 +131,7 @@
       </v-row>
     </v-card>
     <v-expansion-panels :value="0" class="mt-3">
-      <v-expansion-panel readonly v-show="d_txs.length === 0">
+      <v-expansion-panel readonly v-show="d_txs === 0">
         <v-expansion-panel-header expand-icon="">
           <span>
             <v-btn @click="upBalance()" text>

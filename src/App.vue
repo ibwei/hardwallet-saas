@@ -6,10 +6,7 @@
           <!-- drawer -->
           <v-navigation-drawer value="true" class="elevation-2" app>
             <v-row justify="center">
-              <div
-                class="d-flex pa-2 mt-4 justify-center align-center blue lighten-5"
-                style="border-radius:20px;width:80%;"
-              >
+              <div class="d-flex pa-2 mt-4 justify-center align-center blue lighten-5" style="border-radius:20px;width:80%;">
                 <div class="body-2">{{ c_deviceName }}</div>
                 <i class="icon pl-2">&#xe606;</i>
               </div>
@@ -18,14 +15,8 @@
           </v-navigation-drawer>
           <!-- drawer end -->
           <!-- router display -->
-          <div
-            class="blue lighten-4 elevation-3"
-            style="height:60px;border-bottom-right-radius:4px;border-bottom-left-radius:4px;"
-          ></div>
-          <div
-            class="white ma-auto mt-10 pa-6 elevation-1"
-            style="width:960px;min-height:300px;border-radius:2px;"
-          >
+          <div class="blue lighten-3 shadow" style="height:60px"></div>
+          <div class="white ma-auto mt-10 pa-6 elevation-1" style="width:960px;min-height:300px;border-radius:2px;">
             <router-view />
           </div>
           <!-- router end -->
@@ -55,7 +46,6 @@ export default {
   },
   data() {
     return {
-      name: 'nihao',
       d_publicKey: '',
       d_scriptType: 'SPENDP2SHWITNESS',
       d_purpose: 49,
@@ -105,7 +95,7 @@ export default {
   },
   watch: {
     $route() {
-      window.document.title = this.$route.meta.title
+      window.document.title = this.$route.meta.title ? this.$route.meta.title : 'abckey-webusb'
     },
     isDeviceConnect(e) {
       if (e === true) {
@@ -126,7 +116,6 @@ export default {
         })
       }
     },
-
     /**
      * @method - change the application's language
      * @return {void}
@@ -149,5 +138,8 @@ export default {
   }
 }
 </script>
-<style lang="less" scoped>
+<style lang="scss" scoped>
+.shadow {
+  box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.2);
+}
 </style>

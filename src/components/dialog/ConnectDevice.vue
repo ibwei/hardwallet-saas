@@ -41,6 +41,7 @@ export default {
      * @return void
      */
     m_connect() {
+      console.log('hahah')
       this.$usb.add(res => {
         console.log('you have already choose device')
         this.$usb.syncVuex(res)
