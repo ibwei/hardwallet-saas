@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="c_show" max-width="333" persistent scrollable>
+  <v-dialog v-model="d_show" max-width="333" persistent scrollable>
     <v-card>
       <v-card-title class="headline"></v-card-title>
       <v-card-text>
@@ -27,12 +27,13 @@
 export default {
   data: () => ({
     d_eye: false,
+    d_show: false,
     d_passphrase: '',
     d_loading: false
   }),
   computed: {
-    c_msg: vm => vm.$store.__s('usb.msg'),
-    c_show: vm => vm.$store.__s('dialog.passAck')
+    c_msg: vm => vm.$store.__s('usb.msg')
+    // c_show: vm => vm.$store.__s('dialog.passAck')
   },
   watch: {
     async c_msg(msg) {

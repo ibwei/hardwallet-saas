@@ -6,10 +6,7 @@
           <!-- drawer -->
           <v-navigation-drawer value="true" class="elevation-2" app>
             <v-row justify="center">
-              <div
-                class="d-flex pa-2 mt-4 justify-center align-center blue lighten-5"
-                style="border-radius:20px;width:80%;"
-              >
+              <div class="d-flex pa-2 mt-4 justify-center align-center blue lighten-5" style="border-radius:20px;width:80%;">
                 <div class="body-2">{{ c_deviceName }}</div>
                 <i class="icon pl-2">&#xe606;</i>
               </div>
@@ -19,10 +16,7 @@
           <!-- drawer end -->
           <!-- router display -->
           <div class="blue lighten-3 shadow" style="height:60px"></div>
-          <div
-            class="white ma-auto mt-10 pa-6 elevation-1"
-            style="width:960px;min-height:300px;border-radius:2px;"
-          >
+          <div class="white ma-auto mt-10 pa-6 elevation-1" style="width:960px;min-height:300px;border-radius:2px;">
             <router-view />
           </div>
           <!-- router end -->
@@ -36,6 +30,7 @@
       <dialog-pass-ack />
       <dialog-word-ack />
       <dialog-failure />
+      <dialog-set-label />
     </v-app>
   </div>
 </template>
@@ -49,7 +44,7 @@ export default {
   components: {
     SideNavbar
   },
-  data () {
+  data() {
     return {
       d_publicKey: '',
       d_scriptType: 'SPENDP2SHWITNESS',
@@ -81,7 +76,7 @@ export default {
           url: '/send'
         },
         {
-          name: 'Device Setting',
+          name: 'Setting',
           icon: '&#xe9f2;',
           url: '/setting'
         },
@@ -95,16 +90,22 @@ export default {
   },
   computed: {
     ...mapState(['version', 'app', 'usb']),
-    c_deviceName () {
-      return this.app.product ? this.app.product : 'Waiting for connect'
-    }
+    c_deviceName() {
+      return this.usb.connect ? this.usb.product : 'Waiting for connect'
+    },
+    isDeviceConnect: vm => vm.usb.connect
   },
-  mounted () {
+  mounted() {
     this.initLanguage()
   },
   watch: {
-    $route () {
+    $route() {
       window.document.title = this.$route.meta.title ? this.$route.meta.title : 'abckey-webusb'
+    },
+    isDeviceConnect(e) {
+      if (e === true) {
+        this.initDevice()
+      }
     }
   },
   methods: {
@@ -112,7 +113,7 @@ export default {
      * @method - init the application's language
      * @return {void}
      */
-    initLanguage () {
+    initLanguage() {
       const store = JSON.parse(localStorage.getItem('vuex'))
       if (store?.app?.language) {
         loadLanguageAsync(store.app.language).then(lang => {
@@ -124,13 +125,20 @@ export default {
      * @method - change the application's language
      * @return {void}
      */
-    changeLanguage (type) {
+    changeLanguage(type) {
       loadLanguageAsync(type).then(res => {
         const html = document.getElementsByTagName('html')[0]
         if (html) {
           html.lang = res
         }
       })
+    },
+    async initDevice() {
+      const result = await this.$usb.cmd('Initialize')
+      console.log('Initialize', result)
+      this.$store.__s('usb.majorVersion', result.data.major_version)
+      this.$store.__s('usb.minorVersion', result.data.minor_version)
+      this.$store.__s('usb.patchVersion', result.data.patch_version)
     }
   }
 }

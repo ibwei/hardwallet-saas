@@ -33,7 +33,7 @@ export default {
   computed: {
     ...mapState(['usb']),
     c_connect: vm => vm.$store.__s('usb.connect'),
-    c_show: vm => vm.$store.__s('dialog.connectDevice')
+    c_show: vm => !vm.$store.__s('usb.connect')
   },
   methods: {
     /**
@@ -41,6 +41,7 @@ export default {
      * @return void
      */
     m_connect() {
+      console.log('hahah')
       this.$usb.add(res => {
         console.log('you have already choose device')
         this.$usb.syncVuex(res)

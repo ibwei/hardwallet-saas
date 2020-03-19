@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="c_show" max-width="333" persistent scrollable>
+  <v-dialog v-model="d_show" max-width="333" persistent scrollable>
     <v-card>
       <v-card-title class="headline"></v-card-title>
       <v-card-text>
@@ -26,12 +26,13 @@
 <script>
 export default {
   data: () => ({
+    d_show: false,
     d_word: '',
     d_loading: false
   }),
   computed: {
-    c_msg: vm => vm.$store.__s('usb.msg'),
-    c_show: vm => vm.$store.__s('dialog.wordAck')
+    c_msg: vm => vm.$store.__s('usb.msg')
+    // c_show: vm => vm.$store.__s('dialog.wordAck')
   },
   watch: {
     async c_msg(msg) {
@@ -45,9 +46,11 @@ export default {
     async enterWord() {
       this.d_loading = true
       await this.$usb.cmd('WordAck', { word: this.d_word })
+      this.d_loading = false
     },
     async init() {
-      await this.$usb.cmd('Initialize')
+      this.$store.__s('dialog.wordAck', false)
+      // await this.$usb.cmd('Initialize')
     }
   }
 }
