@@ -55,14 +55,9 @@ webusb.onDisconnect(e => {
 webusb.onMsg(e => {
   console.log('onMsg', e)
   Store.__s('usb.msg', JSON.parse(JSON.stringify(e)))
-})
-
-const newCmd = async (type, proto) => {
-  if (type !== 'Initialize') {
-    await webusb.cmd('Initialize')
+  if (e.type === 'PublicKey') {
+    Store.__s('xpub', e.data.xpub)
   }
-  console.log(`${type} is running`)
-  return webusb.cmd(type, proto)
-}
+})
 
 Vue.prototype.$usb = webusb

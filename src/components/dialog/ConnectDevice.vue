@@ -1,12 +1,7 @@
 <template>
   <v-dialog justify="center" overlay-opacity="0.1" v-model="c_show" width="500" persistent>
-    <v-sheet color="white" class="pa-5">
-      <v-row>
-        <v-col cols="12">
-          <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
-        </v-col>
-      </v-row>
-      <v-row>
+    <v-sheet color="white" class="pa-6">
+      <v-row class="mt-4">
         <v-col cols="12">
           <span class="title">Waiting for device to connect</span>
         </v-col>
