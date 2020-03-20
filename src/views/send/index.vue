@@ -4,26 +4,26 @@
       <div class="table">
         <div class="table-header px-3">
           <div class="table-c action-c"></div>
-          <div class="table-c address-c">{{ $t('Address') }}</div>
-          <div class="table-c amount-c">{{ $t('Amount') }}</div>
+          <div class="table-c address-c subtitle-2">{{ $t('Address') }}</div>
+          <div class="table-c amount-c subtitle-2">{{ $t('Amount') }}</div>
         </div>
         <div class="table-body">
           <div class="table-r px-3" v-for="(item, index) in d_txOut" :key="index">
             <div class="table-c action-c">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-icon class="close-icon" v-on="on" :disabled="d_txOut.length <= 1" @click="delTxOut(index)">mdi-close-outline</v-icon>
+                  <v-icon class="close-icon" v-on="on" :disabled="d_txOut.length <= 1" @click="delTxOut(index)">mdi-close</v-icon>
                 </template>
                 <span>{{ $t('Delete') }}</span>
               </v-tooltip>
             </div>
-            <div class="table-c address-c">
+            <div class="table-c address-c subtitle-2">
               <v-text-field v-model="item.address" :rules="d_addressRules" :label="$t('Address')" :hint="$t('Please input address')">
                 <v-tooltip top slot="append">
                   <template v-slot:activator="{ on }">
                     <v-icon v-on="on" color="primary" size="16" @click="paste(item)">mdi-content-paste</v-icon>
                   </template>
-                  <span>{{ $t('Paste') }}</span>
+                  <span class="subtitle-2">{{ $t('Paste') }}</span>
                 </v-tooltip>
               </v-text-field>
             </div>
@@ -42,27 +42,36 @@
             {{ $t('Add recipient') }}
           </v-btn>
         </div>
-        <div class="right">
+        <div class="right body-2">
           <v-chip label class="chip"> {{ $t('Amounts') }} 0 BTC </v-chip>
           <v-chip label class="chip"> {{ $t('Fees') }} 0 BTC </v-chip>
           <v-chip label color="success" class="chip"> {{ $t('Total') }} 0 BTC </v-chip>
-          <v-combobox v-model="d_fee" :items="d_fees" :label="$t('Fee')" @input="handleFeeInput" :rules="d_feeRule" outlined>
-            <div slot="append" class="primary--text">Sat/b</div>
-            <template v-slot:item="{ index, item }">
-              <div class="d-flex justify-space-between" style="width: 100%">
-                <span>{{ item.label }}:</span>
-                <span>{{ item.value }} Sat/b</span>
-              </div>
-            </template>
-          </v-combobox>
-          <v-btn color="primary" large @click="checkAndSend()">{{ $t('Check and send') }}</v-btn>
         </div>
+      </div>
+      <div class="d-flex flex-row justify-end align-center">
+        <v-row>
+          <v-col cols="4">
+            <v-combobox v-model="d_fee" :items="d_fees" :label="$t('Fee')" @input="handleFeeInput" :rules="d_feeRule" outlined>
+              <div slot="append" class="primary--text">Sat/b</div>
+              <template v-slot:item="{ index, item }">
+                <div class="d-flex justify-space-between" style="width: 100%">
+                  <span>{{ item.label }}:</span>
+                  <span>{{ item.value }} Sat/b</span>
+                </div>
+              </template>
+            </v-combobox>
+          </v-col>
+          <v-col cols="4" class="offset-4 text-sm-right pa-0">
+            <v-btn color="primary" large @click="checkAndSend()">{{ $t('Check and send') }}</v-btn>
+          </v-col>
+        </v-row>
       </div>
     </v-card>
   </v-container>
 </template>
 
 <script>
+import clipboard from 'clipboard-polyfill'
 export default {
   name: 'Send',
   data() {
@@ -111,9 +120,8 @@ export default {
     delTxOut(index) {
       this.d_txOut.splice(index, 1)
     },
-    async paste() {
-      console.log('paste')
-      // item.address = await clipboard.readText()
+    async paste(item) {
+      item.address = await clipboard.readText()
     },
     addRecipient() {
       this.d_txOut.push({
@@ -130,7 +138,7 @@ export default {
   },
   i18n: {
     messages: {
-      zhCN: {
+      zhHans: {
         Address: '接收地址',
         Amount: '发送金额',
         Delete: '删除',
@@ -157,7 +165,30 @@ export default {
         Cancel: '取消'
       },
       en: {
-        Address: 'myAdress'
+        Address: '接收地址',
+        Amount: '发送金额',
+        Delete: '删除',
+        Paste: '粘贴',
+        Most: '最多',
+        'Add recipient': '添加接收者',
+        'Check and send': '检查并发送',
+        'Are you sure to delete?': '你确定要删除吗?',
+        Yes: '是',
+        No: '否',
+        'Invalid address': '地址无效',
+        'Invalid amount': '金额无效',
+        'Invalid fee': '费率无效',
+        'Please input address': '请输入地址',
+        'Please input amount': '请输入金额',
+        high: '高',
+        middle: '中',
+        low: '低',
+        Amounts: '总额',
+        Fees: '费用',
+        Total: '合计',
+        Fee: '费率',
+        Review: '核对',
+        Cancel: '取消'
       }
     }
   }
