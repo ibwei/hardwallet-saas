@@ -113,6 +113,7 @@ export default {
       const coordinate = getMousePos(e)
       this.d_overlay = true
       document.getElementsByClassName('qr')[0].style.top = coordinate.y - 60 + 'px'
+      // await this.$usb.cmd('Initialize')
       await this.$usb.getAddr({
         address_n: [(49 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.d_addressList[this.d_selectedId].index],
         script_type: 'SPENDP2SHWITNESS',
@@ -160,7 +161,7 @@ export default {
         return
       }
       try {
-        await this.$usb.cmd('Initialize')
+        // await this.$usb.cmd('Initialize')
         const result = await this.$usb.getAddr({
           address_n: [(49 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.d_currentInex],
           script_type: 'SPENDP2SHWITNESS',
