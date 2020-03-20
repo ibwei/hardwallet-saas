@@ -14,7 +14,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: '',
-    redirect: '/wallet/acount'
+    redirect: '/wallet/account'
   },
   ...modules
 ]
