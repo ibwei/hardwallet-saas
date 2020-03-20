@@ -3,7 +3,7 @@
     <wallet-account
       name="bitcoin"
       symbol="btc"
-      currency="usd"
+      :currency="cashUnitItems[cashUnitIndex]"
       :xpub="xpub"
     ></wallet-account>
   </v-container>
@@ -15,7 +15,7 @@ export default {
   name: 'Account',
   data: () => ({}),
   computed: {
-    ...mapState(['xpub'])
+    ...mapState(['xpub', 'cashUnitItems', 'cashUnitIndex'])
   }
 }
 </script>

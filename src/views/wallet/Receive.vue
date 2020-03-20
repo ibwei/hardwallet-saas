@@ -3,7 +3,7 @@
     <wallet-receive
       name="bitcoin"
       symbol="btc"
-      currency="usd"
+      :currency="cashUnitItems[cashUnitIndex]"
       :xpub="xpub"
     />
   </v-container>
@@ -15,7 +15,7 @@ export default {
   name: 'Receive',
   data: () => ({}),
   computed: {
-    ...mapState(['xpub'])
+    ...mapState(['xpub', 'cashUnitItems', 'cashUnitIndex'])
   },
   methods: {}
 }
