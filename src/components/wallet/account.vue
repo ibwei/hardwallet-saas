@@ -13,7 +13,7 @@
           </div>
         </v-col>
         <v-col class="text-center">
-          <v-btn @click="upAll()" text>
+          <v-btn @click="upBalance()" text>
             <span>{{ $t('Convert') }}</span>
             <v-icon :class="['ml-1', (d_loading.upBalance || d_loading.upRate) && 'rotate']" size="16" color="primary">mdi-cached</v-icon>
           </v-btn>
@@ -356,6 +356,9 @@ export default {
     },
     xpub(e) {
       if (e) this.upBalance()
+    },
+    $router() {
+      if (this.c_isDeviceConnect) console.log(888)
     }
   },
   async created() {
@@ -365,8 +368,6 @@ export default {
       this.upAll()
       await new Promise(resolve => setTimeout(resolve, 77 * 1000))
     }
-    console.log(777777)
-    console.log(this.props)
   },
   methods: {
     upAll() {
@@ -374,10 +375,9 @@ export default {
       // this.upRate()
     },
     async upBalance() {
-      console.log(888888)
-      console.log(this.xpub)
       this.d_loading.upBalance = true
       const { data } = await Axios.get(`https://${this.symbol}.abckey.com/xpub/${this.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
+      console.log('upBalance: ', data)
       this.d_balance = this.sat2btc(data.balance)
       this.d_totalReceived = this.sat2btc(data.totalReceived)
       this.d_totalSent = this.sat2btc(data.totalSent)
@@ -386,7 +386,7 @@ export default {
       this.d_transactionCount = data.txs
       this.d_addressCount = data.usedTokens
       this.d_loading.upBalance = false
-      this._fixTxs(data.transactions, data.tokens)
+      // this._fixTxs(data.transactions, data.tokens)
     },
     async upRate() {
       this.d_loading.upRate = true

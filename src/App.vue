@@ -159,6 +159,18 @@ export default {
     initCoinInfo() {
       this.$store.__s('coinInfo', coinbook[this.c_coinType])
     }
+  },
+  i18n: {
+    messages: {
+      zhHans: {
+        'Switch Currencies': '切换货币',
+        Safe: '安全'
+      },
+      en: {
+        'Switch Currencies': 'Switch Currencies',
+        Safe: 'Safe'
+      }
+    }
   }
 }
 </script>
