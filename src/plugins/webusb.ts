@@ -10,6 +10,7 @@ class UsbDevice extends Usb {
     Store.__s('usb.manufacturer', e ? e.manufacturerName : '')
     Store.__s('usb.product', e ? e.productName : '')
     Store.__s('usb.serialNumber', e ? e.serialNumber : 0)
+    Store.__s('usb.msg', e ? e.msg : null)
   }
 }
 
@@ -59,5 +60,13 @@ webusb.onMsg(e => {
     Store.__s('xpub', e.data.xpub)
   }
 })
+
+// const newCmd = async (type, proto) => {
+//   if (type !== 'Initialize') {
+//     await webusb.cmd('Initialize')
+//   }
+//   console.log(`${type} is running`)
+//   return webusb.cmd(type, proto)
+// }
 
 Vue.prototype.$usb = webusb
