@@ -1,5 +1,5 @@
 <template>
-  <v-dialog justify="center" light overlay-opacity="0.1" v-model="c_show" width="800" persistent>
+  <v-dialog justify="center" light overlay-opacity="0.1" v-model="c_show" width="500px" persistent>
     <v-sheet color="white" class="pa-2">
       <v-card-title class="headline">
         <template v-if="!d_selectType">
@@ -12,12 +12,12 @@
       </v-card-title>
       <v-divider></v-divider>
       <v-row>
-        <v-col cols="4" class="offset-sm-4">
+        <v-col cols="10" class="offset-1">
           <v-text-field placeholder="enter keywords to search" @input="m_filterTypeList" hide-details="auto"></v-text-field>
         </v-col>
       </v-row>
       <v-container id="scroll-target" style="height:400px;" class="overflow-y-auto">
-        <v-row align="center" justify="center">
+        <v-row align="left" justify="left">
           <template v-for="(item, index) in d_filterTypeList">
             <v-col class="d-flex" justify="center" cols="12" :key="index">
               <v-sheet v-if="item.selected" width="100%" color="grey lighten-3" class="d-flex justify-center pa-2 justify-content-center align-items-sm-center">

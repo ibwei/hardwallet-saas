@@ -17,6 +17,7 @@
     "@types/webpack-env": "^1.15.1",
     "axios": "^0.19.2",
     "bignumber.js": "^9.0.0",
+    "clipboard-polyfill": "^2.8.6",
     "commitizen": "^4.0.3",
     "conventional-changelog": "^3.1.18",
     "core-js": "^3.6.4",

@@ -6,7 +6,7 @@
           <!-- drawer -->
           <v-navigation-drawer value="true" class="elevation-2" app>
             <v-row justify="center">
-              <v-btn @click="$store.__s('dialog.chooseType', true)" color="primary" class="ma-4">Switch currencies</v-btn>
+              <img @click="$store.__s('dialog.chooseType', true)" src="./assets/cointype/BTC.png" class="ma-2 mt-4 coin-type" height="50" width="auto" />
               <side-navbar :routerList="d_routerList" class="mt-4" />
             </v-row>
           </v-navigation-drawer>
@@ -62,7 +62,7 @@ export default {
         },
         {
           name: 'Receive',
-          icon: '&#xea06;',
+          icon: '&#xe9fd;',
           url: '/receive'
         },
         {
@@ -170,5 +170,13 @@ export default {
 .switch-button {
   position: fixed;
   bottom: 30px;
+}
+.coin-type {
+  border-radius: 50%;
+  box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+.coin-type:hover {
+  box-shadow: 1px 1px 40px rgba(0, 0, 0, 0.4);
 }
 </style>
