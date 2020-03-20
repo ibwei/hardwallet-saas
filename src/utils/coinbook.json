@@ -1,0 +1,474 @@
+{
+  "bch": {
+    "market_id": "bitcoin-cash",
+    "slip44": 145,
+    "name": "Bitcoin Cash",
+    "symbol": "bch",
+    "address_crypto": "sha256",
+    "address_length": 50,
+    "address_prefix": {
+      "mainnet": {
+        "p2pkh": "00",
+        "p2sh": "05"
+      },
+      "testnet": {
+        "p2pkh": "6f",
+        "p2sh": "c4"
+      }
+    },
+    "bip": {
+      "44": [
+        76066276,
+        76067358
+      ]
+    },
+    "blocktime": 600,
+    "blockbook": [
+      "https://bch1.trezor.io",
+      "https://bch2.trezor.io",
+      "https://bch3.trezor.io",
+      "https://bch4.trezor.io",
+      "https://bch5.trezor.io"
+    ],
+    "bitcore": [],
+    "network": {
+      "coin": "bch",
+      "bech32": "bch",
+      "bip32": {
+        "private": 76066276,
+        "public": 76067358
+      },
+      "dustThreshold": 0,
+      "messagePrefix": "Bitcoin Signed Message:\n",
+      "pubKeyHash": 0,
+      "scriptHash": 5,
+      "wif": 128
+    }
+  },
+  "btc": {
+    "market_id": "bitcoin",
+    "slip44": 0,
+    "name": "Bitcoin",
+    "symbol": "btc",
+    "address_crypto": "sha256",
+    "address_length": 50,
+    "address_prefix": {
+      "mainnet": {
+        "hrp": "bc",
+        "p2pkh": "00",
+        "p2sh": "05"
+      },
+      "testnet": {
+        "hrp": "tb",
+        "p2pkh": "6f",
+        "p2sh": "c4"
+      }
+    },
+    "bip": {
+      "44": [
+        76066276,
+        76067358
+      ],
+      "49": [
+        77428856,
+        77429938
+      ],
+      "84": [
+        78791436,
+        78792518
+      ]
+    },
+    "blocktime": 600,
+    "blockbook": [
+      "https://btc1.trezor.io",
+      "https://btc2.trezor.io",
+      "https://btc3.trezor.io",
+      "https://btc4.trezor.io",
+      "https://btc5.trezor.io"
+    ],
+    "bitcore": [],
+    "network": {
+      "coin": "btc",
+      "bech32": "bc",
+      "bip32": {
+        "private": 76066276,
+        "public": 76067358
+      },
+      "dustThreshold": 0,
+      "messagePrefix": "Bitcoin Signed Message:\n",
+      "pubKeyHash": 0,
+      "scriptHash": 5,
+      "wif": 128
+    }
+  },
+  "btg": {
+    "market_id": "bitcoin-gold",
+    "slip44": 156,
+    "name": "Bitcoin Gold",
+    "symbol": "btg",
+    "address_crypto": "sha256",
+    "address_length": 50,
+    "address_prefix": {
+      "mainnet": {
+        "p2pkh": "26",
+        "p2sh": "17"
+      },
+      "testnet": {
+        "p2pkh": "6f",
+        "p2sh": "c4"
+      }
+    },
+    "bip": {
+      "44": [
+        76066276,
+        76067358
+      ],
+      "49": [
+        77428856,
+        77429938
+      ]
+    },
+    "blocktime": 600,
+    "blockbook": [
+      "https://btg1.trezor.io",
+      "https://btg2.trezor.io",
+      "https://btg3.trezor.io",
+      "https://btg4.trezor.io",
+      "https://btg5.trezor.io"
+    ],
+    "bitcore": [],
+    "network": {
+      "coin": "btg",
+      "bech32": "btg",
+      "bip32": {
+        "private": 76066276,
+        "public": 77429938
+      },
+      "dustThreshold": 0,
+      "messagePrefix": "Bitcoin Gold Signed Message:\n",
+      "pubKeyHash": 38,
+      "scriptHash": 23,
+      "wif": 128
+    }
+  },
+  "dash": {
+    "market_id": "dash",
+    "slip44": 5,
+    "name": "Dash",
+    "symbol": "dash",
+    "address_crypto": "sha256",
+    "address_length": 50,
+    "address_prefix": {
+      "mainnet": {
+        "p2pkh": "4C",
+        "p2sh": "10"
+      },
+      "testnet": {
+        "p2pkh": "8C",
+        "p2sh": "13"
+      }
+    },
+    "bip": {
+      "44": [
+        50221816,
+        50221772
+      ]
+    },
+    "blocktime": 150,
+    "blockbook": [
+      "https://dash1.trezor.io",
+      "https://dash2.trezor.io",
+      "https://dash3.trezor.io",
+      "https://dash4.trezor.io",
+      "https://dash5.trezor.io"
+    ],
+    "bitcore": [],
+    "network": {
+      "coin": "dash",
+      "bip32": {
+        "private": 50221816,
+        "public": 50221772
+      },
+      "dustThreshold": 0,
+      "messagePrefix": "DarkCoin Signed Message:\n",
+      "pubKeyHash": 76,
+      "scriptHash": 16,
+      "wif": 128
+    }
+  },
+  "bgb": {
+    "market_id": "digibyte",
+    "slip44": 20,
+    "name": "DigiByte",
+    "symbol": "dgb",
+    "address_crypto": "sha256",
+    "address_length": 50,
+    "address_prefix": {
+      "mainnet": {
+        "p2pkh": "1e",
+        "p2sh": "3f"
+      },
+      "testnet": {}
+    },
+    "bip": {
+      "44": [
+        76066276,
+        76067358
+      ],
+      "49": [
+        77428856,
+        77429938
+      ]
+    },
+    "blocktime": 15,
+    "blockbook": [
+      "https://dgb1.trezor.io",
+      "https://dgb2.trezor.io"
+    ],
+    "bitcore": [],
+    "network": {
+      "coin": "dgb",
+      "bip32": {
+        "private": 76066276,
+        "public": 77429938
+      },
+      "dustThreshold": 0,
+      "messagePrefix": "DigiByte Signed Message:\n",
+      "pubKeyHash": 30,
+      "scriptHash": 63,
+      "wif": 128
+    }
+  },
+  "doge": {
+    "market_id": "dogecoin",
+    "slip44": 3,
+    "name": "Dogecoin",
+    "symbol": "doge",
+    "address_crypto": "sha256",
+    "address_length": 50,
+    "address_prefix": {
+      "mainnet": {
+        "p2pkh": "1e",
+        "p2sh": "16"
+      },
+      "testnet": {
+        "p2pkh": "71",
+        "p2sh": "c4"
+      }
+    },
+    "bip": {
+      "44": [
+        49988504,
+        49990397
+      ]
+    },
+    "blocktime": 60,
+    "blockbook": [
+      "https://doge1.trezor.io",
+      "https://doge2.trezor.io",
+      "https://doge3.trezor.io",
+      "https://doge4.trezor.io",
+      "https://doge5.trezor.io"
+    ],
+    "bitcore": [],
+    "network": {
+      "coin": "doge",
+      "bip32": {
+        "private": 49988504,
+        "public": 49990397
+      },
+      "dustThreshold": 0,
+      "messagePrefix": "Bitcoin Signed Message:\n",
+      "pubKeyHash": 30,
+      "scriptHash": 22,
+      "wif": 128
+    }
+  },
+  "ltc": {
+    "market_id": "litecoin",
+    "slip44": 2,
+    "name": "Litecoin",
+    "symbol": "ltc",
+    "address_crypto": "sha256",
+    "address_length": 50,
+    "address_prefix": {
+      "mainnet": {
+        "p2pkh": "30",
+        "p2sh": "32"
+      },
+      "testnet": {
+        "p2pkh": "6f",
+        "p2sh": "3a"
+      }
+    },
+    "bip": {
+      "44": [
+        27106558,
+        27108450
+      ],
+      "49": [
+        28469138,
+        28471030
+      ]
+    },
+    "blocktime": 150,
+    "blockbook": [
+      "https://ltc1.trezor.io",
+      "https://ltc2.trezor.io",
+      "https://ltc3.trezor.io",
+      "https://ltc4.trezor.io",
+      "https://ltc5.trezor.io"
+    ],
+    "bitcore": [],
+    "network": {
+      "coin": "ltc",
+      "bech32": "ltc",
+      "bip32": {
+        "private": 27106558,
+        "public": 28471030
+      },
+      "dustThreshold": 0,
+      "messagePrefix": "Litecoin Signed Message:\n",
+      "pubKeyHash": 48,
+      "scriptHash": 50,
+      "wif": 128
+    }
+  },
+  "nmc": {
+    "market_id": "namecoin",
+    "slip44": 7,
+    "name": "Namecoin",
+    "symbol": "nmc",
+    "address_crypto": "sha256",
+    "address_length": 50,
+    "address_prefix": {
+      "mainnet": {
+        "p2pkh": "34",
+        "p2sh": "0d"
+      },
+      "testnet": {
+        "p2pkh": "6f",
+        "p2sh": "c4"
+      }
+    },
+    "bip": {
+      "44": [
+        76066276,
+        76067358
+      ]
+    },
+    "blocktime": 600,
+    "blockbook": [
+      "https://nmc1.trezor.io",
+      "https://nmc2.trezor.io"
+    ],
+    "bitcore": [],
+    "network": {
+      "coin": "nmc",
+      "bip32": {
+        "private": 76066276,
+        "public": 76067358
+      },
+      "dustThreshold": 0,
+      "messagePrefix": "Namecoin Signed Message:\n",
+      "pubKeyHash": 52,
+      "scriptHash": 5,
+      "wif": 128
+    }
+  },
+  "vtc": {
+    "market_id": "vertcoin",
+    "slip44": 28,
+    "name": "Vertcoin",
+    "symbol": "vtc",
+    "address_crypto": "sha256",
+    "address_length": 50,
+    "address_prefix": {
+      "mainnet": {
+        "p2pkh": "47",
+        "p2sh": "05"
+      },
+      "testnet": {
+        "p2pkh": "6f",
+        "p2sh": "c4"
+      }
+    },
+    "bip": {
+      "44": [
+        76066276,
+        76067358
+      ],
+      "49": [
+        77428856,
+        77429938
+      ]
+    },
+    "blocktime": 150,
+    "blockbook": [
+      "https://vtc1.trezor.io",
+      "https://vtc2.trezor.io",
+      "https://vtc3.trezor.io",
+      "https://vtc4.trezor.io",
+      "https://vtc5.trezor.io"
+    ],
+    "bitcore": [],
+    "network": {
+      "coin": "vtc",
+      "bech32": "vtc",
+      "bip32": {
+        "private": 76066276,
+        "public": 77429938
+      },
+      "dustThreshold": 0,
+      "messagePrefix": "Vertcoin Signed Message:\n",
+      "pubKeyHash": 71,
+      "scriptHash": 5,
+      "wif": 128
+    }
+  },
+  "zec": {
+    "market_id": "zcash",
+    "slip44": 133,
+    "name": "Zcash",
+    "symbol": "zec",
+    "address_crypto": "sha256",
+    "address_length": 50,
+    "address_prefix": {
+      "mainnet": {
+        "p2pkh": "1cb8",
+        "p2sh": "1cbd"
+      },
+      "testnet": {
+        "p2pkh": "1d50",
+        "p2sh": "1cba"
+      }
+    },
+    "bip": {
+      "44": [
+        76066276,
+        76067358
+      ]
+    },
+    "blocktime": 150,
+    "blockbook": [
+      "https://zec1.trezor.io",
+      "https://zec2.trezor.io",
+      "https://zec3.trezor.io",
+      "https://zec4.trezor.io",
+      "https://zec5.trezor.io"
+    ],
+    "bitcore": [],
+    "network": {
+      "coin": "zec",
+      "bip32": {
+        "private": 76066276,
+        "public": 76067358
+      },
+      "dustThreshold": 0,
+      "messagePrefix": "Zcash Signed Message:\n",
+      "pubKeyHash": 7352,
+      "scriptHash": 7357,
+      "wif": 128
+    }
+  }
+}
