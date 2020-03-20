@@ -14,6 +14,7 @@
                 <i class="icon pl-2">&#xe606;</i>
               </div>
               <side-navbar :routerList="d_routerList" class="mt-4" />
+              <v-btn @click="$store.__s('dialog.chooseType', true)" color="primary" class="switch-button">Switch currencies</v-btn>
             </v-row>
           </v-navigation-drawer>
           <!-- drawer end -->
@@ -42,6 +43,7 @@
 </template>
 
 <script>
+import coinbook from '@/utils/coinbook'
 import { loadLanguageAsync } from '@/i18n/index'
 import SideNavbar from '@/views/components/SideNavBar'
 import { mapState } from 'vuex'
@@ -108,10 +110,12 @@ export default {
         address_n.push(id)
       }
       return address_n
-    }
+    },
+    c_coinType: vm => vm.$store.__s('coinType')
   },
-  mounted () {
+  created() {
     this.initLanguage()
+    this.initCoinInfo()
   },
   watch: {
     $route () {
@@ -122,6 +126,9 @@ export default {
         this.initDevice()
         this.m_getPublickKey()
       }
+    },
+    c_coinType() {
+      this.initCoinInfo()
     }
   },
   methods: {
@@ -165,6 +172,9 @@ export default {
       }
       await this.$usb.cmd('Initialize')
       await this.$usb.cmd('GetPublicKey', proto)
+    },
+    initCoinInfo() {
+      this.$store.__s('coinInfo', coinbook[this.c_coinType])
     }
   }
 }
@@ -172,5 +182,10 @@ export default {
 <style lang="scss" scoped>
 .shadow {
   box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.2);
+}
+
+.switch-button {
+  position: fixed;
+  bottom: 30px;
 }
 </style>

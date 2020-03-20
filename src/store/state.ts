@@ -1,9 +1,8 @@
 // https://vuex.vuejs.org/en/state.html
-import coinbook from '@/utils/coinbook.json'
 export default {
   xpub: '',
-  coinType: '',
+  coinType: 'btc',
+  coinInfo: null,
   cashUnitItems: ['CNY', 'USD'],
-  cashUnitIndex: 0,
-  coinbook
+  cashUnitIndex: 0
 }

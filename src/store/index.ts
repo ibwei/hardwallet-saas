@@ -37,13 +37,17 @@ store.__s = (type, msg) => {
   let _state = store.state
   if (!type) return store.state
   if (type.indexOf('.') === -1) {
-    store.commit({
-      type: '__set',
-      key: type,
-      val: msg,
-      root: true
-    })
-    return _state
+    if (msg) {
+      store.commit({
+        type: '__set',
+        key: type,
+        val: msg,
+        root: true
+      })
+      return _state
+    } else {
+      return store.state[type]
+    }
   }
   const _path = type.split('.')
   for (let i = 0; i < _path.length; i++) {
