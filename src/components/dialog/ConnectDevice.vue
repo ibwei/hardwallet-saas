@@ -35,9 +35,8 @@ export default {
      * @method  connect - usbdevice
      * @return void
      */
-    m_connect() {
-      console.log('hahah')
-      this.$usb.add(res => {
+    async m_connect() {
+      await this.$usb.add(res => {
         console.log('you have already choose device')
         this.$usb.syncVuex(res)
       })
