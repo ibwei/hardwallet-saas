@@ -6,7 +6,7 @@
           <!-- drawer -->
           <v-navigation-drawer value="true" class="elevation-2" app>
             <v-row justify="center">
-              <v-btn @click="$store.__s('dialog.chooseType', true)" color="primary" class="ma-4">Switch currencies</v-btn>
+              <v-btn @click="$store.__s('dialog.chooseType', true)" color="primary" class="ma-4">{{ $t('Switch Currencies') }}</v-btn>
               <side-navbar :routerList="d_routerList" class="mt-4" />
             </v-row>
           </v-navigation-drawer>
@@ -158,6 +158,18 @@ export default {
     },
     initCoinInfo() {
       this.$store.__s('coinInfo', coinbook[this.c_coinType])
+    }
+  },
+  i18n: {
+    messages: {
+      zhHans: {
+        'Switch Currencies': '切换货币',
+        Safe: '安全'
+      },
+      en: {
+        'Switch Currencies': 'Switch Currencies',
+        Safe: 'Safe'
+      }
     }
   }
 }
