@@ -10,7 +10,7 @@
         <v-col cols="12">
           <v-btn dark rounded color="primary" @click="m_connect">
             <v-icon dark>mdi-plus</v-icon>
-            <span class="subtitle-2 pl-2">{{ $t('Waiting for device to connect') }}</span>
+            <span class="subtitle-2 pl-2">{{ $t('Check For Device') }}</span>
           </v-btn>
         </v-col>
       </v-row>
