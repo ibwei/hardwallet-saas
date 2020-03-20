@@ -5,25 +5,32 @@ const IS_DEV = process.env.NODE_ENV === 'production' ? false : true
 
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 module.exports = {
-  publicPath: '/',
+  publicPath: IS_DEV ? '/' : '/',
   outputDir: 'dist',
   assetsDir: 'static',
-  productionSourceMap: false,
+  productionSourceMap: IS_DEV,
+  integrity: true,
+  css: {
+    extract: false,
+    sourceMap: IS_DEV,
+    loaderOptions: {}
+  },  
   devServer: {
-    host: 'localhost',
-    port: 3000,
     open: true,
-    proxy: {
-      '/api': {
-        target: '<url>',
-        ws: true,
-        changeOrigin: true
-      }
-    }
+    port: 8888,
+    proxy: null
   },
   configureWebpack: {
-    plugins: [new VuetifyLoaderPlugin()]
+    plugins: [new VuetifyLoaderPlugin()],
+    externals: {
+      'vue-router': 'VueRouter',
+      'vue-i18n': 'VueI18n',
+      vue: 'Vue',
+      vuex: 'Vuex',
+      axios: 'axios'
+    }
   },
+  transpileDependencies: ['vuetify'],
   chainWebpack: webpackConfig => {
     IS_DEV ? vueServe(webpackConfig) : vueBuild(webpackConfig)
   }
