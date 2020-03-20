@@ -6,6 +6,7 @@ export default {
     app: {
       name: 'abckey-usb',
       language: 'en-US'
-    }
+    },
+    device: 'device'
   }
 }

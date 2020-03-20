@@ -6,6 +6,7 @@ export default {
     app: {
       name: '钱包',
       language: 'zh-CN'
-    }
+    },
+    device: '设备'
   }
 }
