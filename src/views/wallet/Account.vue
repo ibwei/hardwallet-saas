@@ -5,7 +5,7 @@
       :symbol="c_coinInfo.symbol"
       :currency="c_cashUnitItems[c_cashUnitIndex]"
       :xpub="c_xpub"
-    ></wallet-account>
+    />
   </v-container>
 </template>
 
