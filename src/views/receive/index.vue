@@ -113,7 +113,6 @@ export default {
       const coordinate = getMousePos(e)
       this.d_overlay = true
       document.getElementsByClassName('qr')[0].style.top = coordinate.y - 60 + 'px'
-      // await this.$usb.cmd('Initialize')
       await this.$usb.getAddr({
         address_n: [(49 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.d_addressList[this.d_selectedId].index],
         script_type: 'SPENDP2SHWITNESS',
@@ -150,9 +149,13 @@ export default {
       this.m_showAlert('地址已经复制到剪贴板')
     },
     async m_getUsedTokens() {
-      const result = await Axios.get(`https://btc1.trezor.io/v2/api/xpub/ypub6X8sy1kK2MTcg8149iBYFKd9bfoLeLt1MnxQF7BzqWVqez2BVb7pRLVoiRENduwp2vJmMFnXruYQ8xc3XRgLrGToTtkMEC51yw8yeVtY5jR?details=txs&tokens=used&t=${new Date().getTime()}`)
-      this.d_currentInex = result.usedTokens
-      this.d_currentInex = 85
+      /*  const result = await Axios.get(`https://btc.abckey.com/xpub/${this.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
+      this.d_currentInex = result.usedTokens ? result.usedTokens : '0'
+      if (this.d_currentInex === '0') {
+        // this.m_showAlert('获取地址出错')
+        return
+      } */
+      this.d_currentAddress = 85
       this.m_getAddr()
     },
     async m_getAddr() {
@@ -161,7 +164,6 @@ export default {
         return
       }
       try {
-        // await this.$usb.cmd('Initialize')
         const result = await this.$usb.getAddr({
           address_n: [(49 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.d_currentInex],
           script_type: 'SPENDP2SHWITNESS',
@@ -201,14 +203,14 @@ export default {
 }
 .highlight {
   position: relative;
-  z-index: 999;
+  z-index: 99999;
   border: 1px dashed #f00;
   background: #fff;
   color: #f00;
 }
 .highlight-2 {
   position: relative;
-  z-index: 999;
+  z-index: 99999;
   left: -290px;
   border-radius: 4px;
   top: -10px;
