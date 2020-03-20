@@ -155,9 +155,6 @@ export default {
         Fee: '费率',
         Review: '核对',
         Cancel: '取消'
-      },
-      en: {
-        Address: 'myAdress'
       }
     }
   }
