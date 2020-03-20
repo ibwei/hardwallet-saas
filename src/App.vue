@@ -75,14 +75,14 @@ export default {
           url: '/send'
         },
         {
+          name: 'Receive',
+          icon: '&#xea06;',
+          url: '/receive'
+        },
+        {
           name: 'Setting',
           icon: '&#xe9f2;',
           url: '/setting'
-        },
-        {
-          name: 'ABC1 Extension',
-          icon: '&#xe9fb;',
-          url: 'extension'
         }
       ]
     }

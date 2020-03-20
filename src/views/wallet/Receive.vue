@@ -1,14 +1,22 @@
 <template>
   <v-container>
-    <wallet-receive></wallet-receive>
+    <wallet-receive
+      name="bitcoin"
+      symbol="btc"
+      :currency="cashUnitItems[cashUnitIndex]"
+      :xpub="xpub"
+    />
   </v-container>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'Receive',
   data: () => ({}),
-  computed: {},
+  computed: {
+    ...mapState(['xpub', 'cashUnitItems', 'cashUnitIndex'])
+  },
   methods: {}
 }
 </script>

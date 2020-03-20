@@ -5,7 +5,11 @@
         <v-col class="text-center">
           <v-btn @click="upBalance()" text>
             <span>{{ $t('Balance') }}</span>
-            <v-icon :class="['ml-1', d_loading.upBalance && 'rotate']" size="16" color="primary">mdi-cached</v-icon>
+            <v-icon
+              :class="['ml-1', d_loading.upBalance && 'rotate']"
+              size="16"
+              color="primary"
+            >mdi-cached</v-icon>
           </v-btn>
           <div :class="['mt-1', d_loading.upBalance && 'blur']">
             <span class="title font-weight-bold">{{ btc2str(d_balance) }}</span>
@@ -15,7 +19,11 @@
         <v-col class="text-center">
           <v-btn @click="upAll()" text>
             <span>{{ $t('Convert') }}</span>
-            <v-icon :class="['ml-1', (d_loading.upBalance || d_loading.upRate) && 'rotate']" size="16" color="primary">mdi-cached</v-icon>
+            <v-icon
+              :class="['ml-1', (d_loading.upBalance || d_loading.upRate) && 'rotate']"
+              size="16"
+              color="primary"
+            >mdi-cached</v-icon>
           </v-btn>
           <div :class="['mt-1', (d_loading.upBalance || d_loading.upRate) && 'blur']">
             <span class="title font-weight-bold">{{ btc2cash(d_balance, d_rate) }}</span>
@@ -25,7 +33,11 @@
         <v-col class="text-center">
           <v-btn @click="upRate()" text>
             <span>{{ $t('Rate') }}</span>
-            <v-icon :class="['ml-1', d_loading.upRate && 'rotate']" size="16" color="primary">mdi-cached</v-icon>
+            <v-icon
+              :class="['ml-1', d_loading.upRate && 'rotate']"
+              size="16"
+              color="primary"
+            >mdi-cached</v-icon>
           </v-btn>
           <div :class="['mt-1', d_loading.upRate && 'blur']">
             <span class="title font-weight-bold">{{ cash2str(d_rate) }}</span>
@@ -132,11 +144,16 @@
     </v-card>
     <v-expansion-panels :value="0" class="mt-3">
       <v-expansion-panel readonly v-show="d_txs === 0">
-        <v-expansion-panel-header expand-icon="">
+        <v-expansion-panel-header expand-icon>
           <span>
             <v-btn @click="upBalance()" text>
               <b>{{ $t('Transaction details need to be refreshed.') }}</b>
-              <v-icon right :class="['ml-1', d_loading.upBalance && 'rotate']" size="16" color="primary">mdi-cached</v-icon>
+              <v-icon
+                right
+                :class="['ml-1', d_loading.upBalance && 'rotate']"
+                size="16"
+                color="primary"
+              >mdi-cached</v-icon>
             </v-btn>
           </span>
         </v-expansion-panel-header>
@@ -151,7 +168,13 @@
               <v-col cols="4">
                 <v-tooltip :disabled="!item.valueChanged" top>
                   <template v-slot:activator="{ on }">
-                    <v-chip v-on="on" :color="item.valueChanged < 0 ? 'red' : 'green'" small label outlined>
+                    <v-chip
+                      v-on="on"
+                      :color="item.valueChanged < 0 ? 'red' : 'green'"
+                      small
+                      label
+                      outlined
+                    >
                       <v-icon left size="18">{{ item.valueChanged > 0 ? 'mdi-plus' : 'mdi-minus' }}</v-icon>
                       <span>{{ btc2str(Math.abs(item.valueChanged)) }}</span>
                       <span class="text-uppercase caption ml-1">{{ symbol }}</span>
@@ -192,9 +215,10 @@
                   <td>
                     <v-tooltip top>
                       <template v-slot:activator="{ on }">
-                        <span class="number" v-on="on">
-                          {{ item.txid.replace(/^(.......).+(.......)$/g, '$1 ######### $2') }}
-                        </span>
+                        <span
+                          class="number"
+                          v-on="on"
+                        >{{ item.txid.replace(/^(.......).+(.......)$/g, '$1 ######### $2') }}</span>
                       </template>
                       <span>
                         <span>{{ item.txid }}</span>
@@ -302,7 +326,10 @@
     <p class="mt-3 mb-7 grey--text text-center">
       <span class="caption">
         {{ $t('Only the latest 1000 data is displayed.') }}
-        <a :href="`https://blockchair.com/${name}/xpub/${xpub}`" target="_blank">{{ $t('See more') }}</a>
+        <a
+          :href="`https://blockchair.com/${name}/xpub/${xpub}`"
+          target="_blank"
+        >{{ $t('See more') }}</a>
       </span>
     </p>
   </v-container>
@@ -346,19 +373,25 @@ export default {
       upRate: false
     }
   }),
+  computed: {
+    c_xpub: vm => vm.$store.__s('xpub')
+  },
   watch: {
     ['d_upBalance.page'](val) {
       this.upBalance(val)
+    },
+    xpub(e) {
+      if (e) this.upBalance()
     }
   },
-  async created() {
-    const path = this.$route.path
-    for (;;) {
-      if (this.$route.path !== path) break
-      this.upAll()
-      await new Promise(resolve => setTimeout(resolve, 77 * 1000))
-    }
-  },
+  // async created() {
+  //   const path = this.$route.path
+  //   for (;;) {
+  //     if (this.$route.path !== path) break
+  //     this.upAll()
+  //     await new Promise(resolve => setTimeout(resolve, 77 * 1000))
+  //   }
+  // },
   methods: {
     upAll() {
       this.upBalance()
