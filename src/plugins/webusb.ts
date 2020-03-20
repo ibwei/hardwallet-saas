@@ -61,12 +61,12 @@ webusb.onMsg(e => {
   }
 })
 
-const newCmd = async (type, proto) => {
-  if (type !== 'Initialize') {
-    await webusb.cmd('Initialize')
-  }
-  console.log(`${type} is running`)
-  return webusb.cmd(type, proto)
-}
+// const newCmd = async (type, proto) => {
+//   if (type !== 'Initialize') {
+//     await webusb.cmd('Initialize')
+//   }
+//   console.log(`${type} is running`)
+//   return webusb.cmd(type, proto)
+// }
 
 Vue.prototype.$usb = webusb
