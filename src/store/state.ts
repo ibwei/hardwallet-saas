@@ -2,5 +2,7 @@
 
 export default {
   xpub: '',
-  coinType: ''
+  coinType: '',
+  cashUnitItems: ['CNY', 'USD'],
+  cashUnitIndex: 0
 }
