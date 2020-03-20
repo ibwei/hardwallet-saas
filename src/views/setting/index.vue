@@ -1,5 +1,6 @@
 <template>
   <div class="view">
+    {{d_cashUnitIndex}}
     <v-card min-width="900">
       <v-card-title>常规</v-card-title>
       <v-card-text class="d-flex">
@@ -7,7 +8,7 @@
         <v-btn class="ml-5" color="primary" @click="$store.__s('dialog.language', true)">修改语言</v-btn>
         <v-menu offset-y>
           <template v-slot:activator="{ on }">
-            <v-btn color="primary" outlined dark v-on="on" class="ml-5">
+            <v-btn color="primary" outlined dark v-on="on" class="ml-5" width="100">
               {{d_cashUnitItems[d_cashUnitIndex]}}
               <v-icon>keyboard_arrow_down</v-icon>
             </v-btn>
@@ -16,7 +17,7 @@
             <v-list-item-group v-model="d_cashUnitIndex" color="primary">
               <v-list-item v-for="(item, i) in d_cashUnitItems" :key="i">
                 <v-list-item-content>
-                  <v-list-item-title v-html="item"></v-list-item-title>
+                  <v-list-item-title v-html="item" />
                 </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
