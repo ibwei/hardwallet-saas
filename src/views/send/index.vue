@@ -100,7 +100,7 @@
 
 <script>
 import QRCode from 'qrcodejs2'
-import Axios from 'axios'
+// import Axios from 'axios'
 import { mapState } from 'vuex'
 import { getMousePos } from '@/utils/common'
 import { StaticConfig } from '@/config'

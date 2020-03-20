@@ -407,7 +407,7 @@ export default {
       console.log(888888)
       console.log(this.xpub)
       this.d_loading.upBalance = true
-      const { data } = await Axios.get(`https://btc.abckey.com/xpub/${this.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
+      const { data } = await Axios.get(`https://${this.symbol}.abckey.com/xpub/${this.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
       this.d_balance = this.sat2btc(data.balance)
       this.d_totalReceived = this.sat2btc(data.totalReceived)
       this.d_totalSent = this.sat2btc(data.totalSent)
@@ -421,7 +421,8 @@ export default {
     async upRate() {
       this.d_loading.upRate = true
       const { data } = await Axios.get(`https://api.coingecko.com/api/v3/simple/price?ids=${this.name}&vs_currencies=${this.currency}&t=${new Date().getTime()}`)
-      this.d_rate = data[this.name][this.currency]
+      console.log('upRate: ', data)
+      this.d_rate = data[this.name.toLowerCase()][this.currency.toLowerCase()]
       this.d_loading.upRate = false
     },
     sat2btc: sat =>

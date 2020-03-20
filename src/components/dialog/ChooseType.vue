@@ -56,10 +56,10 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="default darken-1" text @click="d_dialog = false">
-          <span class="subtitle-2 blue-grey--text pl-2 pr-2">Cancel</span>
+          <span class="subtitle-2 blue-grey--text pl-2 pr-2" @click="$store.__s('dialog.chooseType', false)">Cancel</span>
         </v-btn>
         <v-btn color="green darken-1" text @click="d_dialog = false">
-          <span class="subtitle-2 success--text pl-2 pr-2">Confirm</span>
+          <span class="subtitle-2 success--text pl-2 pr-2" @click="m_confirm">Confirm</span>
         </v-btn>
       </v-card-actions>
     </v-sheet>
@@ -165,7 +165,7 @@ export default {
       this.d_filterTypeList.splice(this.d_preSelectedIndex, 1, { ...this.d_filterTypeList[this.d_preSelectedIndex], selected: false })
       this.d_filterTypeList.splice(index, 1, { ...this.d_filterTypeList[index], selected: true })
       this.d_preSelectedIndex = index
-      this.d_selectType = `${seletedType.name}(${seletedType.briefName})`
+      this.d_selectType = seletedType.briefName
     },
 
     /**
@@ -179,6 +179,11 @@ export default {
         const briefName = item.briefName.toLowerCase()
         return name.includes(key) || briefName.includes(key)
       })
+    },
+    m_confirm() {
+      // console.log(888)
+      this.$store.__s('coinType', this.d_selectType)
+      this.$store.__s('dialog.chooseType', false)
     }
   }
 }

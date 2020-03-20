@@ -1,23 +1,18 @@
 <template>
   <v-container>
     <wallet-account
-      name="bitcoin"
-      symbol="btc"
-      :currency="cashUnitItems[cashUnitIndex]"
-      :xpub="xpub"
+      :name="c_coinInfo.name"
+      :symbol="c_coinInfo.symbol"
+      :currency="c_cashUnitItems[c_cashUnitIndex]"
+      :xpub="c_xpub"
     ></wallet-account>
   </v-container>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import mix_wallet from '@/mixins/Wallet'
 export default {
   name: 'Account',
-  data: () => ({}),
-  computed: {
-    ...mapState(['xpub', 'cashUnitItems', 'cashUnitIndex'])
-  }
+  mixins: [mix_wallet]
 }
 </script>
-
-<style lang="scss" scoped></style>
