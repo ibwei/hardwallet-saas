@@ -7,16 +7,17 @@
 
 .icon {
   font-family: 'iconfont';
-  font-style: normal;
-  font-size: 16px;
+  font-style : normal;
+  font-size  : 16px;
 }
 
 #app {
-  font-family: '微软雅黑', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
+  font-family            : '微软雅黑', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing : antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  text-align             : center;
+  color                  : #2c3e50;
+  min-height             : 100vh;
 }
 
 * {
@@ -28,7 +29,7 @@
 
   a {
     font-weight: bold;
-    color: #2c3e50;
+    color      : #2c3e50;
 
     &.router-link-exact-active {
       color: #42b983;
@@ -37,6 +38,6 @@
 }
 
 .row {
-  margin-left: 0;
+  margin-left : 0;
   margin-right: 0;
 }

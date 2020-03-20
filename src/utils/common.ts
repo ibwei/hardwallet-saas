@@ -1,6 +1,15 @@
+/* eslint-disable */
 // @ts-nocheck
-
 // encode html tag
+
+export function getMousePos(event) {
+  var e = event || window.event
+  var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft
+  var scrollY = document.documentElement.scrollTop || document.body.scrollTop
+  var x = e.pageX || e.clientX + scrollX
+  var y = e.pageY || e.clientY + scrollY
+  return { x: x, y: y }
+}
 export function HtmlEncode(text) {
   return text
     .replace(/&/g, '&')
@@ -672,7 +681,6 @@ export function toCDB(str) {
   }
   return result
 }
-å
 
 export function uniqueId(): number {
   const a: any = Math.random

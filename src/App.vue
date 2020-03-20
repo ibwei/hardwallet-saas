@@ -1,12 +1,15 @@
 <template>
   <div id="app">
     <v-app>
-      <v-content class="blue lighten-5">
+      <v-content class="blue lighten-5" style="min-height:100vh;">
         <v-container fluid class="pa-0">
           <!-- drawer -->
           <v-navigation-drawer value="true" class="elevation-2" app>
             <v-row justify="center">
-              <div class="d-flex pa-2 mt-4 justify-center align-center blue lighten-5" style="border-radius:20px;width:80%;">
+              <div
+                class="d-flex pa-2 mt-4 justify-center align-center blue lighten-5"
+                style="border-radius:20px;width:80%;"
+              >
                 <div class="body-2">{{ c_deviceName }}</div>
                 <i class="icon pl-2">&#xe606;</i>
               </div>
@@ -16,7 +19,10 @@
           <!-- drawer end -->
           <!-- router display -->
           <div class="blue lighten-3 shadow" style="height:60px"></div>
-          <div class="white ma-auto mt-10 pa-6 elevation-1" style="width:960px;min-height:300px;border-radius:2px;">
+          <div
+            class="white ma-auto mt-10 pa-6 elevation-1"
+            style="width:960px;min-height:300px;border-radius:2px;"
+          >
             <router-view />
           </div>
           <!-- router end -->
@@ -44,7 +50,7 @@ export default {
   components: {
     SideNavbar
   },
-  data() {
+  data () {
     return {
       d_addressList: ['3323kpuDSksfSWOMQSKsfkj'],
       d_path: `m/49'/0'/0'/0/0`,
@@ -89,11 +95,11 @@ export default {
   },
   computed: {
     ...mapState(['version', 'app', 'usb']),
-    c_deviceName() {
+    c_deviceName () {
       return this.usb.connect ? this.usb.product : 'Waiting for connect'
     },
     isDeviceConnect: vm => vm.usb.connect,
-    c_addressN() {
+    c_addressN () {
       const address_n = []
       const path = this.d_path.match(/\/[0-9]+('|H)?/g)
       for (const item of path) {
@@ -104,14 +110,14 @@ export default {
       return address_n
     }
   },
-  mounted() {
+  mounted () {
     this.initLanguage()
   },
   watch: {
-    $route() {
+    $route () {
       window.document.title = this.$route.meta.title ? this.$route.meta.title : 'abckey-webusb'
     },
-    isDeviceConnect(e) {
+    isDeviceConnect (e) {
       if (e === true) {
         this.initDevice()
         this.m_getPublickKey()
@@ -123,7 +129,7 @@ export default {
      * @method - init the application's language
      * @return {void}
      */
-    initLanguage() {
+    initLanguage () {
       const store = JSON.parse(localStorage.getItem('vuex'))
       if (store?.app?.language) {
         loadLanguageAsync(store.app.language).then(lang => {
@@ -135,7 +141,7 @@ export default {
      * @method - change the application's language
      * @return {void}
      */
-    changeLanguage(type) {
+    changeLanguage (type) {
       loadLanguageAsync(type).then(res => {
         const html = document.getElementsByTagName('html')[0]
         if (html) {
@@ -143,14 +149,14 @@ export default {
         }
       })
     },
-    async initDevice() {
+    async initDevice () {
       const result = await this.$usb.cmd('Initialize')
       console.log('Initialize', result)
       this.$store.__s('usb.majorVersion', result.data.major_version)
       this.$store.__s('usb.minorVersion', result.data.minor_version)
       this.$store.__s('usb.patchVersion', result.data.patch_version)
     },
-    async m_getPublickKey() {
+    async m_getPublickKey () {
       if (!this.c_addressN) return (this.d_response = 'path error')
       const proto = {
         address_n: this.c_addressN,

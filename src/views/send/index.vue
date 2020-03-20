@@ -3,10 +3,8 @@
     <div class="qr" v-show="this.d_selectedId > -1">
       <div id="qrcode"></div>
     </div>
-    <v-snackbar v-model="d_snackbar" top>
-      地址已经复制到剪贴板
-    </v-snackbar>
-    <v-overlay v-model="d_overlay"> </v-overlay>
+    <v-snackbar v-model="d_alertShow" top>{{d_errorText}}</v-snackbar>
+    <v-overlay v-model="d_overlay"></v-overlay>
     <v-card>
       <v-tabs v-model="d_tab" class="pa-6 pb-3">
         <v-tab>新地址</v-tab>
@@ -24,12 +22,30 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(address, index) in d_addressList" :key="index" @click="m_clickAddress(index)" style="position:relative;">
-                    <td class="text-left">{{ index }}</td>
-                    <td class="text-left d-flex flex-row justify-start align-center" style="cursor:pointer">
-                      <span class="s-address caption pl-2 pr-2" :class="d_selectedId === index ? 'highlight' : ''">
-                        <i class="icon" style="font-size:12px;" v-html="d_selectedId === index ? '&#xe804;' : '&#xe9cf;'" @click="m_copyAddress(index)"></i>
-                        {{ address }}
+                  <tr
+                    v-for="(address, index) in d_addressList"
+                    :key="index"
+                    @click="m_clickAddress(index,$event)"
+                    style="position:relative;"
+                  >
+                    <td class="text-left">{{ address.index }}</td>
+                    <td
+                      class="text-left d-flex flex-row justify-start align-center"
+                      style="cursor:pointer"
+                    >
+                      <span
+                        class="s-address caption pl-2 pr-2"
+                        :class="d_selectedId === index ? 'highlight' : ''"
+                      >
+                        <i
+                          class="icon"
+                          style="font-size:12px;"
+                          v-html="d_selectedId === index ? '&#xe804;' : '&#xe9cf;'"
+                          @click="m_copyAddress(index)"
+                        ></i>
+                        <span
+                          v-text="d_selectedId === index ? address.newAddress:address.hideAddress"
+                        ></span>
                       </span>
                     </td>
                     <div v-if="d_selectedId === index">
@@ -39,7 +55,12 @@
                 </tbody>
               </template>
             </v-simple-table>
-            <v-btn small class="blue lighten-1 white--text d-flex mt-4" style="width:100px;" @click="m_addAddress">
+            <v-btn
+              small
+              class="blue lighten-1 white--text d-flex mt-4"
+              style="width:100px;"
+              @click="m_getAddr"
+            >
               <i class="icon" style="font-size:20px;">&#xe612;</i>
               <span>更多地址</span>
             </v-btn>
@@ -66,12 +87,14 @@
                 </tbody>
               </template>
             </v-simple-table>
-            <div v-if="!d_receiveList.length" class="d-flex justify-center align-center body-2 mt-4 grey--text">No Record</div>
+            <div
+              v-if="!d_receiveList.length"
+              class="d-flex justify-center align-center body-2 mt-4 grey--text"
+            >No Record</div>
           </v-card>
         </v-tab-item>
       </v-tabs-items>
     </v-card>
-    <div @click="m_getPublickKey">fsdfds</div>
   </div>
 </template>
 
@@ -79,41 +102,55 @@
 import QRCode from 'qrcodejs2'
 import Axios from 'axios'
 import { mapState } from 'vuex'
+import { getMousePos } from '@/utils/common'
+import { StaticConfig } from '@/config'
 export default {
   name: 'Send',
-  data() {
+  data () {
     return {
       d_tab: null,
       d_overlay: false,
       d_snackbar: false,
       d_receiveList: [],
-      d_selectedId: -1
+      d_addressList: [],
+      d_selectedId: -1,
+      d_currentInex: 0,
+      d_currentAddress: '0',
+      d_alertShow: false,
+      d_errorText: ''
     }
   },
   computed: {
-    ...mapState(['xpub'])
+    ...mapState(['xpub', 'usb'])
+  },
+  created () {
+    this.m_getUsedTokens()
   },
   methods: {
-    m_addAddress() {
-      const newAddress = '3323kpuDSksfSWOMQSKsfkj'
-      this.d_addressList.push(newAddress)
-    },
-    m_clickAddress(index) {
+    m_clickAddress (index, e) {
       if (this.d_overlay) {
       } else {
-        this._showOverlay(index)
+        this._showOverlay(index, e)
       }
     },
-    _showOverlay(index) {
-      this.d_overlay = true
+    async _showOverlay (index, e) {
       this.d_selectedId = index
       this._qrcode(this.d_addressList[this.d_selectedId])
+      const coordinate = getMousePos(e)
+      this.d_overlay = true
+      document.getElementsByClassName('qr')[0].style.top = coordinate.y - 60 + 'px'
+      await this.$usb.getAddr({
+        address_n: [(49 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.d_addressList[this.d_selectedId].index],
+        script_type: 'SPENDP2SHWITNESS',
+        show_display: true
+      })
+      this._hideOverlay()
     },
-    _hideOverlay() {
+    _hideOverlay () {
       this.d_selectedId = -1
       this.d_overlay = false
     },
-    _qrcode(address) {
+    _qrcode (address) {
       document.getElementById('qrcode').innerHTML = ''
       const qr = new QRCode('qrcode', {
         width: 132,
@@ -124,7 +161,7 @@ export default {
       })
       console.log(qr)
     },
-    m_copyAddress(index) {
+    m_copyAddress (index) {
       if (!this.d_overlay) {
         return
       }
@@ -135,11 +172,45 @@ export default {
       document.execCommand('Copy')
       oInput.className = 'oInput'
       oInput.style.display = 'none'
-      this.d_snackbar = true
+      this.m_showAlert('地址已经复制到剪贴板')
     },
-    async m_getAddress() {
-      const { data } = await Axios.get(`https://btc.abckey.com/xpub/${this.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
-      console.log(data)
+    async m_getUsedTokens () {
+      /*  const result = await Axios.get(`https://btc.abckey.com/xpub/ypub6X8sy1kK2MTcg8149iBYFKd9bfoLeLt1MnxQF7BzqWVqez2BVb7pRLVoiRENduwp2vJmMFnXruYQ8xc3XRgLrGToTtkMEC51yw8yeVtY5jR?details=txs&tokens=used&t=${new Date().getTime()}`)
+       this.d_currentInex = result.usedTokens */
+      this.d_currentInex = 85
+      this.m_getAddr()
+    },
+    async m_getAddr () {
+      if (this.d_addressList.length > StaticConfig.maxReceiveAddress) {
+        this.m_showAlert(`收款地址不能超过${StaticConfig.maxReceiveAddress}个`)
+        return
+      }
+      try {
+        await this.$usb.cmd('Initialize')
+        const result = await this.$usb.getAddr({
+          address_n: [(49 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.d_currentInex],
+          script_type: 'SPENDP2SHWITNESS',
+          show_display: false
+        })
+        this.d_currentAddress = result.data.address
+        const len = this.d_currentAddress.length
+        const hideAddress = this.d_currentAddress.slice(0, 4) + new Array(len - 8).fill('#').join('') + this.d_currentAddress.slice(len - 8 + 4)
+        const newAddress = {
+          index: this.d_currentInex++,
+          newAddress: this.d_currentAddress,
+          hideAddress
+        }
+        this.d_addressList.push(newAddress)
+      } catch {
+        this.m_showAlert('获取设备地址错误')
+      }
+    },
+    m_showAlert (content) {
+      this.d_alertShow = true
+      this.d_errorText = content
+      setTimeout(() => {
+        this.d_alertShow = false
+      }, 2000)
     }
   }
 }
@@ -147,7 +218,8 @@ export default {
 
 <style lang="scss" scoped>
 .s-address {
-  text-align: left;
+  width: 300px;
+  text-align: center;
   color: rgba(0, 0, 0, 0.2);
   border-radius: 2px;
   border: 1px dashed rgba(0, 0, 0, 0.2);
@@ -162,7 +234,7 @@ export default {
 .highlight-2 {
   position: relative;
   z-index: 999;
-  left: -270px;
+  left: -290px;
   border-radius: 4px;
   top: -10px;
   background: #000;
