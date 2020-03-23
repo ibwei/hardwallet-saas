@@ -23,7 +23,7 @@
               <v-sheet v-if="item.selected" width="100%" color="grey lighten-3" class="d-flex justify-center pa-2 justify-content-center align-items-sm-center">
                 <v-col cols="1">
                   <div class="d-flex justify-center">
-                    <img src="../../assets/cointype/BTC.png" height="25" width="auto" />
+                    <img :src="require(`../../assets/cointype/${item.briefName}.png`)" height="25" width="auto" />
                   </div>
                 </v-col>
                 <v-col cols="4" justify="left">
@@ -38,7 +38,7 @@
               <v-sheet v-else width="100%" class="d-flex flex-row pa-2 justify-center justify-content-center align-items-center" style="cursor:pointer" @click="m_displaySelect(item.id)">
                 <v-col cols="1">
                   <div class="d-flex justify-center">
-                    <img src="../../assets/cointype/BTC.png" height="25" width="auto" />
+                    <img :src="require(`../../assets/cointype/${item.briefName}.png`)" height="25" width="auto" />
                   </div>
                 </v-col>
                 <v-col cols="4" class="justify-start text-left">
