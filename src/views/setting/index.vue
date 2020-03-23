@@ -48,9 +48,7 @@ export default {
   computed: {
     ...mapState(['usb', 'app', 'cashUnitItems', 'cashUnitIndex']),
     c_isDeviceConnect: vm => vm.$store.__s('usb.connect'),
-    c_firmVersion() {
-      return `${this.usb.majorVersion}.${this.usb.minorVersion}.${this.usb.patchVersion}`
-    }
+    c_firmVersion: vm => `${vm.usb.majorVersion}.${vm.usb.minorVersion}.${vm.usb.patchVersion}`
   },
   methods: {
     async wipeDevice() {
