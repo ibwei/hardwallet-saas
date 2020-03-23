@@ -64,20 +64,17 @@ export default {
   methods: {
     async wipeDevice() {
       const proto = {}
-      const result = await this.$usb.cmd('WipeDevice', proto)
-      console.log('wipeDevice', result)
+      await this.$usb.cmd('WipeDevice', proto)
     },
     async setPin() {
       const proto = {}
-      const result = await this.$usb.cmd('ChangePin', proto)
-      console.log('setPin', result)
+      await this.$usb.cmd('ChangePin', proto)
     },
     async checkSeed() {
       const proto = {
         dry_run: true
       }
-      const result = await this.$usb.cmd('RecoveryDevice', proto)
-      console.log('checkSeed', result)
+      await this.$usb.cmd('RecoveryDevice', proto)
     },
     onClickCash(index) {
       this.$store.__s('cashUnitIndex', index)
