@@ -5,24 +5,15 @@
       <v-card-title>{{ $t('General') }}</v-card-title>
       <v-card-text class="d-flex">
         <v-btn color="primary" @click="$store.__s('dialog.setLabel', true)">{{ $t('Edit Label') }}</v-btn>
-        <v-btn
-          class="ml-5"
-          color="primary"
-          @click="$store.__s('dialog.language', true)"
-        >{{ $t('Change Language') }}</v-btn>
+        <v-btn class="ml-5" color="primary" @click="$store.__s('dialog.language', true)">{{ $t('Change Language') }}</v-btn>
         <v-menu offset-y>
           <template v-slot:activator="{ on }">
             <v-btn color="primary" outlined dark v-on="on" class="ml-5 d-flex justify-center">
-              <v-icon>keyboard_arrow_down</v-icon>
-              <div>{{cashUnitItems[cashUnitIndex]}}</div>
+              <div>{{ cashUnitItems[cashUnitIndex] }}</div>
             </v-btn>
           </template>
           <v-list>
-            <v-list-item
-              v-for="(item, index) in cashUnitItems"
-              :key="index"
-              @click="onClickCash(index)"
-            >
+            <v-list-item v-for="(item, index) in cashUnitItems" :key="index" @click="onClickCash(index)">
               <v-list-item-title>{{ item }}</v-list-item-title>
             </v-list-item>
           </v-list>
@@ -40,8 +31,8 @@
     <v-card min-width="900" class="mt-5">
       <v-card-title>{{ $t('Version') }}</v-card-title>
       <v-card-text class="d-flex">
-        <div>{{ $t('Firmware Version') }}: {{c_firmVersion}}</div>
-        <div class="ml-10">{{ $t('Software Version') }}: {{app.version}}</div>
+        <div>{{ $t('Firmware Version') }}: {{ c_firmVersion }}</div>
+        <div class="ml-10">{{ $t('Software Version') }}: {{ app.version }}</div>
       </v-card-text>
     </v-card>
   </div>
