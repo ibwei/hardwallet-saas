@@ -3,27 +3,46 @@
     <v-sheet color="white" class="pa-2">
       <v-card-title class="headline">
         <template v-if="!d_selectType">
-          <span class="subtitle-2 blue-grey lighten-5 pl-2 pr-2"> <i class="icon pr-3">&#xe666;</i>Choose A Coin Type </span>
+          <span class="subtitle-2 blue-grey lighten-5 pl-2 pr-2">
+            <i class="icon pr-3">&#xe666;</i>
+            {{ $t('Choose A Coin Type') }}
+          </span>
         </template>
         <template v-else>
-          <span class="subtitle-2 blue-grey lighten-5 pl-2 pr-2"> <i class="icon pr-1">&#xe666;</i>Selected: </span>
+          <span class="subtitle-2 blue-grey lighten-5 pl-2 pr-2">
+            <i class="icon pr-1">&#xe666;</i>
+            {{ $t('Selected') }}:
+          </span>
           <span class="green white--text subtitle-2 pl-2 pr-2">{{ d_selectType }}</span>
         </template>
       </v-card-title>
       <v-divider></v-divider>
       <v-row>
         <v-col cols="10" class="offset-1">
-          <v-text-field placeholder="enter keywords to search" @input="m_filterTypeList" hide-details="auto"></v-text-field>
+          <v-text-field
+            :placeholder="$t('Enter Keywords to Search')"
+            @input="m_filterTypeList"
+            hide-details="auto"
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-container id="scroll-target" style="height:400px;" class="overflow-y-auto">
         <v-row align="left" justify="left">
           <template v-for="(item, index) in d_filterTypeList">
             <v-col class="d-flex" justify="center" cols="12" :key="index">
-              <v-sheet v-if="item.selected" width="100%" color="grey lighten-3" class="d-flex justify-center pa-2 justify-content-center align-items-sm-center">
+              <v-sheet
+                v-if="item.selected"
+                width="100%"
+                color="grey lighten-3"
+                class="d-flex justify-center pa-2 justify-content-center align-items-sm-center"
+              >
                 <v-col cols="1">
                   <div class="d-flex justify-center">
-                    <img :src="require(`../../assets/cointype/${item.briefName}.png`)" height="25" width="auto" />
+                    <img
+                      :src="require(`../../assets/cointype/${item.briefName}.png`)"
+                      height="25"
+                      width="auto"
+                    />
                   </div>
                 </v-col>
                 <v-col cols="4" justify="left">
@@ -35,10 +54,20 @@
                   </div>
                 </v-col>
               </v-sheet>
-              <v-sheet v-else width="100%" class="d-flex flex-row pa-2 justify-center justify-content-center align-items-center" style="cursor:pointer" @click="m_displaySelect(item.id)">
+              <v-sheet
+                v-else
+                width="100%"
+                class="d-flex flex-row pa-2 justify-center justify-content-center align-items-center"
+                style="cursor:pointer"
+                @click="m_displaySelect(item.id)"
+              >
                 <v-col cols="1">
                   <div class="d-flex justify-center">
-                    <img :src="require(`../../assets/cointype/${item.briefName}.png`)" height="25" width="auto" />
+                    <img
+                      :src="require(`../../assets/cointype/${item.briefName}.png`)"
+                      height="25"
+                      width="auto"
+                    />
                   </div>
                 </v-col>
                 <v-col cols="4" class="justify-start text-left">
@@ -56,10 +85,13 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="default darken-1" text @click="d_dialog = false">
-          <span class="subtitle-2 blue-grey--text pl-2 pr-2" @click="$store.__s('dialog.chooseType', false)">Cancel</span>
+          <span
+            class="subtitle-2 blue-grey--text pl-2 pr-2"
+            @click="$store.__s('dialog.chooseType', false)"
+          >{{ $t('Cancel') }}</span>
         </v-btn>
         <v-btn color="green darken-1" text @click="d_dialog = false">
-          <span class="subtitle-2 success--text pl-2 pr-2" @click="m_confirm">Confirm</span>
+          <span class="subtitle-2 success--text pl-2 pr-2" @click="m_confirm">{{ $t('Confirm') }}</span>
         </v-btn>
       </v-card-actions>
     </v-sheet>
@@ -184,6 +216,20 @@ export default {
       // console.log(888)
       this.$store.__s('coinType', this.d_selectType)
       this.$store.__s('dialog.chooseType', false)
+    }
+  },
+  i18n: {
+    messages: {
+      zhHans: {
+        Selected: '已选中',
+        'Choose A Coin Type': '代币选择',
+        'Enter Keywords to Search': '搜索关键词'
+      },
+      en: {
+        Selected: 'Selected',
+        'Choose A Coin Type': 'Choose A Coin Type',
+        'Enter Keywords to Search': 'Enter keywords to Search'
+      }
     }
   }
 }

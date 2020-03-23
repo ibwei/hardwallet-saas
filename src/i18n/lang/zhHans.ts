@@ -7,6 +7,8 @@ export default {
       name: '钱包',
       language: 'zh-CN'
     },
-    device: '设备'
+    device: '设备',
+    Cancel: '取消',
+    Confirm: '确认'
   }
 }

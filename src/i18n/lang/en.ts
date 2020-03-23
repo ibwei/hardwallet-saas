@@ -7,6 +7,8 @@ export default {
       name: 'abckey-usb',
       language: 'en-US'
     },
-    device: 'device'
+    device: 'device',
+    Cancel: 'Cancel',
+    Confirm: 'Confirm'
   }
 }
