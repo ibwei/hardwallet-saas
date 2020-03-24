@@ -5,14 +5,14 @@
       <v-card-text>
         <v-row>
           <v-col>
-            <v-text-field v-model="d_label" label="标签" outlined hide-details />
+            <v-text-field v-model="d_label" :label="$t('Label')" outlined hide-details />
           </v-col>
         </v-row>
         <v-row>
           <v-col>
-            <v-btn @click="setLabel()" color="primary" large depressed block>Enter Word</v-btn>
+            <v-btn @click="setLabel()" color="primary" large depressed block>{{ $t('Enter Word') }}</v-btn>
             <br />
-            <v-btn @click="cancel()" color="error" large depressed block>Cancel</v-btn>
+            <v-btn @click="cancel()" color="error" large depressed block>{{ $t('Cancel') }}</v-btn>
           </v-col>
         </v-row>
       </v-card-text>
@@ -55,6 +55,16 @@ export default {
     },
     async cancel() {
       this.$store.__s('dialog.setLabel', false)
+    }
+  },
+  i18n: {
+    messages: {
+      en: {
+        Label: 'Label'
+      },
+      zhHans: {
+        Label: '标签'
+      }
     }
   }
 }

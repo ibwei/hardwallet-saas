@@ -9,6 +9,8 @@ export default {
     },
     device: 'device',
     Cancel: 'Cancel',
-    Confirm: 'Confirm'
+    Confirm: 'Confirm',
+    'Enter Word': 'Enter Word',
+    Failure: 'Failure'
   }
 }

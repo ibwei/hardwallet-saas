@@ -12,23 +12,43 @@
             <div class="table-c action-c">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-icon class="close-icon" v-on="on" :disabled="d_txOut.length <= 1" @click="delTxOut(index)">mdi-close</v-icon>
+                  <v-icon
+                    class="close-icon"
+                    v-on="on"
+                    :disabled="d_txOut.length <= 1"
+                    @click="delTxOut(index)"
+                  >mdi-close</v-icon>
                 </template>
                 <span>{{ $t('Delete') }}</span>
               </v-tooltip>
             </div>
             <div class="table-c address-c subtitle-2">
-              <v-text-field v-model="item.address" :rules="d_addressRules" :label="$t('Address')" :hint="$t('Please input address')">
+              <v-text-field
+                v-model="item.address"
+                :rules="d_addressRules"
+                :label="$t('Address')"
+                :hint="$t('Please input address')"
+              >
                 <v-tooltip top slot="append">
                   <template v-slot:activator="{ on }">
-                    <v-icon v-on="on" color="primary" size="16" @click="paste(item)">mdi-content-paste</v-icon>
+                    <v-icon
+                      v-on="on"
+                      color="primary"
+                      size="16"
+                      @click="paste(item)"
+                    >mdi-content-paste</v-icon>
                   </template>
                   <span class="subtitle-2">{{ $t('Paste') }}</span>
                 </v-tooltip>
               </v-text-field>
             </div>
             <div class="table-c amount-c">
-              <v-text-field v-model="item.amount" :rules="d_amountRules" :label="$t('Amount')" :hint="$t('Please input amount')">
+              <v-text-field
+                v-model="item.amount"
+                :rules="d_amountRules"
+                :label="$t('Amount')"
+                :hint="$t('Please input amount')"
+              >
                 <div slot="append" class="primary--text">BTC</div>
               </v-text-field>
             </div>
@@ -43,15 +63,22 @@
           </v-btn>
         </div>
         <div class="right body-2">
-          <v-chip label class="chip">{{ $t('Amounts') }} 0 BTC</v-chip>
-          <v-chip label class="chip">{{ $t('Fees') }} 0 BTC</v-chip>
-          <v-chip label color="success" class="chip">{{ $t('Total') }} 0 BTC</v-chip>
+          <v-chip label class="chip">{{ $t('Amounts') }} {{ c_totalAmounts }} BTC</v-chip>
+          <v-chip label class="chip">{{ $t('Fees') }} {{ c_totalFees }} BTC</v-chip>
+          <v-chip label color="success" class="chip">{{ $t('Total') }} {{ c_total }} BTC</v-chip>
         </div>
       </div>
       <div class="d-flex flex-row justify-end align-center">
         <v-row>
           <v-col cols="4">
-            <v-combobox v-model="d_fee" :items="d_fees" :label="$t('Fee')" @input="handleFeeInput" :rules="d_feeRule" outlined>
+            <v-combobox
+              v-model="d_fee"
+              :items="d_fees"
+              :label="$t('Fee')"
+              @input="handleFeeInput"
+              :rules="d_feeRule"
+              outlined
+            >
               <div slot="append" class="primary--text">Sat/b</div>
               <template v-slot:item="{ index, item }">
                 <div class="d-flex justify-space-between" style="width: 100%">
@@ -72,6 +99,7 @@
 
 <script>
 import clipboard from 'clipboard-polyfill'
+import { getFullNum } from '@/utils/common'
 export default {
   name: 'Send',
   data() {
@@ -112,6 +140,22 @@ export default {
       ]
     }
   },
+  computed: {
+    c_totalAmounts() {
+      let sum = 0
+      for (const key in this.d_txOut) {
+        sum += Number(this.d_txOut[key].amount)
+      }
+      return sum
+    },
+    c_totalFees() {
+      const _inNum = 0
+      const _outNum = this.d_txOut.length
+      const _result = (_inNum * 148 + _outNum * 34 + 10) * this.d_fee * 0.00000001
+      return getFullNum(_result)
+    },
+    c_total: vm => vm.c_totalAmounts + vm.c_totalFees
+  },
   methods: {
     delTxOut(index) {
       this.d_txOut.splice(index, 1)
@@ -129,7 +173,35 @@ export default {
       this.d_fee = fee.value ? fee.value : fee
     },
     async checkAndSend() {
-      console.log('checkAndSend')
+      const proto = {
+        coin_name: 'Bitcoin',
+        inputs: [
+          {
+            address_n: [2147483697, 2147483650, 2147483648, 0, 0],
+            amount: '1251912615515151598',
+            prev_hash: 'f6ceb5e14b4cb7bd8a2b1922bd2d91596de3be447c806141f225c3d77a0e99eb',
+            prev_index: 0,
+            script_type: 'SPENDP2SHWITNESS',
+            sequence: 4294967295
+          }
+        ],
+        outputs: [
+          {
+            address: '1CXAKbLJW5PZiFRH5nANuDKhaPJ5TKepXD',
+            amount: '12519063',
+            script_type: 'PAYTOADDRESS'
+          },
+          {
+            address_n: [2147483697, 2147483650, 2147483648, 0, 0],
+            amount: '1251',
+            script_type: 'PAYTOADDRESS'
+          }
+        ],
+        version: 1,
+        lock_time: 0
+      }
+      const result = await this.$usb.signTx(proto)
+      console.log(`checkAndSend`, result)
     }
   },
   i18n: {
@@ -154,11 +226,10 @@ export default {
         middle: '中',
         low: '低',
         Amounts: '总额',
-        Fees: '费用',
+        Fees: '手续费',
         Total: '合计',
         Fee: '费率',
-        Review: '核对',
-        Cancel: '取消'
+        Review: '核对'
       },
       en: {
         Address: 'Address',
@@ -183,8 +254,7 @@ export default {
         Fees: 'Fees',
         Total: 'Total',
         Fee: 'Fee',
-        Review: 'Review',
-        Cancel: 'Cancel'
+        Review: 'Review'
       }
     }
   }

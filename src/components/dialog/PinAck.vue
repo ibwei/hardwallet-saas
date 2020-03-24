@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="d_show" max-width="450" persistent scrollable>
     <v-card>
-      <v-card-title class="headline">{{ d_title }}</v-card-title>
+      <v-card-title class="headline">{{ $t(d_title) }}</v-card-title>
       <v-card-text>
         <v-row>
           <v-col>
@@ -63,9 +63,9 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-btn @click="init()" color="error" large depressed block>Cancel</v-btn>
+            <v-btn @click="init()" color="error" large depressed block>{{ $t('Cancel') }}</v-btn>
             <br />
-            <v-btn @click="enterPin()" color="primary" large depressed block>Enter PIN</v-btn>
+            <v-btn @click="enterPin()" color="primary" large depressed block>{{ $t('Enter PIN') }}</v-btn>
           </v-col>
         </v-row>
       </v-card-text>
@@ -117,6 +117,20 @@ export default {
     },
     async init() {
       await this.$usb.cmd('Initialize')
+    }
+  },
+  i18n: {
+    messages: {
+      zhHans: {
+        'Enter a new PIN': '输入一个新PIN码',
+        PIN: '请输入PIN码',
+        'Re-enter PIN': '再次输入PIN码'
+      },
+      en: {
+        'Enter a new PIN': 'Enter a new PIN',
+        PIN: 'PIN',
+        'Re-enter PIN': 'Re-enter PIN'
+      }
     }
   }
 }

@@ -9,6 +9,8 @@ export default {
     },
     device: '设备',
     Cancel: '取消',
-    Confirm: '确认'
+    Confirm: '确认',
+    'Enter Word': '确认输入',
+    Failure: '失败'
   }
 }

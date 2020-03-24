@@ -16,7 +16,11 @@
         <v-divider></v-divider>
         <v-card-actions>
           <div class="flex-grow-1"></div>
-          <v-btn color="warning" @click="$store.__s('dialog.language', false)" text>{{ $t('Close') }}</v-btn>
+          <v-btn
+            color="warning"
+            @click="$store.__s('dialog.language', false)"
+            text
+          >{{ $t('Close') }}</v-btn>
           <v-btn color="primary" @click="saveLanguage()" dark>{{ $t('Save') }}</v-btn>
         </v-card-actions>
       </v-card>
@@ -46,6 +50,16 @@ export default {
   watch: {
     c_show() {
       this.d_language = this.c_language
+    }
+  },
+  i18n: {
+    messages: {
+      zhHans: {
+        Languages: '语言'
+      },
+      en: {
+        Languages: 'Languages'
+      }
     }
   }
 }

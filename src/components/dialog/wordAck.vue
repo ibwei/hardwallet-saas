@@ -5,14 +5,14 @@
       <v-card-text>
         <v-row>
           <v-col>
-            <v-text-field v-model="d_word" label="word" outlined hide-details />
+            <v-text-field v-model="d_word" outlined hide-details />
           </v-col>
         </v-row>
         <v-row>
           <v-col>
-            <v-btn @click="init()" color="error" large depressed block>Cancel</v-btn>
+            <v-btn @click="init()" color="error" large depressed block>{{ $t('Cancel') }}</v-btn>
             <br />
-            <v-btn @click="enterWord()" color="primary" large depressed block>Enter Word</v-btn>
+            <v-btn @click="enterWord()" color="primary" large depressed block>{{ $t('Enter Word') }}</v-btn>
           </v-col>
         </v-row>
       </v-card-text>
