@@ -46,7 +46,7 @@ store.__s = (type, msg) => {
       })
       return _state
     } else {
-      return store.state[type]
+      return _state[type]
     }
   }
   const _path = type.split('.')

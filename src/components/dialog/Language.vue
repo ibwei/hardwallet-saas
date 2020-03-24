@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { loadLanguageAsync } from '@/i18n'
+import I18n from '@/i18n'
 export default {
   data() {
     return {
@@ -44,7 +44,7 @@ export default {
     saveLanguage() {
       this.$store.__s('app.language', this.d_language)
       this.$store.__s('dialog.language', false)
-      loadLanguageAsync(this.d_language)
+      I18n.loadLangAsync(this.d_language)
     }
   },
   watch: {

@@ -1,3 +1,4 @@
 export const StaticConfig = {
-  maxReceiveAddress: 20
+  maxReceiveAddress: 20,
+  brandName: 'ABCKEY'
 }

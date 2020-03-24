@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pa-0" fluid>
+  <v-container class="pa-0 send-wrap" fluid>
     <v-card class="pa-3">
       <div class="table">
         <div class="table-header px-3">
@@ -262,6 +262,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.send-wrap {
+  max-width: 960px;
+  margin: 20px auto;
+}
 .table {
   margin-bottom: 12px;
   .table-header {

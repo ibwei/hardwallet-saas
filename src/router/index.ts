@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
-
+import Wallet from '../views/wallet/Account.vue'
 Vue.use(VueRouter)
 
 const files = require.context('.', true, /\.ts$/)
@@ -14,7 +14,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: '',
-    redirect: '/wallet/account'
+    component: Wallet
   },
   ...modules
 ]

@@ -8,7 +8,6 @@ import Axios from 'axios'
 
 import Store from '@/store'
 import messages from './lang/en'
-import {} from './lang/en'
 
 Vue.use(VueI18n)
 
@@ -55,9 +54,7 @@ class I18n {
   loadLangAsync(lang: string): Promise<string> {
     if (this.locale !== lang) {
       if (!this.langs.includes(lang)) {
-        return import(
-          /* webpackChunkName: "lang-[request]" */ `@/i18n/lang/${lang}`
-        ).then(msgs => {
+        return import(/* webpackChunkName: "lang-[request]" */ `@/i18n/lang/${lang}`).then(msgs => {
           this.i18n.setLocaleMessage(lang, msgs.default[lang])
           this.langs.push(lang)
           return this.setLang(lang)
@@ -69,4 +66,4 @@ class I18n {
   }
 }
 
-export default new I18n().i18n
+export default new I18n()

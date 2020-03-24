@@ -1,7 +1,7 @@
 const vueServe = require('./vue.serve')
 const vueBuild = require('./vue.build')
 
-const IS_DEV = process.env.NODE_ENV === 'production' ? false : true
+const IS_DEV = process.env.NODE_ENV !== 'production'
 
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
     extract: false,
     sourceMap: IS_DEV,
     loaderOptions: {}
-  },  
+  },
   devServer: {
     open: true,
     port: 8888,

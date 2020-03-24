@@ -1,31 +1,59 @@
 <template>
   <div id="app">
     <v-app>
-      <v-content class="blue lighten-5" style="min-height:100vh;">
+      <connect v-if="usb.connect" />
+      <v-content v-else class="blue lighten-5" style="min-height:100vh;">
         <v-container fluid class="pa-0">
           <!-- drawer -->
           <v-navigation-drawer value="true" class="elevation-2" app>
-            <v-row justify="center">
-              <img @click="$store.__s('dialog.chooseType', true)" src="./assets/cointype/BTC.png" class="ma-2 mt-4 coin-type" height="50" width="auto" />
-              <side-navbar :routerList="d_routerList" class="mt-4" />
+            <v-row class="d-flex justify-start  align-center text-left">
+              <v-col cols="4">
+                <img @click="$store.__s('dialog.chooseType', true)" src="./assets/cointype/BTC.png" class="ma-2 mt-4 coin-type" height="50" width="auto" />
+              </v-col>
+              <v-col cols="8" class="pa-0">
+                <div class="d-flex flex-column justify-start align-start text-left">
+                  <div class="d-flex justify-start align-center">
+                    <span class="subtitle-1">BTC</span>
+                    <v-menu>
+                      <template v-slot:activator="{ on }">
+                        <v-btn small color="primary" outlined dark v-on="on" class="ml-5 d-flex justify-center">
+                          <span class="caption">{{ cashUnitItems[cashUnitIndex] }}</span>
+                        </v-btn>
+                      </template>
+                      <v-list>
+                        <v-list-item v-for="(item, index) in cashUnitItems" :key="index" @click="onClickCash(index)">
+                          <v-list-item-title>{{ item }}</v-list-item-title>
+                        </v-list-item>
+                      </v-list>
+                    </v-menu>
+                  </div>
+                  <div class="caption font-weight-medium">
+                    <span>Bitcoin</span>
+                    <span></span>
+                  </div>
+                </div>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-divider />
+            </v-row>
+            <v-row>
+              <side-navbar :routerList="d_routerList" />
             </v-row>
           </v-navigation-drawer>
           <!-- drawer end -->
           <!-- router display -->
-          <div class="d-flex flex-row justify-center align-center  blue lighten-3 shadow">
-            <div class="d-flex flex-row justify-center align-center pa-2 ma-2  blue lighten-5" style="border-radius:20px; width:200px;">
+          <div class="d-flex flex-row justify-end align-center  blue lighten-3 shadow">
+            <div class="d-flex flex-row justify-center align-center pa-2 ma-2 pl-4 pr-4 blue lighten-5" style="border-radius:20px; width:auto;">
               <div class="body-2">{{ c_deviceName }}</div>
               <i class="icon pl-2">&#xe606;</i>
             </div>
           </div>
-          <div class="white ma-auto mt-10 pa-6 elevation-1" style="width:960px;min-height:300px;border-radius:2px;">
-            <router-view />
-          </div>
+          <router-view />
           <!-- router end -->
         </v-container>
       </v-content>
       <dialog-choose-type />
-      <dialog-connect-device />
       <dialog-language />
       <dialog-button-ack />
       <dialog-pin-ack />
@@ -42,10 +70,12 @@ import coinbook from '@/utils/coinbook'
 import { loadLanguageAsync } from '@/i18n/index'
 import SideNavbar from '@/views/components/SideNavBar'
 import { mapState } from 'vuex'
+import Connect from './views/Connect'
 export default {
   name: 'App',
   components: {
-    SideNavbar
+    SideNavbar,
+    Connect
   },
   data() {
     return {
@@ -79,7 +109,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['version', 'app', 'usb']),
+    ...mapState(['version', 'app', 'usb', 'cashUnitItems', 'cashUnitIndex']),
     c_deviceName() {
       return this.usb.connect ? this.usb.product : 'Waiting for connect'
     },
@@ -97,7 +127,6 @@ export default {
     c_coinType: vm => vm.$store.__s('coinType')
   },
   created() {
-    this.initLanguage()
     this.initCoinInfo()
   },
   watch: {
@@ -120,36 +149,13 @@ export default {
     }
   },
   methods: {
-    /**
-     * @method - init the application's language
-     * @return {void}
-     */
-    initLanguage() {
-      const store = JSON.parse(localStorage.getItem('vuex'))
-      if (store?.app?.language) {
-        loadLanguageAsync(store.app.language).then(lang => {
-          console.log(`You have already change language:${lang}`)
-        })
-      }
-    },
-    /**
-     * @method - change the application's language
-     * @return {void}
-     */
-    changeLanguage(type) {
-      loadLanguageAsync(type).then(res => {
-        const html = document.getElementsByTagName('html')[0]
-        if (html) {
-          html.lang = res
-        }
-      })
+    onClickCash(index) {
+      this.$store.__s('cashUnitIndex', index)
     },
     async initDevice() {
       await this.$usb.cmd('Initialize')
       const { data } = await this.$usb.cmd('GetFeatures')
       await this.$usb.cmd('Initialize')
-      console.log('GetFeatures', data)
-      console.log(888888)
       this.$store.__s('usb.majorVersion', data.data.major_version)
       this.$store.__s('usb.minorVersion', data.data.minor_version)
       this.$store.__s('usb.patchVersion', data.data.patch_version)

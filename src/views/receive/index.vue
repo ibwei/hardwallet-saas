@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="receive-wrap">
     <div class="qr" v-show="this.d_selectedId > -1">
       <div id="qrcode"></div>
     </div>
@@ -194,6 +194,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.receive-wrap {
+  width: 960px;
+  margin: 20px auto;
+}
 .s-address {
   width: 300px;
   text-align: center;
