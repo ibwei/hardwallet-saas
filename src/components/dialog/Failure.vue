@@ -1,11 +1,11 @@
 <template>
   <v-dialog v-model="d_show" max-width="450" persistent scrollable>
     <v-card>
-      <v-card-title class="headline">Failure</v-card-title>
-      <v-card-text class="headline">{{ this.d_msg }}</v-card-text>
+      <v-card-title class="headline">{{ $t('Failure') }}</v-card-title>
+      <v-card-text class="headline">{{ $t(this.d_msg) }}</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn @click="d_show = false">Close</v-btn>
+        <v-btn @click="d_show = false">{{ $t('Close') }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -28,6 +28,20 @@ export default {
       }
     }
   },
-  methods: {}
+  methods: {},
+  i18n: {
+    messages: {
+      zhHans: {
+        'Action cancelled by user': '用户取消了此操作',
+        'Wrong word retyped': '多次输入了错误的单词',
+        'PIN mismatch': 'PIN码不匹配'
+      },
+      en: {
+        'Action cancelled by user': 'Action cancelled by user',
+        'Wrong word retyped': 'Wrong word retyped',
+        'PIN mismatch': 'PIN mismatch'
+      }
+    }
+  }
 }
 </script>
