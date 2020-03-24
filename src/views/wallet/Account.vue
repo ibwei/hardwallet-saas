@@ -1,10 +1,6 @@
 <template>
-  <v-container>
-    <wallet-account
-      :name="c_coinInfo.name"
-      :currency="c_cashUnitItems[c_cashUnitIndex]"
-      :xpub="c_xpub"
-    />
+  <v-container class="account-wrap">
+    <wallet-account :name="c_coinInfo.name" :currency="c_cashUnitItems[c_cashUnitIndex]" :xpub="c_xpub" />
   </v-container>
 </template>
 
@@ -15,3 +11,10 @@ export default {
   mixins: [mix_wallet]
 }
 </script>
+
+<style lang="scss" scoped>
+.account-wrap {
+  margin: 20px auto;
+  max-width: 960px;
+}
+</style>

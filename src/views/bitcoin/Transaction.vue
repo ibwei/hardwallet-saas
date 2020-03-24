@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="account-wrap">
     <v-row justify="center">
       <v-col cols="3">
         <div class="">
@@ -36,4 +36,9 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.account-wrap {
+  margin: 20px auto;
+  max-width: 960px;
+}
+</style>

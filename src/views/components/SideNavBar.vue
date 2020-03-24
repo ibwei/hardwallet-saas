@@ -1,27 +1,38 @@
 <template>
   <div class="side-navbar">
-    <div v-for="(item, index) in d_routerList" :key="index" link class="pa-0">
-      <div class="d-flex flex-row justify-start align-center pt-3 pb-3 pl-4" :class="item.id === d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'black--text'" @click="m_menuClick(item.id)">
-        <div class="dot mr-4" :class="item.id === d_selectedId ? '' : 'white'"></div>
-        <i class="icon pr-2" v-html="item.icon"></i>
-        <div class="body-2">{{ $t(item.name) }}</div>
-        <div class="icon text-right flex-grow-1 pr-4">
-          <i class="icon text-right" style="font-size:26px;" :class="item.id === c_currentRootLevel ? '' : 'black--text'" v-if="item.children" v-html="item.id === c_currentRootLevel ? '&#xe625;' : '&#xe664;'"></i>
-        </div>
-      </div>
-      <transition-group name="fade">
-        <template v-if="index == c_currentRootLevel">
-          <div v-for="(child, childId) in d_routerList[index].children" :key="childId" @click="m_menuClick(child.id)" class="d-flex justify-start align-center pt-3 pb-3 pl-6" :class="child.id === d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'black--text'">
-            <div class="dot mr-4" :class="child.id === d_selectedId ? 'blue' : 'white'"></div>
-            <i class="icon pr-3" v-html="child.icon"></i>
-            <div class="body-2">{{ child.name }}</div>
+    <div class="nav-area">
+      <div v-for="(item, index) in d_routerList" :key="index" link class="pa-0">
+        <div class="d-flex flex-row justify-start align-center pt-3 pb-3 pl-4" :class="item.id === d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'black--text'" @click="m_menuClick(item.id)">
+          <div class="dot mr-4" :class="item.id === d_selectedId ? 'blue' : 'white'"></div>
+          <i class="icon pr-2" v-html="item.icon"></i>
+          <div class="body-2">{{ $t(item.name) }}</div>
+          <div class="icon text-right flex-grow-1 pr-4">
+            <i class="icon text-right" style="font-size:26px;" :class="item.id === c_currentRootLevel ? '' : 'black--text'" v-if="item.children" v-html="item.id === c_currentRootLevel ? '&#xe625;' : '&#xe664;'"></i>
           </div>
-        </template>
-      </transition-group>
+        </div>
+        <transition-group name="fade">
+          <template v-if="index == c_currentRootLevel">
+            <div v-for="(child, childId) in d_routerList[index].children" :key="childId" @click="m_menuClick(child.id)" class="d-flex justify-start align-center pt-3 pb-3 pl-6" :class="child.id === d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'black--text'">
+              <div class="dot mr-4" :class="child.id === d_selectedId ? 'blue' : 'white'"></div>
+              <i class="icon pr-3" v-html="child.icon"></i>
+              <div class="body-2">{{ child.name }}</div>
+            </div>
+          </template>
+        </transition-group>
+      </div>
+    </div>
+    <div class="pa-4 pl-0" style="heigth:60px">
+      <v-btn class="ml-5 change-language" color="primary" @click="$store.__s('dialog.language', true)">{{ $t('Change Language') }}</v-btn>
+      <v-divider class="mt-5 pb-3" style="width:100%;" />
+      <div class="d-flex justify-center align-center">
+        <img src="../../assets/logo.png" class="logo-picture" alt="" />
+        <span class="product-name headline-1 pl-4">{{ StaticConfig.brandName }}</span>
+      </div>
     </div>
   </div>
 </template>
 <script>
+import { StaticConfig } from '../../config/index'
 export default {
   name: 'SideNavBar',
   props: {
@@ -34,7 +45,8 @@ export default {
     return {
       d_preSelectedIndex: 0,
       d_routerList: [],
-      d_selectedId: []
+      d_selectedId: [],
+      StaticConfig
     }
   },
   computed: {
@@ -83,13 +95,15 @@ export default {
         Account: '账户',
         Receive: '收款',
         Send: '转账',
-        Setting: '设置'
+        Setting: '设置',
+        'Change Language': '修改语言'
       },
       en: {
         Account: 'Account',
         Receive: 'Receive',
         Send: 'Send',
-        Setting: 'Setting'
+        Setting: 'Setting',
+        'Change Language': 'Change Language'
       }
     }
   }
@@ -100,7 +114,16 @@ export default {
 .side-navbar {
   width: 100%;
   padding: 0;
+  min-height: calc(100vh - 110px);
+  display: flex;
+  flex-flow: column nowrap;
 }
+
+.nav-area {
+  flex: 1;
+  cursor: pointer;
+}
+
 .dot {
   width: 6px;
   height: 6px;
@@ -123,5 +146,13 @@ export default {
 .fade-leave-to {
   transform: translateY(-30px);
   opacity: 0;
+}
+.change-language {
+  height: 60px;
+  bottom: 0;
+}
+.logo-picture {
+  height: 30px;
+  width: auto;
 }
 </style>

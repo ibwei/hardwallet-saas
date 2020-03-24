@@ -1,5 +1,5 @@
 <template>
-  <div class="view">
+  <div class="setting-wrap">
     <!-- {{cashUnitIndex}} -->
     <v-card min-width="900">
       <v-card-title>{{ $t('General') }}</v-card-title>
@@ -101,7 +101,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.view {
+.setting-wrap {
   background: transparent;
+  max-width: 960px;
+  margin: 20px auto;
 }
 </style>
