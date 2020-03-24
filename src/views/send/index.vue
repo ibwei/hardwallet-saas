@@ -63,9 +63,15 @@
           </v-btn>
         </div>
         <div class="right body-2">
+<<<<<<< HEAD
           <v-chip label class="chip">{{ $t('Amounts') }} {{ c_totalAmounts }} BTC</v-chip>
           <v-chip label class="chip">{{ $t('Fees') }} {{ c_totalFees }} BTC</v-chip>
           <v-chip label color="success" class="chip">{{ $t('Total') }} {{ c_total }} BTC</v-chip>
+=======
+          <v-chip label class="chip">{{ $t('Amounts') }} 0 BTC</v-chip>
+          <v-chip label class="chip">{{ $t('Fees') }} 0 BTC</v-chip>
+          <v-chip label color="success" class="chip">{{ $t('Total') }} 0 BTC</v-chip>
+>>>>>>> ed8181da131c514212f1d439b0ebaa5347b55121
         </div>
       </div>
       <div class="d-flex flex-row justify-end align-center">
@@ -105,10 +111,6 @@ export default {
   data() {
     return {
       d_txOut: [
-        {
-          address: '',
-          amount: ''
-        },
         {
           address: '',
           amount: ''
@@ -243,7 +245,7 @@ export default {
         Most: 'Most',
         'Add recipient': 'Add recipient',
         'Check and send': 'Check and send',
-        'Are you sure to delete?': 'Are you sure to delete??',
+        'Are you sure to delete?': 'Are you sure to delete?',
         Yes: 'Yes',
         No: 'No',
         'Invalid address': 'Invalid address',

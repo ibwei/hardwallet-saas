@@ -1,33 +1,17 @@
 <template>
   <div class="side-navbar">
     <div v-for="(item, index) in d_routerList" :key="index" link class="pa-0">
-      <div
-        class="d-flex flex-row justify-start align-center pt-3 pb-3 pl-4"
-        :class="item.id === d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'black--text'"
-        @click="m_menuClick(item.id)"
-      >
+      <div class="d-flex flex-row justify-start align-center pt-3 pb-3 pl-4" :class="item.id === d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'black--text'" @click="m_menuClick(item.id)">
         <div class="dot mr-4" :class="item.id === d_selectedId ? '' : 'white'"></div>
         <i class="icon pr-2" v-html="item.icon"></i>
         <div class="body-2">{{ $t(item.name) }}</div>
         <div class="icon text-right flex-grow-1 pr-4">
-          <i
-            class="icon text-right"
-            style="font-size:26px;"
-            :class="item.id === c_currentRootLevel ? '' : 'black--text'"
-            v-if="item.children"
-            v-html="item.id === c_currentRootLevel ? '&#xe625;' : '&#xe664;'"
-          ></i>
+          <i class="icon text-right" style="font-size:26px;" :class="item.id === c_currentRootLevel ? '' : 'black--text'" v-if="item.children" v-html="item.id === c_currentRootLevel ? '&#xe625;' : '&#xe664;'"></i>
         </div>
       </div>
       <transition-group name="fade">
         <template v-if="index == c_currentRootLevel">
-          <div
-            v-for="(child, childId) in d_routerList[index].children"
-            :key="childId"
-            @click="m_menuClick(child.id)"
-            class="d-flex justify-start align-center pt-3 pb-3 pl-6"
-            :class="child.id === d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'black--text'"
-          >
+          <div v-for="(child, childId) in d_routerList[index].children" :key="childId" @click="m_menuClick(child.id)" class="d-flex justify-start align-center pt-3 pb-3 pl-6" :class="child.id === d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'black--text'">
             <div class="dot mr-4" :class="child.id === d_selectedId ? 'blue' : 'white'"></div>
             <i class="icon pr-3" v-html="child.icon"></i>
             <div class="body-2">{{ child.name }}</div>
