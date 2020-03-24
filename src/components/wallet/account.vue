@@ -9,7 +9,7 @@
           </v-btn>
           <div :class="['mt-1', d_loading.upBalance && 'blur']">
             <span class="title font-weight-bold">{{ btc2str(d_balance) }}</span>
-            <span class="text-uppercase caption">&nbsp;{{ symbol }}</span>
+            <span class="text-uppercase caption">&nbsp;{{ c_symbol }}</span>
           </div>
         </v-col>
         <v-col class="text-center">
@@ -29,7 +29,7 @@
           </v-btn>
           <div :class="['mt-1', d_loading.upRate && 'blur']">
             <span class="title font-weight-bold">{{ cash2str(d_rate) }}</span>
-            <span class="text-uppercase caption">&nbsp;{{ currency }}/{{ symbol }}</span>
+            <span class="text-uppercase caption">&nbsp;{{ currency }}/{{ c_symbol }}</span>
           </div>
         </v-col>
       </v-row>
@@ -48,7 +48,7 @@
                       <template v-slot:activator="{ on }">
                         <span v-on="on" :class="[d_loading.upBalance && 'blur']">
                           <b>{{ btc2str(d_totalReceived) }}</b>
-                          <span class="text-uppercase caption grey--text">&nbsp;{{ symbol }}</span>
+                          <span class="text-uppercase caption grey--text">&nbsp;{{ c_symbol }}</span>
                         </span>
                       </template>
                       <span>
@@ -73,7 +73,7 @@
                       <template v-slot:activator="{ on }">
                         <span v-on="on" :class="[d_loading.upBalance && 'blur']">
                           <b>{{ btc2str(d_unconfirmedBalance) }}</b>
-                          <span class="text-uppercase caption grey--text">&nbsp;{{ symbol }}</span>
+                          <span class="text-uppercase caption grey--text">&nbsp;{{ c_symbol }}</span>
                         </span>
                       </template>
                       <span>
@@ -98,7 +98,7 @@
                       <template v-slot:activator="{ on }">
                         <span v-on="on" :class="[d_loading.upBalance && 'blur']">
                           <b>{{ btc2str(d_totalSent) }}</b>
-                          <span class="text-uppercase caption grey--text">&nbsp;{{ symbol }}</span>
+                          <span class="text-uppercase caption grey--text">&nbsp;{{ c_symbol }}</span>
                         </span>
                       </template>
                       <span>
@@ -154,7 +154,7 @@
                     <v-chip v-on="on" :color="item.valueChanged < 0 ? 'red' : 'green'" small label outlined>
                       <v-icon left size="18">{{ item.valueChanged > 0 ? 'mdi-plus' : 'mdi-minus' }}</v-icon>
                       <span>{{ btc2str(Math.abs(item.valueChanged)) }}</span>
-                      <span class="text-uppercase caption ml-1">{{ symbol }}</span>
+                      <span class="text-uppercase caption ml-1">{{ c_symbol }}</span>
                     </v-chip>
                   </template>
                   <span>
@@ -170,7 +170,7 @@
                     <v-chip v-on="on" small label outlined>
                       <v-icon left color="grey" size="22">mdi-wallet-outline</v-icon>
                       <span>{{ btc2str(item.value) }}</span>
-                      <span class="text-uppercase caption ml-1">{{ symbol }}</span>
+                      <span class="text-uppercase caption ml-1">{{ c_symbol }}</span>
                     </v-chip>
                   </template>
                   <span>
@@ -215,7 +215,7 @@
                       <template v-slot:activator="{ on }">
                         <span v-on="on">
                           <span>{{ btc2str(item.fees) }}</span>
-                          <span class="text-uppercase caption">&nbsp;{{ symbol }}</span>
+                          <span class="text-uppercase caption">&nbsp;{{ c_symbol }}</span>
                         </span>
                       </template>
                       <span>
@@ -249,7 +249,7 @@
                           </template>
                           <span>
                             <b>{{ item.value }}</b>
-                            <span class="text-uppercase caption">&nbsp;{{ symbol }}</span>
+                            <span class="text-uppercase caption">&nbsp;{{ c_symbol }}</span>
                             <span>&nbsp;≈&nbsp;</span>
                             <b>{{ btc2cash(item.value, d_rate) }}</b>
                             <span class="text-uppercase caption">&nbsp;{{ currency }}</span>
@@ -281,7 +281,7 @@
                           </template>
                           <span>
                             <b>{{ item.value }}</b>
-                            <span class="text-uppercase caption">&nbsp;{{ symbol }}</span>
+                            <span class="text-uppercase caption">&nbsp;{{ c_symbol }}</span>
                             <span>&nbsp;≈&nbsp;</span>
                             <b>{{ btc2cash(item.value, d_rate) }}</b>
                             <span class="text-uppercase caption">&nbsp;{{ currency }}</span>
@@ -315,10 +315,10 @@ export default {
       default: 'bitcoin',
       type: String
     },
-    symbol: {
-      default: 'btc',
-      type: String
-    },
+    // symbol: {
+    //   default: 'btc',
+    //   type: String
+    // },
     currency: {
       default: 'usd',
       type: String
@@ -345,7 +345,9 @@ export default {
   }),
   computed: {
     c_isDeviceConnect: vm => vm.$store.__s('usb.connect'),
-    c_xpub: vm => vm.$store.__s('xpub')
+    c_xpub: vm => vm.$store.__s('xpub'),
+    c_coinType: vm => vm.$store.__s('coinType'),
+    c_symbol: vm => vm.$store.__s('coinType')
   },
   watch: {
     ['d_upBalance.page'](val) {
@@ -359,24 +361,27 @@ export default {
     },
     $router() {
       if (this.c_isDeviceConnect) console.log(888)
+    },
+    c_coinType() {
+      this.upAll()
     }
   },
   async created() {
     const path = this.$route.path
     for (;;) {
       if (this.$route.path !== path) break
-      this.upAll()
+      // this.upAll()
       await new Promise(resolve => setTimeout(resolve, 77 * 1000))
     }
   },
   methods: {
     upAll() {
-      // this.upBalance()
-      // this.upRate()
+      this.upBalance()
+      this.upRate()
     },
     async upBalance() {
       this.d_loading.upBalance = true
-      const { data } = await Axios.get(`https://${this.symbol}.abckey.com/xpub/${this.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
+      const { data } = await Axios.get(`https://${this.c_symbol}.abckey.com/xpub/${this.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
       console.log('upBalance: ', data)
       this.d_balance = this.sat2btc(data.balance)
       this.d_totalReceived = this.sat2btc(data.totalReceived)

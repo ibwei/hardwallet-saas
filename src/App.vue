@@ -104,8 +104,13 @@ export default {
     $route() {
       window.document.title = this.$route.meta.title ? this.$route.meta.title : 'abckey-webusb'
     },
+    /**
+     * @method - Hook function - Execute after the device is connected
+     * @return {void}
+     */
     isDeviceConnect(e) {
       if (e === true) {
+        console.log('Device is Connected!')
         this.initDevice()
         this.m_getPublickKey()
       }
@@ -140,11 +145,14 @@ export default {
       })
     },
     async initDevice() {
-      const result = await this.$usb.cmd('Initialize')
-      console.log('Initialize', result)
-      this.$store.__s('usb.majorVersion', result.data.major_version)
-      this.$store.__s('usb.minorVersion', result.data.minor_version)
-      this.$store.__s('usb.patchVersion', result.data.patch_version)
+      await this.$usb.cmd('Initialize')
+      const { data } = await this.$usb.cmd('GetFeatures')
+      await this.$usb.cmd('Initialize')
+      console.log('GetFeatures', data)
+      console.log(888888)
+      this.$store.__s('usb.majorVersion', data.data.major_version)
+      this.$store.__s('usb.minorVersion', data.data.minor_version)
+      this.$store.__s('usb.patchVersion', data.data.patch_version)
     },
     async m_getPublickKey() {
       if (!this.c_addressN) return (this.d_response = 'path error')
