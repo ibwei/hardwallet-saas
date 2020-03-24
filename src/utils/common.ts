@@ -69,11 +69,11 @@ export function appendscript(src, text, reload, charset) {
     if (src) {
       scriptNode.src = src
       scriptNode.onloadDone = false
-      scriptNode.onload = function() {
+      scriptNode.onload = function () {
         scriptNode.onloadDone = true
         JSLOADED[src] = 1
       }
-      scriptNode.onreadystatechange = function() {
+      scriptNode.onreadystatechange = function () {
         if ((scriptNode.readyState == 'loaded' || scriptNode.readyState == 'complete') && !scriptNode.onloadDone) {
           scriptNode.onloadDone = true
           JSLOADED[src] = 1
@@ -83,7 +83,7 @@ export function appendscript(src, text, reload, charset) {
       scriptNode.text = text
     }
     document.getElementsByTagName('head')[0].appendChild(scriptNode)
-  } catch (e) {}
+  } catch (e) { }
 }
 // back to top of window
 export function backTop(btnId) {
@@ -92,10 +92,10 @@ export function backTop(btnId) {
   const b = document.body
   window.onscroll = set
   btn.style.display = 'none'
-  btn.onclick = function() {
+  btn.onclick = function () {
     btn.style.display = 'none'
     window.onscroll = null
-    this.timer = setInterval(function() {
+    this.timer = setInterval(function () {
       d.scrollTop -= Math.ceil((d.scrollTop + b.scrollTop) * 0.1)
       b.scrollTop -= Math.ceil((d.scrollTop + b.scrollTop) * 0.1)
       if (d.scrollTop + b.scrollTop == 0) clearInterval(btn.timer, (window.onscroll = set))
@@ -343,13 +343,13 @@ export function getScreenWidth() {
 export function getScrollXY() {
   return document.body.scrollTop
     ? {
-        x: document.body.scrollLeft,
-        y: document.body.scrollTop
-      }
+      x: document.body.scrollLeft,
+      y: document.body.scrollTop
+    }
     : {
-        x: document.documentElement.scrollLeft,
-        y: document.documentElement.scrollTop
-      }
+      x: document.documentElement.scrollLeft,
+      y: document.documentElement.scrollTop
+    }
 }
 
 // is valid url
@@ -576,7 +576,7 @@ export function openWindow(url, windowName, width, height) {
 
 export const fnParams2Url = obj => {
   const aUrl = []
-  const fnAdd = function(key, value) {
+  const fnAdd = function (key, value) {
     return key + '=' + value
   }
   for (const k in obj) {
@@ -624,7 +624,7 @@ export function setSort() {
 }
 
 export function* sleepGenerator(time) {
-  yield new Promise(function(resolve, reject) {
+  yield new Promise(function (resolve, reject) {
     setTimeout(resolve, time)
   })
 }
@@ -713,4 +713,15 @@ export function utf8_decode(str_data) {
     }
   }
   return tmp_arr.join('')
+}
+
+export function getFullNum(num) {
+  //处理非数字
+  if (isNaN(num)) { return num };
+
+  //处理不需要转换的数字
+  var str = '' + num;
+  if (!/e/i.test(str)) { return num; };
+
+  return (num).toFixed(18).replace(/\.?0+$/, "");
 }
