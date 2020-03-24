@@ -12,43 +12,23 @@
             <div class="table-c action-c">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-icon
-                    class="close-icon"
-                    v-on="on"
-                    :disabled="d_txOut.length <= 1"
-                    @click="delTxOut(index)"
-                  >mdi-close</v-icon>
+                  <v-icon class="close-icon" v-on="on" :disabled="d_txOut.length <= 1" @click="delTxOut(index)">mdi-close</v-icon>
                 </template>
                 <span>{{ $t('Delete') }}</span>
               </v-tooltip>
             </div>
             <div class="table-c address-c subtitle-2">
-              <v-text-field
-                v-model="item.address"
-                :rules="d_addressRules"
-                :label="$t('Address')"
-                :hint="$t('Please input address')"
-              >
+              <v-text-field v-model="item.address" :rules="d_addressRules" :label="$t('Address')" :hint="$t('Please input address')">
                 <v-tooltip top slot="append">
                   <template v-slot:activator="{ on }">
-                    <v-icon
-                      v-on="on"
-                      color="primary"
-                      size="16"
-                      @click="paste(item)"
-                    >mdi-content-paste</v-icon>
+                    <v-icon v-on="on" color="primary" size="16" @click="paste(item)">mdi-content-paste</v-icon>
                   </template>
                   <span class="subtitle-2">{{ $t('Paste') }}</span>
                 </v-tooltip>
               </v-text-field>
             </div>
             <div class="table-c amount-c">
-              <v-text-field
-                v-model="item.amount"
-                :rules="d_amountRules"
-                :label="$t('Amount')"
-                :hint="$t('Please input amount')"
-              >
+              <v-text-field v-model="item.amount" :rules="d_amountRules" :label="$t('Amount')" :hint="$t('Please input amount')">
                 <div slot="append" class="primary--text">BTC</div>
               </v-text-field>
             </div>
@@ -71,14 +51,7 @@
       <div class="d-flex flex-row justify-end align-center">
         <v-row>
           <v-col cols="4">
-            <v-combobox
-              v-model="d_fee"
-              :items="d_fees"
-              :label="$t('Fee')"
-              @input="handleFeeInput"
-              :rules="d_feeRule"
-              outlined
-            >
+            <v-combobox v-model="d_fee" :items="d_fees" :label="$t('Fee')" @input="handleFeeInput" :rules="d_feeRule" outlined>
               <div slot="append" class="primary--text">Sat/b</div>
               <template v-slot:item="{ index, item }">
                 <div class="d-flex justify-space-between" style="width: 100%">
@@ -101,13 +74,9 @@
 import clipboard from 'clipboard-polyfill'
 export default {
   name: 'Send',
-  data () {
+  data() {
     return {
       d_txOut: [
-        {
-          address: '',
-          amount: ''
-        },
         {
           address: '',
           amount: ''
@@ -144,22 +113,22 @@ export default {
     }
   },
   methods: {
-    delTxOut (index) {
+    delTxOut(index) {
       this.d_txOut.splice(index, 1)
     },
-    async paste (item) {
+    async paste(item) {
       item.address = await clipboard.readText()
     },
-    addRecipient () {
+    addRecipient() {
       this.d_txOut.push({
         address: '',
         amount: ''
       })
     },
-    handleFeeInput (fee) {
+    handleFeeInput(fee) {
       this.d_fee = fee.value ? fee.value : fee
     },
-    async checkAndSend () {
+    async checkAndSend() {
       console.log('checkAndSend')
     }
   },
