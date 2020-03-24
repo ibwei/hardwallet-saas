@@ -16,7 +16,6 @@
     "axios": "^0.19.2",
     "bignumber.js": "^9.0.0",
     "clipboard-polyfill": "^2.8.6",
-    "conventional-changelog": "^3.1.18",
     "core-js": "^3.6.4",
     "qrcodejs2": "^0.0.2",
     "roboto-fontface": "*",
@@ -30,6 +29,7 @@
     "vuex-persistedstate": "^2.7.1"
   },
   "devDependencies": {
+    "conventional-changelog": "^3.1.18",
     "@babel/plugin-proposal-optional-chaining": "^7.8.3",
     "@types/webpack-env": "^1.15.1",
     "vuetify-loader": "^1.4.3",
@@ -60,9 +60,7 @@
     "prettier": "^1.19.1",
     "sass": "^1.26.2",
     "typescript": "~3.7.5",
-    "vue-i18n": "^8.15.3",
-    "vue-template-compiler": "^2.6.11",
-    "vuetify": "^2.2.11"
+    "vue-template-compiler": "^2.6.11"
   },
   "config": {
     "commitizen": {
