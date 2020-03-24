@@ -4,24 +4,30 @@
  */
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
-import axios from 'axios'
+import Axios from 'axios'
+
 import Store from '@/store'
 import messages from './lang/en'
 
 Vue.use(VueI18n)
 
-const sysLang = window.navigator.language.split('-').join('')
-const loadedLanguages = ['en']
-
-if (!Store.__s('app.language')) {
-  Store.__s('app.language', sysLang)
-}
+const locale = _initLanguage()
+const loadedLanguages = [locale]
 
 export const i18n = new VueI18n({
-  locale: 'en',
+  locale,
   fallbackLocale: 'en',
   messages
 })
+
+function _initLanguage() {
+  let lang = Store.__s('app.language')
+  if (!lang) {
+    lang = window.navigator.language.split('-').join('')
+    Store.__s('app.language', lang)
+  }
+  return lang
+}
 
 /**
  * @functin _setI18nLanguage - set the app's language
@@ -31,7 +37,7 @@ export const i18n = new VueI18n({
 function _setI18nLanguage(lang: string): string {
   i18n.locale = lang
   i18n.fallbackLocale = lang
-  axios.defaults.headers.common['Accept-Language'] = lang
+  Axios.defaults.headers.common['Accept-Language'] = lang
   Store.__s('app.language', lang)
   return lang
 }
@@ -44,8 +50,9 @@ function _setI18nLanguage(lang: string): string {
 export function loadLanguageAsync(lang: string): Promise<string> {
   if (i18n.locale !== lang) {
     if (!loadedLanguages.includes(lang)) {
-      return import(/* webpackChunkName: "lang-[request]" */ `@/i18n/lang/${lang}`).then(msgs => {
-        // get laguage data and load it
+      return import(
+        /* webpackChunkName: "lang-[request]" */ `@/i18n/lang/${lang}`
+      ).then(msgs => {
         i18n.setLocaleMessage(lang, msgs.default[lang])
         loadedLanguages.push(lang)
         return _setI18nLanguage(lang)
