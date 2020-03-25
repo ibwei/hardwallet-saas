@@ -25,13 +25,9 @@ export default {
   methods: {},
   i18n: {
     messages: {
-      zhHans: {
+      zhCN: {
         ButtonAck: '按键确认',
         'Confirm the action on your device!': '请在设备上确认您的操作！'
-      },
-      en: {
-        ButtonAck: 'ButtonAck',
-        'Confirm the action on your device!': 'Confirm the action on your device!'
       }
     }
   }

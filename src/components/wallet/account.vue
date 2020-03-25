@@ -481,7 +481,7 @@ export default {
   },
   i18n: {
     messages: {
-      zhHans: {
+      zhCN: {
         Balance: '余额',
         Convert: '折合',
         Rate: '汇率',
@@ -504,30 +504,6 @@ export default {
         'Unconfirmed Balance': '未确认余额',
         'Unconfirmed Txs': '未确认交易计数',
         'Transaction details need to be refreshed.': '交易明细有待刷新。'
-      },
-      en: {
-        Balance: 'Balance',
-        Convert: 'Convert',
-        Rate: 'Rate',
-        Received: 'Received',
-        Spent: 'Spent',
-        Hash: 'Hash',
-        Block: 'Block',
-        Confirmations: 'Confirmations',
-        Fees: 'Fees',
-        Input: 'Input',
-        Output: 'Output',
-        Refresh: 'Refresh',
-        'See more': 'See more',
-        'Only the latest 1000 data is displayed.': 'Only the latest 1000 data is displayed.',
-        'Click to copy': 'Click to copy',
-        'Total Received': 'Total Received',
-        'Total Spent': 'Total Spent',
-        'Address Count': 'Address Count',
-        'Transaction Count': 'Transaction Count',
-        'Unconfirmed Balance': 'Unconfirmed Balance',
-        'Unconfirmed Txs': 'Unconfirmed Txs',
-        'Transaction details need to be refreshed.': 'Transaction details need to be refreshed.'
       }
     }
   }

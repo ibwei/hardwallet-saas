@@ -59,10 +59,7 @@ export default {
   },
   i18n: {
     messages: {
-      en: {
-        Label: 'Label'
-      },
-      zhHans: {
+      zhCN: {
         Label: '标签'
       }
     }

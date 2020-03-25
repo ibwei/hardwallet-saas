@@ -182,7 +182,7 @@ export default {
   },
   i18n: {
     messages: {
-      zhHans: {
+      zhCN: {
         'Switch Currencies': '切换货币',
         Safe: '安全',
         Change: '切换'

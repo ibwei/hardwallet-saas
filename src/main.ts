@@ -3,7 +3,7 @@ import Vue from 'vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
-import I18n from './i18n'
+import i18n from './i18n'
 import '@/components'
 
 import './plugins'
@@ -13,7 +13,7 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
-  i18n: I18n.i18n,
+  i18n,
   vuetify,
   store,
   render: h => h(App)

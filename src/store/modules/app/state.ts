@@ -1,5 +1,5 @@
 export default {
-  language: 'en',
+  language: '',
   theme: 'light',
   version: '0.0.1'
 }
