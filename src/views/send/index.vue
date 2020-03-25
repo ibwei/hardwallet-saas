@@ -170,7 +170,7 @@ export default {
       })
     },
     handleFeeInput(fee) {
-      this.d_fee = fee.value ? fee.value : fee
+      this.d_fee = fee.value
     },
     async checkAndSend() {
       const proto = {

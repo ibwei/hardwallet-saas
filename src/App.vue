@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <v-app>
-      <connect v-if="usb.connect" />
+      <connect v-if="!usb.connect" />
       <v-content v-else class="blue lighten-5" style="min-height:100vh;">
         <v-container fluid class="pa-0">
           <!-- drawer -->
@@ -67,7 +67,7 @@
 
 <script>
 import coinbook from '@/utils/coinbook'
-import { loadLanguageAsync } from '@/i18n/index'
+// import { loadLanguageAsync } from '@/i18n/index'
 import SideNavbar from '@/views/components/SideNavBar'
 import { mapState } from 'vuex'
 import Connect from './views/Connect'
