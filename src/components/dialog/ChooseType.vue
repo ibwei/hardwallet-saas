@@ -1,5 +1,5 @@
 <template>
-  <v-dialog justify="center" light overlay-opacity="0.1" v-model="c_show" width="500px" persistent>
+  <v-dialog light overlay-opacity="0.1" v-model="c_show" width="500px" persistent>
     <v-sheet color="white" class="pa-2">
       <v-card-title class="headline">
         <template v-if="!d_selectType">
@@ -27,7 +27,7 @@
         </v-col>
       </v-row>
       <v-container id="scroll-target" style="height:400px;" class="overflow-y-auto">
-        <v-row align="left" justify="left">
+        <v-row>
           <template v-for="(item, index) in d_filterTypeList">
             <v-col class="d-flex" justify="center" cols="12" :key="index">
               <v-sheet
@@ -99,9 +99,10 @@
 </template>
 
 <script>
+import coinbook from '@/utils/coinbook'
 export default {
   name: 'chooseType',
-  data() {
+  data () {
     return {
       d_preSelectedIndex: 0,
       d_selectType: '',
@@ -178,7 +179,7 @@ export default {
   computed: {
     c_show: vm => vm.$store.__s('dialog.chooseType')
   },
-  created() {
+  created () {
     this.d_coinTypeList.forEach((item, index) => {
       item.id = index
       item.seleted = false
@@ -192,7 +193,7 @@ export default {
      * @param {number} index - this unique id of the selected type  when user choose
      * @return void
      */
-    m_displaySelect(index) {
+    m_displaySelect (index) {
       const seletedType = this.d_filterTypeList[index]
       this.d_filterTypeList.splice(this.d_preSelectedIndex, 1, { ...this.d_filterTypeList[this.d_preSelectedIndex], selected: false })
       this.d_filterTypeList.splice(index, 1, { ...this.d_filterTypeList[index], selected: true })
@@ -204,7 +205,7 @@ export default {
      * @method filterTypeList - when you input a keywords of coin type,the coinTypeList will be filter
      * @param {string} keywords - the keywords by user input
      */
-    m_filterTypeList(keywords) {
+    m_filterTypeList (keywords) {
       const key = keywords.toLowerCase()
       this.d_filterTypeList = this.d_coinTypeList.filter(item => {
         const name = item.name.toLowerCase()
@@ -212,9 +213,10 @@ export default {
         return name.includes(key) || briefName.includes(key)
       })
     },
-    m_confirm() {
-      // console.log(888)
+    m_confirm () {
       this.$store.__s('coinType', this.d_selectType)
+      const coinName = this.d_selectType.toLowerCase()
+      this.$store.__s('coinInfo', coinbook[coinName])
       this.$store.__s('dialog.chooseType', false)
     }
   },

@@ -4,7 +4,7 @@ const files = require.context('.', true, /\.ts$/)
 const modules = {}
 
 files.keys().forEach(key => {
-  if (key === './index.js') return
+  if (key === './index.ts') return
   const path = key.replace(/(\.\/|\.ts)/g, '')
   const [namespace, imported] = path.split('/')
   if (!modules[namespace]) {
