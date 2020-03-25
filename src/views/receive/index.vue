@@ -60,7 +60,7 @@
             <v-btn
               small
               class="blue lighten-1 white--text d-flex mt-4"
-              style="width:100px;"
+              style="width:auto;max-width:180px;"
               @click="m_getAddr"
             >
               <i class="icon" style="font-size:20px;">&#xe612;</i>
