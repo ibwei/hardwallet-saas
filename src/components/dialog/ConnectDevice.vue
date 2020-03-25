@@ -44,13 +44,9 @@ export default {
   },
   i18n: {
     messages: {
-      zhHans: {
+      zhCN: {
         'Waiting for device to connect': '等待设备连接中',
         'Check For Device': '检查设备'
-      },
-      en: {
-        'Waiting for device to connect': 'Waiting for device to connect',
-        'Check For Device': 'Check For Device'
       }
     }
   }

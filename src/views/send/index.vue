@@ -206,7 +206,7 @@ export default {
   },
   i18n: {
     messages: {
-      zhHans: {
+      zhCN: {
         Address: '接收地址',
         Amount: '发送金额',
         Delete: '删除',
@@ -230,31 +230,6 @@ export default {
         Total: '合计',
         Fee: '费率',
         Review: '核对'
-      },
-      en: {
-        Address: 'Address',
-        Amount: 'Amount',
-        Delete: 'Delete',
-        Paste: 'Paste',
-        Most: 'Most',
-        'Add recipient': 'Add recipient',
-        'Check and send': 'Check and send',
-        'Are you sure to delete?': 'Are you sure to delete?',
-        Yes: 'Yes',
-        No: 'No',
-        'Invalid address': 'Invalid address',
-        'Invalid amount': 'Invalid amount',
-        'Invalid fee': 'Invalid fee',
-        'Please input address': 'Please input address',
-        'Please input amount': 'Please input amount',
-        high: 'high',
-        middle: 'middle',
-        low: 'low',
-        Amounts: 'Amounts',
-        Fees: 'Fees',
-        Total: 'Total',
-        Fee: 'Fee',
-        Review: 'Review'
       }
     }
   }

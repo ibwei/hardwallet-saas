@@ -121,15 +121,10 @@ export default {
   },
   i18n: {
     messages: {
-      zhHans: {
+      zhCN: {
         'Enter a new PIN': '输入一个新PIN码',
         PIN: '请输入PIN码',
         'Re-enter PIN': '再次输入PIN码'
-      },
-      en: {
-        'Enter a new PIN': 'Enter a new PIN',
-        PIN: 'PIN',
-        'Re-enter PIN': 'Re-enter PIN'
       }
     }
   }

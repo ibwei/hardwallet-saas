@@ -31,15 +31,10 @@ export default {
   methods: {},
   i18n: {
     messages: {
-      zhHans: {
+      zhCN: {
         'Action cancelled by user': '用户取消了此操作',
         'Wrong word retyped': '多次输入了错误的单词',
         'PIN mismatch': 'PIN码不匹配'
-      },
-      en: {
-        'Action cancelled by user': 'Action cancelled by user',
-        'Wrong word retyped': 'Wrong word retyped',
-        'PIN mismatch': 'PIN mismatch'
       }
     }
   }

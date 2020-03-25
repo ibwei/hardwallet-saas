@@ -1,5 +1,5 @@
 export default {
-  zhHans: {
+  zhCN: {
     Close: '关闭',
     Save: '保存',
     home: {},

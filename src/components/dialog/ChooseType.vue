@@ -220,15 +220,10 @@ export default {
   },
   i18n: {
     messages: {
-      zhHans: {
+      zhCN: {
         Selected: '已选中',
         'Choose A Coin Type': '代币选择',
         'Enter Keywords to Search': '搜索关键词'
-      },
-      en: {
-        Selected: 'Selected',
-        'Choose A Coin Type': 'Choose A Coin Type',
-        'Enter Keywords to Search': 'Enter keywords to Search'
       }
     }
   }

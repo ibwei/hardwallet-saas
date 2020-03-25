@@ -71,7 +71,7 @@ export default {
   },
   i18n: {
     messages: {
-      zhHans: {
+      zhCN: {
         General: '常规',
         Safe: '安全',
         Version: '版本信息',
@@ -82,18 +82,6 @@ export default {
         'Wipe Device': '擦除设备',
         'Firmware Version': '固件版本号',
         'Software Version': '软件版本号'
-      },
-      en: {
-        General: 'General',
-        Safe: 'Safe',
-        Version: 'Version Info',
-        'Edit Label': 'Edit Label',
-        'Change Language': 'Change Language',
-        'Modify PIN': 'Modify PIN',
-        'Verification Mnemonics': 'Verification Mnemonics',
-        'Wipe Device': 'Wipe Device',
-        'Firmware Version': 'Firmware Version',
-        'Software Version': 'Software Version'
       }
     }
   }
