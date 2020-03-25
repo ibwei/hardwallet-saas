@@ -86,7 +86,7 @@ export default {
       en: {
         General: 'General',
         Safe: 'Safe',
-        Version: '版本信息',
+        Version: 'Version Info',
         'Edit Label': 'Edit Label',
         'Change Language': 'Change Language',
         'Modify PIN': 'Modify PIN',

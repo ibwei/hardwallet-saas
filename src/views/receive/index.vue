@@ -7,8 +7,8 @@
     <v-overlay v-model="d_overlay"></v-overlay>
     <v-card>
       <v-tabs v-model="d_tab" class="pa-6 pb-3">
-        <v-tab>新地址</v-tab>
-        <v-tab>旧地址</v-tab>
+        <v-tab>{{ $t('New Address') }}</v-tab>
+        <v-tab>{{ $t('Old Address') }}</v-tab>
       </v-tabs>
       <v-tabs-items v-model="d_tab">
         <v-tab-item>
@@ -17,8 +17,8 @@
               <template v-slot:default>
                 <thead>
                   <tr>
-                    <th class="text-left">索引</th>
-                    <th class="text-left">地址</th>
+                    <th class="text-left">{{ $t('Index') }}</th>
+                    <th class="text-left">{{ $t('Address') }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -31,7 +31,7 @@
                       </span>
                     </td>
                     <div v-if="d_selectedId === index">
-                      <span class="pa-1 caption highlight-2">请在设备上核对地址</span>
+                      <span class="pa-1 caption highlight-2">{{ $t('Please check the address in your device') }}</span>
                     </div>
                   </tr>
                 </tbody>
@@ -39,7 +39,7 @@
             </v-simple-table>
             <v-btn small class="blue lighten-1 white--text d-flex mt-4" style="width:100px;" @click="m_getAddr">
               <i class="icon" style="font-size:20px;">&#xe612;</i>
-              <span>更多地址</span>
+              <span>{{ $t('More Address') }}</span>
             </v-btn>
           </v-card>
         </v-tab-item>
@@ -49,9 +49,9 @@
               <template v-slot:default>
                 <thead>
                   <tr>
-                    <th class="text-left">索引</th>
-                    <th class="text-left">地址</th>
-                    <th class="text-left">累计接受</th>
+                    <th class="text-left">{{ $t('Index') }}</th>
+                    <th class="text-left">{{ $t('Address') }}</th>
+                    <th class="text-left">{{ $t('Total Receive') }}</th>
                   </tr>
                 </thead>
                 <tbody v-if="d_receiveList.length">
@@ -64,7 +64,7 @@
                 </tbody>
               </template>
             </v-simple-table>
-            <div v-if="!d_receiveList.length" class="d-flex justify-center align-center body-2 mt-4 grey--text">No Record</div>
+            <div v-if="!d_receiveList.length" class="d-flex justify-center align-center body-2 mt-4 grey--text">{{ $t('No Record') }}</div>
           </v-card>
         </v-tab-item>
       </v-tabs-items>
@@ -188,6 +188,30 @@ export default {
       setTimeout(() => {
         this.d_alertShow = false
       }, 2000)
+    }
+  },
+  i18n: {
+    messages: {
+      zhHans: {
+        'New Address': '新地址',
+        'Old Address': '旧地址',
+        Index: '索引',
+        Address: '地址',
+        'More Address': '更多地址',
+        'Total Receive': '累积接收',
+        'No Record': '暂无记录',
+        'Please check the address in your device': '请在设备上核对地址'
+      },
+      en: {
+        'New Address': 'New Address',
+        'Old Address': 'Old Address',
+        Index: 'Index',
+        Address: 'Address',
+        'More Address': 'More Address',
+        'Total Receive': 'Total Receive',
+        'No Record': 'No Record',
+        'Please check the address in your device': 'Please check the address in your device'
+      }
     }
   }
 }
