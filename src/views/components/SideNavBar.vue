@@ -110,19 +110,12 @@ export default {
   },
   i18n: {
     messages: {
-      zhHans: {
+      zhCN: {
         Account: '账户',
         Receive: '收款',
         Send: '转账',
         Setting: '设置',
         'Change Language': '修改语言'
-      },
-      en: {
-        Account: 'Account',
-        Receive: 'Receive',
-        Send: 'Send',
-        Setting: 'Setting',
-        'Change Language': 'Change Language'
       }
     }
   }

@@ -219,7 +219,7 @@ export default {
   },
   i18n: {
     messages: {
-      zhHans: {
+      zhCN: {
         'New Address': '新地址',
         'Old Address': '旧地址',
         Index: '索引',
@@ -228,16 +228,6 @@ export default {
         'Total Receive': '累积接收',
         'No Record': '暂无记录',
         'Please check the address in your device': '请在设备上核对地址'
-      },
-      en: {
-        'New Address': 'New Address',
-        'Old Address': 'Old Address',
-        Index: 'Index',
-        Address: 'Address',
-        'More Address': 'More Address',
-        'Total Receive': 'Total Receive',
-        'No Record': 'No Record',
-        'Please check the address in your device': 'Please check the address in your device'
       }
     }
   }
