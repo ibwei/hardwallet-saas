@@ -17,22 +17,6 @@ export function HtmlEncode(text) {
     .replace(/</g, '<')
     .replace(/>/g, '>')
 }
-// @param {Array.<DOMString>} templateData
-// @param {...} ..vals tokens
-export function SaferHTML(templateData) {
-  let s = templateData[0]
-  for (let i = 1; i < arguments.length; i++) {
-    const arg = String(arguments[i])
-    // Escape special characters in the substitution.
-    s += arg
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-    // Don't escape special characters in the template.
-    s += templateData[i]
-  }
-  return s
-}
 
 // add bookmark
 export function addFavorite(sURL, sTitle) {
@@ -69,11 +53,11 @@ export function appendscript(src, text, reload, charset) {
     if (src) {
       scriptNode.src = src
       scriptNode.onloadDone = false
-      scriptNode.onload = function () {
+      scriptNode.onload = function() {
         scriptNode.onloadDone = true
         JSLOADED[src] = 1
       }
-      scriptNode.onreadystatechange = function () {
+      scriptNode.onreadystatechange = function() {
         if ((scriptNode.readyState == 'loaded' || scriptNode.readyState == 'complete') && !scriptNode.onloadDone) {
           scriptNode.onloadDone = true
           JSLOADED[src] = 1
@@ -92,10 +76,10 @@ export function backTop(btnId) {
   const b = document.body
   window.onscroll = set
   btn.style.display = 'none'
-  btn.onclick = function () {
+  btn.onclick = function() {
     btn.style.display = 'none'
     window.onscroll = null
-    this.timer = setInterval(function () {
+    this.timer = setInterval(function() {
       d.scrollTop -= Math.ceil((d.scrollTop + b.scrollTop) * 0.1)
       b.scrollTop -= Math.ceil((d.scrollTop + b.scrollTop) * 0.1)
       if (d.scrollTop + b.scrollTop == 0) clearInterval(btn.timer, (window.onscroll = set))
@@ -576,7 +560,7 @@ export function openWindow(url, windowName, width, height) {
 
 export const fnParams2Url = obj => {
   const aUrl = []
-  const fnAdd = function (key, value) {
+  const fnAdd = function(key, value) {
     return key + '=' + value
   }
   for (const k in obj) {
@@ -624,7 +608,7 @@ export function setSort() {
 }
 
 export function* sleepGenerator(time) {
-  yield new Promise(function (resolve, reject) {
+  yield new Promise(function(resolve, reject) {
     setTimeout(resolve, time)
   })
 }

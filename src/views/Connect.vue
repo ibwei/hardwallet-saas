@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column justify-center  text-center align-center" style="height:100vh;">
+  <div class="d-flex flex-column justify-center text-center align-center" style="height:100vh;">
     <div style="transform:translateY(-50%)">
       <div>
         <v-icon size="100" color="info">mdi-usb</v-icon>
@@ -16,15 +16,15 @@
 <script>
 import { mapState } from 'vuex'
 export default {
-  name: 'StepB',
-  data() {
+  name: 'Connect',
+  data () {
     return {}
   },
   computed: {
     ...mapState(['usb']),
     c_connect: vm => vm.$store.__s('usb.connect')
   },
-  created() {
+  created () {
     if (this.usb.connect) {
       this.$router.push('/wallet/account')
     }
@@ -34,7 +34,7 @@ export default {
      * @method  connect - usbdevice
      * @return void
      */
-    async m_connect() {
+    async m_connect () {
       await this.$usb.add(res => {
         console.log('you have already choose device')
         this.$usb.syncVuex(res)
@@ -42,7 +42,7 @@ export default {
     }
   },
   watch: {
-    c_connect(newV) {
+    c_connect (newV) {
       if (newV) {
         this.$router.push('/wallet/account')
       } else {
