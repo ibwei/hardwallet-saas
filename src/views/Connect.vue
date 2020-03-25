@@ -40,15 +40,6 @@ export default {
         this.$usb.syncVuex(res)
       })
     }
-  },
-  watch: {
-    c_connect (newV) {
-      if (newV) {
-        this.$router.push('/wallet/account')
-      } else {
-        this.$router.push('/')
-      }
-    }
   }
 }
 </script>

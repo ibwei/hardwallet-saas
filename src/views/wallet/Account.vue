@@ -5,10 +5,21 @@
 </template>
 
 <script>
-import mix_wallet from '@/mixins/Wallet'
+import MixWallet from '@/mixins/wallet'
+import MixUsb from '@/mixins/usb'
+import { mapState } from 'vuex'
+
 export default {
   name: 'Account',
-  mixins: [mix_wallet]
+  mixins: [MixWallet, MixUsb],
+  created() {
+    if (!this.usb.xpub) {
+      this.m_getPublickKey()
+    }
+  },
+  computed: {
+    ...mapState(['usb'])
+  }
 }
 </script>
 

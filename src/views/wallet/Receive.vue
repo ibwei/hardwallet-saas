@@ -10,9 +10,9 @@
 </template>
 
 <script>
-import mix_wallet from '@/mixins/Wallet'
+import MixWallet from '@/mixins/wallet'
 export default {
   name: 'Receive',
-  mixins: [mix_wallet]
+  mixins: [MixWallet]
 }
 </script>

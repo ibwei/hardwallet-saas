@@ -101,7 +101,7 @@
 <script>
 import coinbook from '@/utils/coinbook'
 export default {
-  name: 'chooseType',
+  name: 'DialogChooseType',
   data () {
     return {
       d_preSelectedIndex: 0,
