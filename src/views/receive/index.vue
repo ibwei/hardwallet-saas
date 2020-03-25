@@ -99,9 +99,6 @@ export default {
     ...mapState(['usb'])
   },
   created() {
-    if (!this.usb.xpub) {
-      this.m_getPublickKey()
-    }
     this.m_getUsedTokens()
   },
   methods: {

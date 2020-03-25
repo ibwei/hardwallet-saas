@@ -46,7 +46,7 @@
         <div style="heigth:60px">
           <v-btn class="ml-5 change-language" color="primary" @click="$store.__s('dialog.language', true)">{{ $t('Change Language') }}</v-btn>
           <v-divider class="mt-5 pb-3" style="width:100%;" />
-          <div class="d-flex justify-center align-center pb-4">
+          <div class="d-flex justify-center align-center pt-3 pb-4">
             <img src="../../assets/logo.png" class="logo-picture" alt />
             <span class="product-name headline-1 pl-4">{{ this.d_brandName }}</span>
           </div>

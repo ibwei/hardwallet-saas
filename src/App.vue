@@ -2,6 +2,7 @@
   <div id="app">
     <v-app>
       <connect v-if="!usb.connect" />
+      <load-data v-else-if="!usb.xpub" />
       <v-content v-else class="blue lighten-5" style="min-height:100vh;">
         <v-container fluid class="pa-0">
           <side-navbar />
@@ -26,12 +27,14 @@ import SideNavbar from '@/views/components/SideNavBar'
 import { mapState } from 'vuex'
 import Connect from './views/Connect'
 import TopBar from '@/views/components/TopBar'
+import LoadData from '@/views/LoadData'
 export default {
   name: 'App',
   components: {
     SideNavbar,
     Connect,
-    TopBar
+    TopBar,
+    LoadData
   },
   data() {
     return {}
@@ -42,13 +45,6 @@ export default {
   watch: {
     $route() {
       window.document.title = this.$route.meta.title ? this.$route.meta.title : 'abckey-webusb'
-    },
-    isDeviceConnect(e) {
-      if (e === true) {
-        this.$router.push('/wallet/account')
-      } else {
-        this.$router.push('/')
-      }
     }
   }
 }
