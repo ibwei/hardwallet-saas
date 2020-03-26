@@ -5,14 +5,14 @@
       <v-card-text>
         <v-row>
           <v-col>
-            <v-text-field v-model="d_passphrase" :type="d_eye ? 'text' : 'password'" label="Passphrase" :append-icon="d_eye ? 'mdi-eye' : 'mdi-eye-off'" @click:append="d_eye = !d_eye" outlined hide-details />
+            <v-text-field v-model="d_passphrase" :type="d_eye ? 'text' : 'password'" :label="$t('Passphrase')" :append-icon="d_eye ? 'mdi-eye' : 'mdi-eye-off'" @click:append="d_eye = !d_eye" outlined hide-details />
           </v-col>
         </v-row>
         <v-row>
           <v-col>
-            <v-btn @click="init()" color="error" large depressed block>Cancel</v-btn>
+            <v-btn @click="init()" color="error" large depressed block>{{ $t('Cancel') }}</v-btn>
             <br />
-            <v-btn @click="enterPass()" color="primary" large depressed block>Enter Passphrase</v-btn>
+            <v-btn @click="enterPass()" color="primary" large depressed block>{{ $t('Enter Passphrase') }}</v-btn>
           </v-col>
         </v-row>
       </v-card-text>

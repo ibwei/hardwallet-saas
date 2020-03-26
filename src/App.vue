@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <v-app>
-      <connect v-if="usb.connect" />
+      <connect v-if="!c_isDeviceConnect" />
       <v-content v-else class="blue lighten-4" style="min-height:100vh;">
         <v-container fluid class="pa-0">
           <!-- drawer -->
@@ -112,14 +112,9 @@ export default {
   },
   computed: {
     ...mapState(['version', 'app', 'usb', 'cashUnitItems', 'cashUnitIndex', 'coinInfo']),
-    c_coinPicture () {
-      const pictureName = this.c_coinType.toUpperCase()
-      return require(`./assets/cointype/${pictureName}.png`)
-    },
-    c_deviceName () {
-      return this.usb.connect ? this.usb.product : 'Waiting for connect'
-    },
-    isDeviceConnect: vm => vm.usb.connect,
+    c_coinPicture: vm => require(`./assets/cointype/${vm.c_coinType.toUpperCase()}.png`),
+    c_deviceName: vm => vm.usb.connect ? vm.usb.product : 'Waiting for connect',
+    c_isDeviceConnect: vm => vm.usb.connect,
     c_addressN () {
       const address_n = []
       const path = this.d_path.match(/\/[0-9]+('|H)?/g)
@@ -138,12 +133,13 @@ export default {
   watch: {
     $route () {
       window.document.title = this.$route.meta.title ? this.$route.meta.title : 'abckey-webusb'
+      // this.initDevice()
     },
     /**
      * @method - Hook function - Execute after the device is connected
      * @return {void}
      */
-    isDeviceConnect (e) {
+    c_isDeviceConnect (e) {
       if (e === true) {
         console.log('Device is Connected!')
         this.initDevice()

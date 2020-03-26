@@ -12,5 +12,7 @@ export default {
   firmwarePresent: false,
   model: '',
   msg: null,
-  xpub: ''
+  xpub: '',
+  label: '',
+  passphraseProtection: false
 }
