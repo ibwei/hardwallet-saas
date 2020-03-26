@@ -18,7 +18,6 @@ export default {
   async created() {
     await this.m_getPublickKey()
     this.$router.push({ path: '/wallet/account' })
-    await this.$usb.cmd('Initialize')
   }
 }
 </script>
