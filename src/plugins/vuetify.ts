@@ -2,12 +2,44 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify/lib'
 
-import zhHans from 'vuetify/es5/locale/zh-Hans'
-import en from 'vuetify/es5/locale/en'
-import ko from 'vuetify/es5/locale/ko'
-import zhHant from 'vuetify/es5/locale/zh-Hant'
-import ja from 'vuetify/es5/locale/ja'
 import '@/styles/theme.scss'
+import Store from '@/store'
+
+/**
+ * the vuetify-i18n language list
+ * see more :  https://vuetifyjs.com/en/customization/internationalization/
+ */
+const localList = ['zhHans', 'en', 'ko', 'zhHant', 'ja']
+
+const files = require.context('vuetify/lib/locale/', true, /\.js$/)
+const locales: Array<any> = []
+files.keys().forEach(key => {
+  const languageName = key
+    .replace('./', '')
+    .replace('.js', '')
+    .replace('-', '')
+  if (localList.includes(languageName)) {
+    locales.push({ [languageName]: files(key).default })
+  }
+})
+
+const current = Store.__s('app.language')
+console.log(current)
+
+interface TranslateItem {
+  [key: string]: string
+}
+
+/**
+ *  Keep I18n and vuetify iternational be consistent
+ */
+export const TranslateTable: TranslateItem = {
+  enUS: 'en',
+  zhCN: 'zhHans',
+  zhTW: 'zhHant',
+  ja: 'ja',
+  ko: 'ko'
+}
 
 const preset: any = {
   breakpoint: {
@@ -24,8 +56,8 @@ const preset: any = {
     values: {}
   },
   lang: {
-    locales: { zhHans, en, zhHant, ko, ja },
-    current: 'zhHans',
+    locales,
+    current,
     t: undefined as any
   },
   rtl: false,

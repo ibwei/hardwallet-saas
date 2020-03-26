@@ -26,7 +26,7 @@
 
 <script>
 import { setLang } from '@/i18n'
-import { TranslateTable } from '../../i18n/translateTable'
+import { TranslateTable } from '../../plugins/vuetify'
 
 export default {
   data: () => ({
@@ -51,7 +51,6 @@ export default {
   methods: {
     lang() {
       setLang(this.d_language)
-      console.log(this.d_language)
       this.setVuetifyLang(TranslateTable[this.d_language])
       this.c_show = false
     },
