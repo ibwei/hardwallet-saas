@@ -400,7 +400,7 @@ export default {
     for (; ;) {
       if (this.$route.path !== path) break
       // this.upAll()
-      await new Promise(resolve => setTimeout(resolve, 77 * 1000))
+      await new Promise(resolve => setTimeout(resolve, 60 * 1000))
     }
   },
   methods: {

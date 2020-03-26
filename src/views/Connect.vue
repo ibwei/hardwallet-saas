@@ -14,14 +14,12 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 export default {
   name: 'Connect',
   data() {
     return {}
   },
   computed: {
-    ...mapState(['usb']),
     c_connect: vm => vm.$store.__s('usb.connect')
   },
   methods: {
