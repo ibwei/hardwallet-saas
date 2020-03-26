@@ -22,7 +22,21 @@ const routes: Array<RouteConfig> = [
 const router: any = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes
+  routes,
+  linkActiveClass: 'active',
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) return savedPosition
+    return { x: 0, y: 0 }
+  }
+})
+
+router.beforeEach((to, from, next) => {
+  if (to === from) return
+  next()
+})
+
+router.afterEach(() => {
+  window.scrollTo(0, 0)
 })
 
 export default router

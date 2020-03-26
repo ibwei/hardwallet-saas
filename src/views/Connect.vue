@@ -17,37 +17,23 @@
 import { mapState } from 'vuex'
 export default {
   name: 'Connect',
-  data () {
+  data() {
     return {}
   },
   computed: {
     ...mapState(['usb']),
     c_connect: vm => vm.$store.__s('usb.connect')
   },
-  created () {
-    if (this.usb.connect) {
-      this.$router.push('/wallet/account')
-    }
-  },
   methods: {
     /**
      * @method  connect - usbdevice
      * @return void
      */
-    async m_connect () {
+    async m_connect() {
       await this.$usb.add(res => {
         console.log('you have already choose device')
         this.$usb.syncVuex(res)
       })
-    }
-  },
-  watch: {
-    c_connect (newV) {
-      if (newV) {
-        this.$router.push('/wallet/account')
-      } else {
-        this.$router.push('/')
-      }
     }
   }
 }

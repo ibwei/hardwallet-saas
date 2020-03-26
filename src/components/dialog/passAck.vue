@@ -10,7 +10,7 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-btn @click="init()" color="error" large depressed block>{{ $t('Cancel') }}</v-btn>
+            <v-btn color="error" large depressed block>Cancel</v-btn>
             <br />
             <v-btn @click="enterPass()" color="primary" large depressed block>{{ $t('Enter Passphrase') }}</v-btn>
           </v-col>
@@ -38,7 +38,6 @@ export default {
   watch: {
     async c_msg(msg) {
       if (msg.type === 'PassphraseRequest') this.d_show = true
-      else this.d_show = false
       this.d_loading = false
       this.d_pin = ''
     }
@@ -46,10 +45,8 @@ export default {
   methods: {
     async enterPass() {
       this.d_loading = true
+      this.d_show = false
       await this.$usb.cmd('PassphraseAck', { passphrase: this.d_passphrase })
-    },
-    async init() {
-      await this.$usb.cmd('Initialize')
     }
   }
 }

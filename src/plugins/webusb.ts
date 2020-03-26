@@ -29,24 +29,16 @@ webusb.onAdd(e => {
 /**
  * @method onConnect - device has reconnected
  */
-webusb.onConnect(e => {
+/* webusb.onConnect(e => {
   console.log('You have already connect devices', e)
   webusb.syncVuex(e)
-})
+}) */
 
 /**
  * @method onErr - device has something wrong
  */
 webusb.onErr(e => {
   console.log('something wrong with usb device', e)
-  webusb.syncVuex()
-})
-
-/**
- * @method onErr - device has something wrong
- */
-webusb.onDisconnect(e => {
-  console.log('Usb device disconnect', e)
   webusb.syncVuex()
 })
 
@@ -63,15 +55,7 @@ webusb.onMsg(e => {
     Store.__s('usb.label', e.data.label)
     Store.__s('usb.passphraseProtection', e.data.passphrase_protection)
   }
-  if (e.type === 'PublicKey') Store.__s('xpub', e.data.xpub)
+  if (e.type === 'PublicKey') Store.__s('usb.xpub', e.data.xpub)
 })
-
-// const newCmd = async (type, proto) => {
-//   if (type !== 'Initialize') {
-//     await webusb.cmd('Initialize')
-//   }
-//   console.log(`${type} is running`)
-//   return webusb.cmd(type, proto)
-// }
 
 Vue.prototype.$usb = webusb
