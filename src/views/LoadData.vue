@@ -15,15 +15,10 @@ import UsbMixin from '@/mixins/usb'
 export default {
   name: 'LoadData',
   mixins: [UsbMixin],
-  data() {
-    return {}
-  },
   async created() {
     await this.m_getPublickKey()
-    console.log('---------------------')
     this.$router.push({ path: '/wallet/account' })
+    await this.$usb.cmd('Initialize')
   }
 }
 </script>
-
-<style lang="scss" scoped></style>
