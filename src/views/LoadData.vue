@@ -13,14 +13,9 @@ import UsbMixin from '@/mixins/usb'
 export default {
   name: 'LoadData',
   mixins: [UsbMixin],
-  data () {
-    return {}
-  },
-  async created () {
+  async created() {
     await this.m_getPublickKey()
     this.$router.push({ path: '/wallet/account' })
   }
 }
 </script>
-
-<style lang="scss" scoped></style>
