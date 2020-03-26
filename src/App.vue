@@ -9,7 +9,6 @@
           <top-bar />
           <loading v-show="pageLoading" />
           <router-view />
-          <v-time-picker></v-time-picker>
         </v-container>
       </v-content>
       <dialog-choose-type />
