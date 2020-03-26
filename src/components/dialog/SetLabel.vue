@@ -5,7 +5,14 @@
       <v-card-text>
         <v-row>
           <v-col>
-            <v-text-field v-model="d_label" :label="$t('Label')" outlined hide-details />
+            <v-text-field
+              v-model="d_label"
+              :label="$t('Label')"
+              outlined
+              hide-details
+              @keyup.enter.native="setLabel()"
+              autofocus
+            />
           </v-col>
         </v-row>
         <v-row>

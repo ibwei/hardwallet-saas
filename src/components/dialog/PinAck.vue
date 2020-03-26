@@ -4,9 +4,12 @@
       <v-card-title class="headline">{{ $t(d_title) }}</v-card-title>
       <v-card-text>
         <v-row>
-          <v-col>
-            <v-btn @click="deletePin()" outlined block>
-              <v-icon v-for="n in d_pin.length" :key="n">mdi-lock</v-icon>
+          <v-col class="d-flex">
+            <v-sheet color="grey lighten-2" min-height="30" width="500" class="psw-sheet">
+              <v-icon v-for="n in d_pin.length" :key="n" color="black">mdi-lock</v-icon>
+            </v-sheet>
+            <v-btn class="al float-left" @click.stop="deletePin()" color="error" icon>
+              <v-icon>mdi-backspace</v-icon>
             </v-btn>
           </v-col>
         </v-row>
@@ -118,6 +121,7 @@ export default {
     },
     async init() {
       await this.$usb.cmd('Initialize')
+      this.d_show = false
     }
   },
   i18n: {
@@ -131,3 +135,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.psw-sheet {
+  line-height: 36px;
+}
+</style>
