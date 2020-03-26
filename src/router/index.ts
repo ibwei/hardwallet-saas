@@ -31,7 +31,7 @@ const router: any = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to === from) return
+  if (to.path === from.path) return
   next()
 })
 

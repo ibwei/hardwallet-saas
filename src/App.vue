@@ -9,6 +9,7 @@
           <top-bar />
           <loading v-show="pageLoading" />
           <router-view />
+          <v-time-picker></v-time-picker>
         </v-container>
       </v-content>
       <dialog-choose-type />
@@ -40,14 +41,14 @@ export default {
     LoadData,
     Loading
   },
-  data () {
+  data() {
     return {}
   },
   computed: {
     ...mapState(['usb', 'pageLoading'])
   },
   watch: {
-    $route () {
+    $route() {
       window.document.title = this.$route.meta.title ? this.$route.meta.title : 'abckey-webusb'
     }
   }

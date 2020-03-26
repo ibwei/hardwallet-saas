@@ -3,6 +3,10 @@ import Vue from 'vue'
 import Vuetify from 'vuetify/lib'
 
 import zhHans from 'vuetify/es5/locale/zh-Hans'
+import en from 'vuetify/es5/locale/en'
+import ko from 'vuetify/es5/locale/ko'
+import zhHant from 'vuetify/es5/locale/zh-Hant'
+import ja from 'vuetify/es5/locale/ja'
 import '@/styles/theme.scss'
 
 const preset: any = {
@@ -20,7 +24,7 @@ const preset: any = {
     values: {}
   },
   lang: {
-    locales: { zhHans },
+    locales: { zhHans, en, zhHant, ko, ja },
     current: 'zhHans',
     t: undefined as any
   },
