@@ -4,5 +4,6 @@ export default {
   coinInfo: null,
   cashUnitItems: ['CNY', 'USD'],
   cashUnitIndex: 0,
-  pageLoading: false
+  pageLoading: false,
+  cashUnit: ''
 }

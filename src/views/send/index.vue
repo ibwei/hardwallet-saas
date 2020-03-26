@@ -72,17 +72,17 @@
         <v-row>
           <v-col cols="4">
             <v-combobox
-              v-model="d_fee"
+              :value="d_fee"
               :items="d_fees"
               :label="$t('Fee')"
-              @input="handleFeeInput"
+              @input="handleFeeInput($event)"
               :rules="d_feeRule"
               outlined
             >
               <div slot="append" class="primary--text">Sat/b</div>
               <template v-slot:item="{ index, item }">
                 <div class="d-flex justify-space-between" style="width: 100%">
-                  <span>{{ item.label }}:</span>
+                  <span>{{ item.text }}:</span>
                   <span>{{ item.value }} Sat/b</span>
                 </div>
               </template>
@@ -100,6 +100,7 @@
 <script>
 import clipboard from 'clipboard-polyfill'
 import { getFullNum } from '@/utils/common'
+import UnitHelper from '@abckey/unit-helper'
 export default {
   name: 'Send',
   data() {
@@ -126,15 +127,15 @@ export default {
       d_fee: '15',
       d_fees: [
         {
-          label: this.$t('high'),
+          text: this.$t('high'),
           value: '19'
         },
         {
-          label: this.$t('middle'),
+          text: this.$t('middle'),
           value: '15'
         },
         {
-          label: this.$t('low'),
+          text: this.$t('low'),
           value: '1'
         }
       ]
@@ -170,9 +171,22 @@ export default {
       })
     },
     handleFeeInput(fee) {
+      console.log(fee)
       this.d_fee = fee.value
     },
     async checkAndSend() {
+      // const map1 = this.d_txOut.map(x => {
+      //   address: x.address,
+      //   amount: UnitHelper(x.amount, 'btc_sat').toString()
+      // });
+      const outputs = this.d_txOut.map(function(item) {
+        return {
+          address: item.address,
+          amount: UnitHelper(item.amount, 'btc_sat').toString(),
+          script_type: 'PAYTOADDRESS'
+        }
+      })
+      console.log('Out', outputs)
       const proto = {
         coin_name: 'Bitcoin',
         inputs: [
@@ -231,6 +245,11 @@ export default {
         Fee: '费率',
         Review: '核对'
       }
+    }
+  },
+  watch: {
+    d_fee(e) {
+      console.log(e)
     }
   }
 }

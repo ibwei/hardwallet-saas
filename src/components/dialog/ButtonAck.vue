@@ -14,7 +14,6 @@ export default {
   }),
   computed: {
     c_msg: vm => vm.$store.__s('usb.msg')
-    // c_show: vm => vm.$store.__s('dialog.buttonAck')
   },
   watch: {
     c_msg(msg) {
