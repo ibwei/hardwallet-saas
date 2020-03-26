@@ -63,9 +63,10 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-btn @click="init()" color="error" large depressed block>{{ $t('Cancel') }}</v-btn>
-            <br />
+            <div class="flex-grow-1"></div>
             <v-btn @click="enterPin()" color="primary" large depressed block>{{ $t('Enter PIN') }}</v-btn>
+            <br />
+            <v-btn @click="init()" color="error" large depressed block>{{ $t('Cancel') }}</v-btn>
           </v-col>
         </v-row>
       </v-card-text>

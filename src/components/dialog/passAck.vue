@@ -10,9 +10,9 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-btn color="error" large depressed block>Cancel</v-btn>
-            <br />
             <v-btn @click="enterPass()" color="primary" large depressed block>{{ $t('Enter Passphrase') }}</v-btn>
+            <br />
+            <v-btn color="error" large depressed block>{{ $t('Cancel') }}</v-btn>
           </v-col>
         </v-row>
       </v-card-text>

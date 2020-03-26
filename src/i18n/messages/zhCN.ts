@@ -14,6 +14,6 @@ export default {
     Passphrase: '密码短语',
     'Enter Passphrase': '请输入密码短语',
     'Enter Word': '确认输入',
-    'Enter PIN': '确认 PIN 码'
+    'Enter PIN': '确认PIN码'
   }
 }
