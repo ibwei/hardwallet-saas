@@ -30,6 +30,7 @@ import Connect from '@/views/Connect'
 import TopBar from '@/views/components/TopBar'
 import Loading from '@/views/components/Loading'
 import LoadData from '@/views/LoadData'
+import coinbook from '@/utils/coinbook'
 
 export default {
   name: 'App',
@@ -45,6 +46,10 @@ export default {
   },
   computed: {
     ...mapState(['usb', 'pageLoading'])
+  },
+  created() {
+    this.$store.__s('coinType', 'btc')
+    this.$store.__s('coinInfo', coinbook.btc)
   },
   watch: {
     $route() {
