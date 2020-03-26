@@ -1,13 +1,13 @@
 <template>
   <div id="app">
     <v-app>
-      <connect v-if="!usb.connect" />
-      <load-data v-else-if="!usb.xpub" />
+      <connect v-if="!c_usb.connect" />
+      <load-data v-else-if="!c_usb.xpub" />
       <v-content v-else class="blue lighten-5" style="min-height:100vh;">
         <v-container fluid class="pa-0">
           <side-navbar />
           <top-bar />
-          <loading v-show="pageLoading" />
+          <loading v-show="c_pageLoading" />
           <router-view />
         </v-container>
       </v-content>
@@ -24,9 +24,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import SideNavbar from '@/views/components/SideNavBar'
-import Connect from '@/views/Connect'
+import Connect from './views/Connect'
 import TopBar from '@/views/components/TopBar'
 import Loading from '@/views/components/Loading'
 import LoadData from '@/views/LoadData'
@@ -40,11 +39,9 @@ export default {
     LoadData,
     Loading
   },
-  data () {
-    return {}
-  },
   computed: {
-    ...mapState(['usb', 'pageLoading'])
+    c_usb: vm => vm.$store.__s('usb'),
+    c_pageLoading: vm => vm.$store.__s('pageLoading')
   },
   watch: {
     $route () {
@@ -53,4 +50,3 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped></style>

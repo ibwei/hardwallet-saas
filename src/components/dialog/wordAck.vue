@@ -5,7 +5,13 @@
       <v-card-text>
         <v-row>
           <v-col>
-            <v-text-field v-model="d_word" outlined hide-details />
+            <v-text-field
+              v-model="d_word"
+              outlined
+              hide-details
+              @keyup.enter.native="enterWord()"
+              autofocus
+            />
           </v-col>
         </v-row>
         <v-row>
@@ -32,7 +38,6 @@ export default {
   }),
   computed: {
     c_msg: vm => vm.$store.__s('usb.msg')
-    // c_show: vm => vm.$store.__s('dialog.wordAck')
   },
   watch: {
     async c_msg(msg) {
@@ -50,7 +55,7 @@ export default {
     },
     async init() {
       this.$store.__s('dialog.wordAck', false)
-      // await this.$usb.cmd('Initialize')
+      await this.$usb.cmd('Initialize')
     }
   }
 }
