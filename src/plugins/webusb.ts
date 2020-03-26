@@ -48,9 +48,14 @@ webusb.onErr(e => {
 webusb.onMsg(e => {
   console.log('onMsg', e)
   Store.__s('usb.msg', JSON.parse(JSON.stringify(e)))
-  if (e.type === 'PublicKey') {
-    Store.__s('usb.xpub', e.data.xpub)
+  if (e.type === 'Features') {
+    Store.__s('usb.majorVersion', e.data.major_version)
+    Store.__s('usb.minorVersion', e.data.minor_version)
+    Store.__s('usb.patchVersion', e.data.patch_version)
+    Store.__s('usb.label', e.data.label)
+    Store.__s('usb.passphraseProtection', e.data.passphrase_protection)
   }
+  if (e.type === 'PublicKey') Store.__s('usb.xpub', e.data.xpub)
 })
 
 Vue.prototype.$usb = webusb
