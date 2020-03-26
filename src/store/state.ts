@@ -3,5 +3,5 @@ export default {
   coinType: 'btc',
   coinInfo: null,
   cashUnitItems: ['CNY', 'USD'],
-  cashUnit: ''
+  cashUnit: 'CNY'
 }
