@@ -2,9 +2,7 @@
   <v-container class="fill-height">
     <v-layout class="d-flex justify-center align-center text-center">
       <div>
-        <v-progress-circular indeterminate size="188" color="primary">
-          {{ $t('Loading ABCKEY') }}
-        </v-progress-circular>
+        <v-progress-circular indeterminate size="188" color="primary">{{ $t('Loading ABCKEY') }}</v-progress-circular>
       </div>
     </v-layout>
   </v-container>

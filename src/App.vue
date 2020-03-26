@@ -7,6 +7,7 @@
         <v-container fluid class="pa-0">
           <side-navbar />
           <top-bar />
+          <loading v-show="c_pageLoading" />
           <router-view />
         </v-container>
       </v-content>
@@ -26,20 +27,24 @@
 import SideNavbar from '@/views/components/SideNavBar'
 import Connect from './views/Connect'
 import TopBar from '@/views/components/TopBar'
+import Loading from '@/views/components/Loading'
 import LoadData from '@/views/LoadData'
+
 export default {
   name: 'App',
   components: {
     SideNavbar,
     Connect,
     TopBar,
-    LoadData
+    LoadData,
+    Loading
   },
   computed: {
-    c_usb: vm => vm.$store.__s('usb')
+    c_usb: vm => vm.$store.__s('usb'),
+    c_pageLoading: vm => vm.$store.__s('pageLoading')
   },
   watch: {
-    $route() {
+    $route () {
       window.document.title = this.$route.meta.title ? this.$route.meta.title : 'abckey-webusb'
     }
   }
