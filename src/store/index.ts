@@ -37,7 +37,7 @@ store.__s = (type, msg) => {
   let _state = store.state
   if (!type) return store.state
   if (type.indexOf('.') === -1) {
-    if (msg) {
+    if (msg !== undefined) {
       store.commit({
         type: '__set',
         key: type,

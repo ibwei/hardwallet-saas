@@ -21,13 +21,6 @@ export default {
     }
   },
   methods: {
-    /* async initDevice() {
-      await this.$usb.cmd('Initialize')
-      const { data } = await this.$usb.cmd('GetFeatures')
-      this.$store.__s('usb.majorVersion', data.major_version)
-      this.$store.__s('usb.minorVersion', data.minor_version)
-      this.$store.__s('usb.patchVersion', data.patch_version)
-    }, */
     async m_getPublickKey() {
       if (!this.c_addressN) return (this.d_response = 'path error')
       const proto = {

@@ -2,9 +2,7 @@
   <v-container class="fill-height">
     <v-layout class="d-flex justify-center align-center text-center">
       <div>
-        <v-progress-circular indeterminate size="188" color="primary">
-          {{ $t('Loading ABCKEY') }}
-        </v-progress-circular>
+        <v-progress-circular indeterminate size="188" color="primary">{{ $t('Loading ABCKEY') }}</v-progress-circular>
       </div>
     </v-layout>
   </v-container>
@@ -15,12 +13,11 @@ import UsbMixin from '@/mixins/usb'
 export default {
   name: 'LoadData',
   mixins: [UsbMixin],
-  data() {
+  data () {
     return {}
   },
-  async created() {
+  async created () {
     await this.m_getPublickKey()
-    console.log('---------------------')
     this.$router.push({ path: '/wallet/account' })
   }
 }

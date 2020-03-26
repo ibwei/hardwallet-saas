@@ -3,5 +3,6 @@ export default {
   coinType: 'btc',
   coinInfo: null,
   cashUnitItems: ['CNY', 'USD'],
-  cashUnitIndex: 0
+  cashUnitIndex: 0,
+  pageLoading: false
 }
