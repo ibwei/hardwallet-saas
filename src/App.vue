@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <router-view />
     <v-app>
       <connect v-if="!c_usb.connect" />
       <first-guide v-else-if="!c_usb.initialized" />
@@ -46,7 +45,7 @@ export default {
   },
   computed: {
     c_usb: vm => vm.$store.__s('usb'),
-    c_pageLoading: vm => vm.$stor.__s('pageLoading'),
+    c_pageLoading: vm => vm.$store.__s('pageLoading'),
     c_isConnect: vm => vm.$store.__s('usb.connect')
   },
   async created() {

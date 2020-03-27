@@ -14,10 +14,8 @@ export default {
   name: 'LoadData',
   mixins: [UsbMixin],
   async created() {
-    if (this.$store.__s('initialized')) {
-      await this.m_getPublickKey()
-      if (this.$route.path !== '/wallet/account') this.$router.push({ path: '/wallet/account' })
-    }
+    await this.m_getPublickKey()
+    if (this.$route.path !== '/wallet/account') this.$router.push({ path: '/wallet/account' })
   }
 }
 </script>
