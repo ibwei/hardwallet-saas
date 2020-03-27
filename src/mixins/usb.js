@@ -56,6 +56,7 @@ export default {
         enforce_wordlist: false
       }
       await this.$usb.cmd('RecoveryDevice', proto)
+      this.$router.push({ path: '/wallet/account' })
     }
   }
 }
