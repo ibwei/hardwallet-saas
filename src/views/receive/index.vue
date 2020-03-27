@@ -2,7 +2,7 @@
   <div class="receive-wrap">
     <div class="qr" v-show="this.d_selectedId > -1">
       <div id="qrcode"></div>
-      <div class="">{{ `${this.c_protocol}` }}</div>
+      <div class="">{{ `/${this.c_protocol}'/${this.c_coinInfo.slip44}'/0'/0'/${this.d_selectedId}` }}</div>
     </div>
     <v-snackbar v-model="d_alertShow" top>{{ d_errorText }}</v-snackbar>
     <v-overlay v-model="d_overlay"></v-overlay>
