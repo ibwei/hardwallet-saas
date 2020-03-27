@@ -379,36 +379,28 @@ export default {
     c_symbol: vm => vm.$store.__s('coinType')
   },
   watch: {
-    ['d_upBalance.page'] (val) {
+    ['d_upBalance.page'](val) {
       this.upBalance(val)
     },
-    c_isDeviceConnect (e) {
+    c_isDeviceConnect(e) {
       if (e) this.upRate()
     },
-    xpub (e) {
+    xpub(e) {
       if (e) this.upBalance()
     },
-    $router () {
+    $router() {
       if (this.c_isDeviceConnect) console.log(888)
     },
-    c_coinType () {
+    c_coinType() {
       this.upAll()
     }
   },
-  async created () {
-    const path = this.$route.path
-    for (; ;) {
-      if (this.$route.path !== path) break
-      // this.upAll()
-      await new Promise(resolve => setTimeout(resolve, 60 * 1000))
-    }
-  },
   methods: {
-    upAll () {
+    upAll() {
       this.upBalance()
       this.upRate()
     },
-    async upBalance () {
+    async upBalance() {
       this.d_loading.upBalance = true
       const { data } = await Axios.get(`https://${this.c_symbol}.abckey.com/xpub/${this.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
       console.log('upBalance: ', data)
@@ -422,7 +414,7 @@ export default {
       this.d_loading.upBalance = false
       // this._fixTxs(data.transactions, data.tokens)
     },
-    async upRate () {
+    async upRate() {
       this.d_loading.upRate = true
       const { data } = await Axios.get(`https://api.coingecko.com/api/v3/simple/price?ids=${this.name}&vs_currencies=${this.currency}&t=${new Date().getTime()}`)
       console.log('upRate: ', data)
@@ -451,7 +443,7 @@ export default {
         .toJSON()
         .substr(0, 19)
         .replace('T', ' '),
-    _fixTxs (txs, tokens) {
+    _fixTxs(txs, tokens) {
       for (let i = 0; i < txs.length; i++) {
         const oldValue = i + 1 === txs.length ? 0 : txs[i + 1].value
         txs[i].valueChanged = this.sat2btc(txs[i].value - oldValue)
@@ -468,7 +460,7 @@ export default {
       }
       this.d_txs = txs
     },
-    _isOwnAddr (addr, tokens) {
+    _isOwnAddr(addr, tokens) {
       let result = false
       for (let i = 0; i < tokens.length; i++) {
         if (addr === tokens[i].name) {
@@ -477,6 +469,14 @@ export default {
         }
       }
       return result
+    }
+  },
+  async created() {
+    const path = this.$route.path
+    for (;;) {
+      if (this.$route.path !== path) break
+      this.upAll()
+      await new Promise(resolve => setTimeout(resolve, 60 * 1000))
     }
   },
   i18n: {
