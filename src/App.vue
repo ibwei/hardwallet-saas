@@ -2,7 +2,7 @@
   <div id="app">
     <v-app>
       <connect v-if="!c_usb.connect" />
-      <load-data v-else-if="!c_usb.xpub && this.$store.__s('initialized')" />
+      <load-data v-else-if="!c_usb.xpub && c_usb.initialized" />
       <first-guide v-else-if="!c_usb.initialized" />
       <v-content v-else class="blue lighten-5" style="min-height:100vh;">
         <v-container fluid class="pa-0">

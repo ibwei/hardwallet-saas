@@ -14,5 +14,6 @@ export default {
   msg: null,
   xpub: '',
   label: '',
-  passphraseProtection: false
+  passphraseProtection: false,
+  initialized: false
 }

@@ -26,7 +26,7 @@
               </v-card-text>
               <v-divider />
               <v-card-actions class="d-flex justify-end">
-                <v-btn color="success">创建钱包</v-btn>
+                <v-btn color="success" @click="m_resetDevice()">创建钱包</v-btn>
               </v-card-actions>
             </v-card>
           </div>
@@ -45,7 +45,6 @@
               </v-card-actions>
             </v-card>
           </div>
-
         </div>
       </v-container>
     </v-content>
@@ -55,6 +54,17 @@
 <script>
 import MixUsb from '@/mixins/usb'
 export default {
-  mixins: [MixUsb]
+  mixins: [MixUsb],
+  computed: {
+    c_msg: vm => vm.$store.__s('usb.msg')
+  },
+  watch: {
+    c_msg(msg) {
+      if (msg.data.message === 'Device successfully initialized') {
+        this.$router.push({ path: '/wallet/account' })
+        this.$store.__s('usb.initialized', true)
+      }
+    }
+  }
 }
 </script>
