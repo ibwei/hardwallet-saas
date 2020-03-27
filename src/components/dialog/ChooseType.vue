@@ -195,6 +195,11 @@ export default {
       this.$store.__s('coinType', this.d_selectType)
       const coinName = this.d_selectType.toLowerCase()
       this.$store.__s('coinInfo', coinbook[coinName])
+      if (Reflect.has(coinbook[coinName], '49')) {
+        this.$store.__s('coinProtocol', 49)
+      } else {
+        this.$store.__s('coinProtocol', 44)
+      }
       this.$store.__s('dialog.chooseType', false)
       this.$store.__s('usb.xpub', '')
     }

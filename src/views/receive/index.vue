@@ -2,6 +2,7 @@
   <div class="receive-wrap">
     <div class="qr" v-show="this.d_selectedId > -1">
       <div id="qrcode"></div>
+      <div class="">{{ `${this.c_protocol}` }}</div>
     </div>
     <v-snackbar v-model="d_alertShow" top>{{ d_errorText }}</v-snackbar>
     <v-overlay v-model="d_overlay"></v-overlay>
@@ -58,7 +59,10 @@
                   <tr v-for="(address, index) in d_receiveList" :key="index">
                     <td class="text-left">{{ index }}</td>
                     <td class="text-left d-flex flex-row justify-start align-center">
-                      <span class="s-address body-2 pl-2 pr-2">{{ address }}</span>
+                      <span class="old-address body-2 pl-2 pr-2">{{ address.name }}</span>
+                    </td>
+                    <td class="text-left">
+                      <span class="old-address body-2 pl-2 pr-2">{{ receiveCoin(address.totalReceived) }}</span>
                     </td>
                   </tr>
                 </tbody>
@@ -73,6 +77,8 @@
 </template>
 
 <script>
+import UnitHelper from '@abckey/unit-helper'
+import Axios from 'axios'
 import QRCode from 'qrcodejs2'
 import { mapState } from 'vuex'
 import { getMousePos } from '@/utils/common'
@@ -110,6 +116,9 @@ export default {
     this.getUsedTokens()
   },
   methods: {
+    receiveCoin(coin) {
+      return UnitHelper(coin, `sat_${this.c_coinInfo.symbol}`).toString()
+    },
     clickAddress(index, e) {
       if (this.d_overlay) {
       } else {
@@ -159,9 +168,10 @@ export default {
     },
     async getUsedTokens() {
       this.$store.__s('pageLoading', true)
-      /* const result = await Axios.get(`https://btc.abckey.com/xpub/${this.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
-      this.d_currentInex = result.usedTokens ? result.usedTokens : '0' */
-      this.d_currentAddress = 85
+      const result = await Axios.get(`https://api.abckey.com/${this.coinInfo.symbol}/xpub/${this.usb.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
+      this.d_receiveList = result.data.tokens ? result.data.tokens : []
+      this.d_currentInex = result.data.usedTokens ? result.data.usedTokens : '0'
+      this.d_currentAddress = this.d_currentInex
       this.getAddr()
       this.$store.__s('pageLoading', false)
     },
@@ -173,7 +183,7 @@ export default {
       }
       try {
         const result = await this.$usb.getAddr({
-          address_n: [(49 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.d_currentInex],
+          address_n: [(this.c_protocol | 0x80000000) >>> 0, (this.coinInfo.slip44 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.d_currentInex],
           script_type: 'SPENDP2SHWITNESS',
           show_display: false
         })
@@ -229,6 +239,9 @@ export default {
   color: rgba(0, 0, 0, 0.2);
   border-radius: 2px;
   border: 1px dashed rgba(0, 0, 0, 0.2);
+}
+.old-address {
+  color: rgba(0, 0, 0, 0.6);
 }
 .highlight {
   position: relative;
