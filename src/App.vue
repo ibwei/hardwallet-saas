@@ -48,8 +48,8 @@ export default {
     c_pageLoading: vm => vm.$store.__s('pageLoading')
   },
   created() {
-    this.$store.__s('coinType', 'btc')
-    this.$store.__s('coinInfo', coinbook.btc)
+    const coinType = this.$store.__s('coinType').toLowerCase()
+    this.$store.__s('coinInfo', coinbook[coinType])
   },
   watch: {
     $route() {

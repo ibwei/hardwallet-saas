@@ -3,7 +3,7 @@ export default {
   data() {
     return {
       d_addressList: ['3323kpuDSksfSWOMQSKsfkj'],
-      d_scriptType: 'SPENDP2SHWITNESS',
+      d_scriptType: '',
       d_showDisplay: false
     }
   },
@@ -22,7 +22,7 @@ export default {
     c_path() {
       try {
         const coinIndex = this.coinInfo.slip44
-        return `m/${this.c_purpose}'/${coinIndex}'/0'/0/0`
+        return `m/${this.c_purpose}'/${coinIndex}'/0'`
       } catch (error) {
         console.log('get coin type is error!', error)
         this.$router.push({ path: '/' })
@@ -30,8 +30,10 @@ export default {
     },
     c_purpose() {
       if (Reflect.has(this.coinInfo.bip, '49')) {
+        this.d_scriptType = 'SPENDP2SHWITNESS'
         return 49
       } else {
+        this.d_scriptType = 'SPENDADDRESS'
         return 44
       }
     }
@@ -40,10 +42,12 @@ export default {
     async m_getPublickKey() {
       if (!this.c_addressN) return (this.d_response = 'path error')
       const proto = {
+        coin_name: this.coinInfo.name,
         address_n: this.c_addressN,
         script_type: this.d_scriptType,
         show_display: this.d_showDisplay
       }
+      console.log(proto)
       await this.$usb.cmd('GetPublicKey', proto, true)
     },
     async m_recoveryDevice() {
