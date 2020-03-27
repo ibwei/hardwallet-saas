@@ -60,7 +60,7 @@ export default {
   },
   watch: {
     c_msg(msg) {
-      if (msg.data.message === 'Device successfully initialized') {
+      if (msg.data.message === 'Device successfully initialized' || msg.data.message === 'Device recovered') {
         this.$store.__s('usb.connect', false)
         this.$router.push({ path: '/' })
         this.$store.__s('usb.initialized', true)
