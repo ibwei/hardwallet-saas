@@ -29,10 +29,11 @@ webusb.onAdd(e => {
 /**
  * @method onConnect - device has reconnected
  */
-/* webusb.onConnect(e => {
+webusb.onConnect(e => {
   console.log('You have already connect devices', e)
-  webusb.syncVuex(e)
-}) */
+  Store.__s('usb.connect', e.data.connect)
+  // webusb.syncVuex(e)
+})
 
 /**
  * @method onErr - device has something wrong

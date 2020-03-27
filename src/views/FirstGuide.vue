@@ -61,7 +61,8 @@ export default {
   watch: {
     c_msg(msg) {
       if (msg.data.message === 'Device successfully initialized') {
-        this.$router.push({ path: '/wallet/account' })
+        this.$store.__s('usb.connect', false)
+        this.$router.push({ path: '/' })
         this.$store.__s('usb.initialized', true)
       }
     }
