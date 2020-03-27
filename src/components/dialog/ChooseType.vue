@@ -41,7 +41,7 @@
                   </div>
                 </v-col>
               </v-sheet>
-              <v-sheet v-else width="100%" class="d-flex flex-row pa-2 justify-center justify-content-center align-items-center" style="cursor:pointer" @click="m_displaySelect(item.id)">
+              <v-sheet v-else width="100%" :color="item.briefName.toLowerCase() === c_coinType ? 'grey lighten-4' : ''" class="d-flex flex-row pa-2 justify-center justify-content-center align-items-center" style="cursor:pointer" @click="m_displaySelect(item.id)">
                 <v-col cols="1">
                   <div class="d-flex justify-center">
                     <img :src="require(`../../assets/cointype/${item.briefName}.png`)" height="25" width="auto" />
@@ -151,7 +151,8 @@ export default {
     }
   },
   computed: {
-    c_show: vm => vm.$store.__s('dialog.chooseType')
+    c_show: vm => vm.$store.__s('dialog.chooseType'),
+    c_coinType: vm => vm.$store.__s('coinType')
   },
   created() {
     this.d_coinTypeList.forEach((item, index) => {
@@ -168,6 +169,9 @@ export default {
      * @return void
      */
     m_displaySelect(index) {
+      if (this.c_coinType.toUpperCase() === this.d_filterTypeList[index].briefName) {
+        return
+      }
       const seletedType = this.d_filterTypeList[index]
       this.d_filterTypeList.splice(this.d_preSelectedIndex, 1, { ...this.d_filterTypeList[this.d_preSelectedIndex], selected: false })
       this.d_filterTypeList.splice(index, 1, { ...this.d_filterTypeList[index], selected: true })

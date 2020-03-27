@@ -13,7 +13,7 @@
   "dependencies": {
     "@abckey/coinbook": "0.0.6",
     "@abckey/unit-helper": "^0.6.0",
-    "@abckey/webusb": "^0.0.20",
+    "@abckey/webusb": "0.0.22",
     "axios": "^0.19.2",
     "bignumber.js": "^9.0.0",
     "clipboard-polyfill": "^2.8.6",
