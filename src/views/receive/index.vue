@@ -22,47 +22,22 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    v-for="(address, index) in d_addressList"
-                    :key="index"
-                    @click="clickAddress(index, $event)"
-                    style="position:relative;"
-                  >
+                  <tr v-for="(address, index) in d_addressList" :key="index" @click="clickAddress(index, $event)" style="position:relative;">
                     <td class="text-left">{{ address.index }}</td>
-                    <td
-                      class="text-left d-flex flex-row justify-start align-center"
-                      style="cursor:pointer"
-                    >
-                      <span
-                        class="s-address caption pl-2 pr-2"
-                        :class="d_selectedId === index ? 'highlight' : ''"
-                      >
-                        <i
-                          class="icon"
-                          style="font-size:12px;"
-                          v-html="d_selectedId === index ? '&#xe804;' : '&#xe9cf;'"
-                          @click="copyAddress(index)"
-                        ></i>
-                        <span
-                          v-text="d_selectedId === index ? address.newAddress : address.hideAddress"
-                        ></span>
+                    <td class="text-left d-flex flex-row justify-start align-center" style="cursor:pointer">
+                      <span class="s-address caption pl-2 pr-2" :class="d_selectedId === index ? 'highlight' : ''">
+                        <i class="icon" style="font-size:12px;" v-html="d_selectedId === index ? '&#xe804;' : '&#xe9cf;'" @click="copyAddress(index)"></i>
+                        <span v-text="d_selectedId === index ? address.newAddress : address.hideAddress"></span>
                       </span>
                     </td>
                     <div v-if="d_selectedId === index">
-                      <span
-                        class="pa-1 caption highlight-2"
-                      >{{ $t('Please check the address in your device') }}</span>
+                      <span class="pa-1 caption highlight-2">{{ $t('Please check the address in your device') }}</span>
                     </div>
                   </tr>
                 </tbody>
               </template>
             </v-simple-table>
-            <v-btn
-              small
-              class="blue lighten-1 white--text d-flex mt-4"
-              style="width:auto;max-width:180px;"
-              @click="getAddr"
-            >
+            <v-btn small class="blue lighten-1 white--text d-flex mt-4" style="width:auto;max-width:180px;" @click="getAddr">
               <i class="icon" style="font-size:20px;">&#xe612;</i>
               <span>{{ $t('More Address') }}</span>
             </v-btn>
@@ -89,10 +64,7 @@
                 </tbody>
               </template>
             </v-simple-table>
-            <div
-              v-if="!d_receiveList.length"
-              class="d-flex justify-center align-center body-2 mt-4 grey--text"
-            >{{ $t('No Record') }}</div>
+            <div v-if="!d_receiveList.length" class="d-flex justify-center align-center body-2 mt-4 grey--text">{{ $t('No Record') }}</div>
           </v-card>
         </v-tab-item>
       </v-tabs-items>
@@ -108,7 +80,7 @@ import UsbMixin from '@/mixins/usb'
 export default {
   name: 'Receive',
   mixins: [UsbMixin],
-  data () {
+  data() {
     return {
       d_maxReceiveAddress: 20,
       d_tab: null,
@@ -124,36 +96,44 @@ export default {
     }
   },
   computed: {
-    ...mapState(['usb', 'pageLoading'])
+    ...mapState(['usb', 'pageLoading']),
+    c_coinInfo: vm => vm.$store.__s('coinInfo'),
+    c_protocol() {
+      if (Reflect.has(this.c_coinInfo.bip, '49')) {
+        return 49
+      } else {
+        return 44
+      }
+    }
   },
-  created () {
+  created() {
     this.getUsedTokens()
   },
   methods: {
-    clickAddress (index, e) {
+    clickAddress(index, e) {
       if (this.d_overlay) {
       } else {
         this._showOverlay(index, e)
       }
     },
-    async _showOverlay (index, e) {
+    async _showOverlay(index, e) {
       this.d_selectedId = index
       this._qrcode(this.d_addressList[this.d_selectedId])
       const coordinate = getMousePos(e)
       this.d_overlay = true
       document.getElementsByClassName('qr')[0].style.top = coordinate.y - 60 + 'px'
       await this.$usb.getAddr({
-        address_n: [(49 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.d_addressList[this.d_selectedId].index],
+        address_n: [(this.c_protocol | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.d_addressList[this.d_selectedId].index],
         script_type: 'SPENDP2SHWITNESS',
         show_display: true
       })
       this._hideOverlay()
     },
-    _hideOverlay () {
+    _hideOverlay() {
       this.d_selectedId = -1
       this.d_overlay = false
     },
-    _qrcode (address) {
+    _qrcode(address) {
       document.getElementById('qrcode').innerHTML = ''
       const qr = new QRCode('qrcode', {
         width: 132,
@@ -164,7 +144,7 @@ export default {
       })
       console.log(qr)
     },
-    copyAddress (index) {
+    copyAddress(index) {
       if (!this.d_overlay) {
         return
       }
@@ -175,9 +155,9 @@ export default {
       document.execCommand('Copy')
       oInput.className = 'oInput'
       oInput.style.display = 'none'
-      this.showAlert('地址已经复制到剪贴板')
+      this.showAlert(this.$t('Address has been copied to clipboard'))
     },
-    async getUsedTokens () {
+    async getUsedTokens() {
       this.$store.__s('pageLoading', true)
       /* const result = await Axios.get(`https://btc.abckey.com/xpub/${this.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
       this.d_currentInex = result.usedTokens ? result.usedTokens : '0' */
@@ -185,9 +165,9 @@ export default {
       this.getAddr()
       this.$store.__s('pageLoading', false)
     },
-    async getAddr () {
+    async getAddr() {
       if (this.d_addressList.length > this.d_maxReceiveAddress) {
-        this.showAlert(`收款地址不能超过${this.d_maxReceiveAddress}个`)
+        this.showAlert(this.$t('Payment address cannot exceed 20 Each'))
         this.$store.__s('pageLoading', false)
         return
       }
@@ -210,7 +190,7 @@ export default {
         this.showAlert(this.$t('Get device address error'))
       }
     },
-    showAlert (content) {
+    showAlert(content) {
       this.d_alertShow = true
       this.d_errorText = content
       setTimeout(() => {
@@ -221,6 +201,8 @@ export default {
   i18n: {
     messages: {
       zhCN: {
+        'Payment address cannot exceed 20 Each': '收款地址不能超过20个',
+        'Address has been copied to clipboard': '地址已经复制到剪贴板',
         'New Address': '新地址',
         'Old Address': '旧地址',
         Index: '索引',
@@ -258,9 +240,11 @@ export default {
 .highlight-2 {
   position: relative;
   z-index: 99999;
+  display: inline-block;
   left: -250px;
   border-radius: 4px;
   top: -10px;
+  width: 260px;
   background: #000;
   color: #fff;
 }

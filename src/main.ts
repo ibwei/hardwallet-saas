@@ -2,10 +2,10 @@
 import Vue from 'vue'
 import router from './router'
 import store from './store'
-import vuetify from './plugins/vuetify'
 import i18n from './i18n'
-import '@/components'
+import vuetify from './plugins/vuetify'
 
+import '@/components'
 import './plugins'
 import App from './App.vue'
 

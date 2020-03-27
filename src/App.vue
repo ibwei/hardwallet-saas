@@ -31,6 +31,7 @@ import TopBar from '@/views/components/TopBar'
 import Loading from '@/views/components/Loading'
 import LoadData from '@/views/LoadData'
 import FirstGuide from '@/views/FirstGuide'
+import coinbook from '@/utils/coinbook'
 
 export default {
   name: 'App',
@@ -46,8 +47,12 @@ export default {
     c_usb: vm => vm.$store.__s('usb'),
     c_pageLoading: vm => vm.$store.__s('pageLoading')
   },
+  created() {
+    this.$store.__s('coinType', 'btc')
+    this.$store.__s('coinInfo', coinbook.btc)
+  },
   watch: {
-    $route () {
+    $route() {
       window.document.title = this.$route.meta.title ? this.$route.meta.title : 'abckey-webusb'
     }
   }

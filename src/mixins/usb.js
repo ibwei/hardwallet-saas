@@ -1,23 +1,39 @@
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
       d_addressList: ['3323kpuDSksfSWOMQSKsfkj'],
-      d_path: `m/49'/0'/0'/0/0`,
       d_scriptType: 'SPENDP2SHWITNESS',
-      d_showDisplay: false,
-      d_purpose: 49
+      d_showDisplay: false
     }
   },
   computed: {
+    ...mapState(['coinInfo']),
     c_addressN() {
       const address_n = []
-      const path = this.d_path.match(/\/[0-9]+('|H)?/g)
+      const path = this.c_path.match(/\/[0-9]+('|H)?/g)
       for (const item of path) {
         let id = parseInt(item.match(/[0-9]+/g)[0])
         if (item.match(/('|H)/g)) id = (id | 0x80000000) >>> 0
         address_n.push(id)
       }
       return address_n
+    },
+    c_path() {
+      try {
+        const coinIndex = this.coinInfo.slip44
+        return `m/${this.c_purpose}'/${coinIndex}'/0'/0/0`
+      } catch (error) {
+        console.log('get coin type is error!', error)
+        this.$router.push({ path: '/' })
+      }
+    },
+    c_purpose() {
+      if (Reflect.has(this.coinInfo.bip, '49')) {
+        return 49
+      } else {
+        return 44
+      }
     }
   },
   methods: {

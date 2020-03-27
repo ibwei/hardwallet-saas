@@ -5,11 +5,7 @@
         <v-col class="text-center">
           <v-btn @click="upBalance()" text>
             <span>{{ $t('Balance') }}</span>
-            <v-icon
-              :class="['ml-1', d_loading.upBalance && 'rotate']"
-              size="16"
-              color="primary"
-            >mdi-cached</v-icon>
+            <v-icon :class="['ml-1', d_loading.upBalance && 'rotate']" size="16" color="primary">mdi-cached</v-icon>
           </v-btn>
           <div :class="['mt-1', d_loading.upBalance && 'blur']">
             <span class="title font-weight-bold">{{ btc2str(d_balance) }}</span>
@@ -19,11 +15,7 @@
         <v-col class="text-center">
           <v-btn @click="upBalance()" text>
             <span>{{ $t('Convert') }}</span>
-            <v-icon
-              :class="['ml-1', (d_loading.upBalance || d_loading.upRate) && 'rotate']"
-              size="16"
-              color="primary"
-            >mdi-cached</v-icon>
+            <v-icon :class="['ml-1', (d_loading.upBalance || d_loading.upRate) && 'rotate']" size="16" color="primary">mdi-cached</v-icon>
           </v-btn>
           <div :class="['mt-1', (d_loading.upBalance || d_loading.upRate) && 'blur']">
             <span class="title font-weight-bold">{{ btc2cash(d_balance, d_rate) }}</span>
@@ -33,11 +25,7 @@
         <v-col class="text-center">
           <v-btn @click="upRate()" text>
             <span>{{ $t('Rate') }}</span>
-            <v-icon
-              :class="['ml-1', d_loading.upRate && 'rotate']"
-              size="16"
-              color="primary"
-            >mdi-cached</v-icon>
+            <v-icon :class="['ml-1', d_loading.upRate && 'rotate']" size="16" color="primary">mdi-cached</v-icon>
           </v-btn>
           <div :class="['mt-1', d_loading.upRate && 'blur']">
             <span class="title font-weight-bold">{{ cash2str(d_rate) }}</span>
@@ -148,12 +136,7 @@
           <span>
             <v-btn @click="upBalance()" text>
               <b>{{ $t('Transaction details need to be refreshed.') }}</b>
-              <v-icon
-                right
-                :class="['ml-1', d_loading.upBalance && 'rotate']"
-                size="16"
-                color="primary"
-              >mdi-cached</v-icon>
+              <v-icon right :class="['ml-1', d_loading.upBalance && 'rotate']" size="16" color="primary">mdi-cached</v-icon>
             </v-btn>
           </span>
         </v-expansion-panel-header>
@@ -168,13 +151,7 @@
               <v-col cols="4">
                 <v-tooltip :disabled="!item.valueChanged" top>
                   <template v-slot:activator="{ on }">
-                    <v-chip
-                      v-on="on"
-                      :color="item.valueChanged < 0 ? 'red' : 'green'"
-                      small
-                      label
-                      outlined
-                    >
+                    <v-chip v-on="on" :color="item.valueChanged < 0 ? 'red' : 'green'" small label outlined>
                       <v-icon left size="18">{{ item.valueChanged > 0 ? 'mdi-plus' : 'mdi-minus' }}</v-icon>
                       <span>{{ btc2str(Math.abs(item.valueChanged)) }}</span>
                       <span class="text-uppercase caption ml-1">{{ c_symbol }}</span>
@@ -215,10 +192,7 @@
                   <td>
                     <v-tooltip top>
                       <template v-slot:activator="{ on }">
-                        <span
-                          class="number"
-                          v-on="on"
-                        >{{ item.txid.replace(/^(.......).+(.......)$/g, '$1 ######### $2') }}</span>
+                        <span class="number" v-on="on">{{ item.txid.replace(/^(.......).+(.......)$/g, '$1 ######### $2') }}</span>
                       </template>
                       <span>
                         <span>{{ item.txid }}</span>
@@ -326,10 +300,7 @@
     <p class="mt-3 mb-7 grey--text text-center">
       <span class="caption">
         {{ $t('Only the latest 1000 data is displayed.') }}
-        <a
-          :href="`https://blockchair.com/${name}/xpub/${xpub}`"
-          target="_blank"
-        >{{ $t('See more') }}</a>
+        <a :href="`https://blockchair.com/${name}/xpub/${xpub}`" target="_blank">{{ $t('See more') }}</a>
       </span>
     </p>
   </v-container>
@@ -485,7 +456,7 @@ export default {
         Balance: '余额',
         Convert: '折合',
         Rate: '汇率',
-        Received: '收入',
+        Received: '接收',
         Spent: '花费',
         Hash: '哈希',
         Block: '区块',
@@ -497,8 +468,8 @@ export default {
         'See more': '查看更多',
         'Only the latest 1000 data is displayed.': '仅显示最新 1000 条数据。',
         'Click to copy': '点击复制',
-        'Total Received': '总收入',
-        'Total Spent': '总转出',
+        'Total Received': '累计接收',
+        'Total Spent': '累计转出',
         'Address Count': '地址计数',
         'Transaction Count': '交易计数',
         'Unconfirmed Balance': '未确认余额',

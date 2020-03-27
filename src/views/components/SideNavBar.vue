@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer value="true" class="elevation-2" app>
+  <v-navigation-drawer :value="true" class="elevation-2" app permanent>
     <v-row class="d-flex justify-start align-center text-left">
       <v-col cols="4">
         <img @click="$store.__s('dialog.chooseType', true)" :src="c_coinPicture" class="ma-2 mt-4 coin-type" height="50" width="auto" />
@@ -179,6 +179,16 @@ export default {
         'Switch Currencies': '切换货币',
         Safe: '安全',
         Change: '切换'
+      },
+      enUs: {
+        Account: 'Account',
+        Receive: 'Receive',
+        Send: 'Send',
+        Setting: 'Setting',
+        'Change Language': 'Change Language',
+        'Switch Currencies': 'Switch Currencies',
+        Safe: 'Safe',
+        Change: 'Change'
       }
     }
   }
