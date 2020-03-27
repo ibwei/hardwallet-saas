@@ -36,7 +36,7 @@ export default {
   },
   watch: {
     async c_msg(msg) {
-      if (msg.type === 'PassphraseRequest') this.d_show = true
+      if (msg?.type === 'PassphraseRequest') this.d_show = true
       this.d_loading = false
       this.d_pin = ''
     }

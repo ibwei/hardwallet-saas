@@ -5,14 +5,7 @@
       <v-card-text>
         <v-row>
           <v-col>
-            <v-text-field
-              v-model="d_label"
-              :label="$t('Label')"
-              outlined
-              hide-details
-              @keyup.enter.native="setLabel()"
-              autofocus
-            />
+            <v-text-field v-model="d_label" :label="$t('Label')" outlined hide-details @keyup.enter.native="setLabel()" autofocus />
           </v-col>
         </v-row>
         <v-row>
@@ -42,7 +35,7 @@ export default {
   },
   watch: {
     async c_msg(msg) {
-      if (msg.type === 'WordRequest') this.d_show = true
+      if (msg?.type === 'WordRequest') this.d_show = true
       else this.d_show = false
       this.d_loading = false
     },

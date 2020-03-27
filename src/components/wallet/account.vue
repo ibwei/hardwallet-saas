@@ -345,9 +345,9 @@ export default {
   }),
   computed: {
     c_isDeviceConnect: vm => vm.$store.__s('usb.connect'),
-    c_xpub: vm => vm.$store.__s('xpub'),
+    c_xpub: vm => vm.$store.__s('usb.xpub'),
     c_coinType: vm => vm.$store.__s('coinType'),
-    c_symbol: vm => vm.$store.__s('coinType')
+    c_symbol: vm => vm.$store.__s('coinInfo.symbol')
   },
   watch: {
     ['d_upBalance.page'](val) {
@@ -370,7 +370,7 @@ export default {
     const path = this.$route.path
     for (;;) {
       if (this.$route.path !== path) break
-      // this.upAll()
+      this.upAll()
       await new Promise(resolve => setTimeout(resolve, 60 * 1000))
     }
   },
@@ -381,7 +381,7 @@ export default {
     },
     async upBalance() {
       this.d_loading.upBalance = true
-      const { data } = await Axios.get(`https://${this.c_symbol}.abckey.com/xpub/${this.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
+      const { data } = await Axios.get(`https://api.abckey.com/${this.c_symbol}/xpub/${this.c_xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
       console.log('upBalance: ', data)
       this.d_balance = this.sat2btc(data.balance)
       this.d_totalReceived = this.sat2btc(data.totalReceived)

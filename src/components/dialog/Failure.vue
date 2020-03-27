@@ -22,7 +22,7 @@ export default {
   },
   watch: {
     c_msg(msg) {
-      if (msg.type === 'Failure') {
+      if (msg?.type === 'Failure') {
         this.d_show = true
         this.d_msg = msg.data.message
       }
