@@ -13,18 +13,26 @@
 
 <script>
 export default {
-  data: () => ({
-    d_msg: null,
-    d_show: false
-  }),
+  data() {
+    return {
+      d_msg: null,
+      d_show: false,
+      d_whiteList: ['Failure_NotInitialized']
+    }
+  },
   computed: {
     c_msg: vm => vm.$store.__s('usb.msg')
   },
   watch: {
     c_msg(msg) {
       if (msg.type === 'Failure') {
-        this.d_show = true
-        this.d_msg = msg.data.message
+        this.d_whiteList.map(item => {
+          console.log(item)
+          if (msg.data.code.indexOf(item) === -1) {
+            this.d_show = true
+            this.d_msg = msg.data.message
+          }
+        })
       }
     }
   },

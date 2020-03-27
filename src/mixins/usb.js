@@ -29,6 +29,17 @@ export default {
         show_display: this.d_showDisplay
       }
       await this.$usb.cmd('GetPublicKey', proto, true)
+    },
+    async m_recoveryDevice() {
+      const proto = {
+        word_count: this.d_wordCount,
+        passphrase_protection: false,
+        pin_protection: false,
+        language: 'en-US',
+        label: 'ABCKEY',
+        enforce_wordlist: false
+      }
+      await this.$usb.cmd('RecoveryDevice', proto)
     }
   }
 }

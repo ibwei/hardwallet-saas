@@ -2,7 +2,8 @@
   <div id="app">
     <v-app>
       <connect v-if="!c_usb.connect" />
-      <load-data v-else-if="!c_usb.xpub" />
+      <load-data v-else-if="!c_usb.xpub && this.$store.__s('initialized')" />
+      <first-guide v-else-if="c_usb.initialized" />
       <v-content v-else class="blue lighten-5" style="min-height:100vh;">
         <v-container fluid class="pa-0">
           <side-navbar />
@@ -29,6 +30,7 @@ import Connect from './views/Connect'
 import TopBar from '@/views/components/TopBar'
 import Loading from '@/views/components/Loading'
 import LoadData from '@/views/LoadData'
+import FirstGuide from '@/views/FirstGuide'
 
 export default {
   name: 'App',
@@ -37,7 +39,8 @@ export default {
     Connect,
     TopBar,
     LoadData,
-    Loading
+    Loading,
+    FirstGuide
   },
   computed: {
     c_usb: vm => vm.$store.__s('usb'),
