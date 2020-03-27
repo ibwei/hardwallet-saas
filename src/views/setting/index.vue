@@ -72,6 +72,7 @@ export default {
     async wipeDevice() {
       const proto = {}
       await this.$usb.cmd('WipeDevice', proto)
+      location.reload()
     },
     async setPin() {
       const proto = {}
