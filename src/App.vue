@@ -2,6 +2,7 @@
   <div id="app">
     <v-app>
       <connect v-if="!c_usb.connect" />
+      <first-guide v-else-if="!c_usb.initialized" />
       <load-data v-else-if="!c_usb.xpub" />
       <v-content v-else class="blue lighten-5" style="min-height:100vh;">
         <v-container fluid class="pa-0">
@@ -29,6 +30,7 @@ import Connect from './views/Connect'
 import TopBar from '@/views/components/TopBar'
 import Loading from '@/views/components/Loading'
 import LoadData from '@/views/LoadData'
+import FirstGuide from '@/views/FirstGuide'
 import coinbook from '@/utils/coinbook'
 
 export default {
@@ -38,19 +40,24 @@ export default {
     Connect,
     TopBar,
     LoadData,
-    Loading
+    Loading,
+    FirstGuide
   },
   computed: {
     c_usb: vm => vm.$store.__s('usb'),
-    c_pageLoading: vm => vm.$store.__s('pageLoading')
+    c_pageLoading: vm => vm.$store.__s('pageLoading'),
+    c_isConnect: vm => vm.$store.__s('usb.connect')
   },
-  created() {
+  async created() {
     const coinType = this.$store.__s('coinType').toLowerCase()
     this.$store.__s('coinInfo', coinbook[coinType])
   },
   watch: {
     $route() {
       window.document.title = this.$route.meta.title ? this.$route.meta.title : 'abckey-webusb'
+    },
+    async c_isConnect(value) {
+      if (value === true) await this.$usb.cmd('Initialize')
     }
   }
 }

@@ -49,6 +49,38 @@ export default {
       }
       console.log(proto)
       await this.$usb.cmd('GetPublicKey', proto, true)
+    },
+    async m_recoveryDevice() {
+      const proto = {
+        word_count: this.d_wordCount,
+        passphrase_protection: false,
+        pin_protection: false,
+        language: 'en-US',
+        label: 'ABCKEY',
+        enforce_wordlist: false
+      }
+      await this.$usb.cmd('RecoveryDevice', proto)
+    },
+    async m_resetDevice() {
+      const proto = {
+        display_random: false,
+        strength: 256,
+        passphrase_protection: false,
+        pin_protection: false,
+        language: 'en-US',
+        label: 'ABCKEY',
+        skip_backup: true,
+        no_backup: false,
+        backup_type: 0
+      }
+      await this.$usb.resetDevice(proto)
+    },
+    async m_backupDevice() {
+      const proto = {}
+      await this.$usb.cmd('BackupDevice', proto)
+    },
+    async m_initialize() {
+      await this.$usb.cmd('Initialize')
     }
   }
 }

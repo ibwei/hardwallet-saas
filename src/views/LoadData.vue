@@ -15,9 +15,7 @@ export default {
   mixins: [UsbMixin],
   async created() {
     await this.m_getPublickKey()
-    if (this.$route.path !== '/wallet/account') {
-      this.$router.push({ path: '/wallet/account' })
-    }
+    if (this.$route.path !== '/wallet/account') this.$router.push({ path: '/wallet/account' })
   }
 }
 </script>

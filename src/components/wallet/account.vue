@@ -366,14 +366,6 @@ export default {
       this.upAll()
     }
   },
-  async created() {
-    const path = this.$route.path
-    for (;;) {
-      if (this.$route.path !== path) break
-      this.upAll()
-      await new Promise(resolve => setTimeout(resolve, 60 * 1000))
-    }
-  },
   methods: {
     upAll() {
       this.upBalance()
@@ -448,6 +440,14 @@ export default {
         }
       }
       return result
+    }
+  },
+  async created() {
+    const path = this.$route.path
+    for (;;) {
+      if (this.$route.path !== path) break
+      this.upAll()
+      await new Promise(resolve => setTimeout(resolve, 60 * 1000))
     }
   },
   i18n: {

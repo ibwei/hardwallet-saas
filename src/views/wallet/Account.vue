@@ -1,18 +1,21 @@
 <template>
   <v-container class="account-wrap">
-    <wallet-account :name="c_coinInfo.name" :currency="c_cashUnitItems[c_cashUnitIndex]" :xpub="c_xpub" />
+    <wallet-account
+      :name="c_coinInfo.name"
+      :currency="c_cashUnitItems[c_cashUnitIndex]"
+      :xpub="c_xpub"
+    />
   </v-container>
 </template>
 
 <script>
 import MixWallet from '@/mixins/wallet'
-import { mapState } from 'vuex'
 
 export default {
   name: 'Account',
   mixins: [MixWallet],
   computed: {
-    ...mapState(['usb'])
+    c_xpub: vm => vm.$store.__s('usb.xpub')
   }
 }
 </script>

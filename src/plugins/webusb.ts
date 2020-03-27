@@ -29,10 +29,11 @@ webusb.onAdd(e => {
 /**
  * @method onConnect - device has reconnected
  */
-/* webusb.onConnect(e => {
+webusb.onConnect(e => {
   console.log('You have already connect devices', e)
-  webusb.syncVuex(e)
-}) */
+  Store.__s('usb.connect', e.data.connect)
+  // webusb.syncVuex(e)
+})
 
 /**
  * @method onErr - device has something wrong
@@ -54,6 +55,7 @@ webusb.onMsg(e => {
     Store.__s('usb.patchVersion', e.data.patch_version)
     Store.__s('usb.label', e.data.label)
     Store.__s('usb.passphraseProtection', e.data.passphrase_protection)
+    Store.__s('usb.initialized', e.data.initialized)
   }
   if (e.type === 'PublicKey') Store.__s('usb.xpub', e.data.xpub)
 })
