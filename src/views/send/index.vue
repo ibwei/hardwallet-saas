@@ -12,43 +12,23 @@
             <div class="table-c action-c">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-icon
-                    class="close-icon"
-                    v-on="on"
-                    :disabled="d_txOut.length <= 1"
-                    @click="delTxOut(index)"
-                  >mdi-close</v-icon>
+                  <v-icon class="close-icon" v-on="on" :disabled="d_txOut.length <= 1" @click="delTxOut(index)">mdi-close</v-icon>
                 </template>
                 <span>{{ $t('Delete') }}</span>
               </v-tooltip>
             </div>
             <div class="table-c address-c subtitle-2">
-              <v-text-field
-                v-model="item.address"
-                :rules="d_addressRules"
-                :label="$t('Address')"
-                :hint="$t('Please input address')"
-              >
+              <v-text-field v-model="item.address" :rules="d_addressRules" :label="$t('Address')" :hint="$t('Please input address')">
                 <v-tooltip top slot="append">
                   <template v-slot:activator="{ on }">
-                    <v-icon
-                      v-on="on"
-                      color="primary"
-                      size="16"
-                      @click="paste(item)"
-                    >mdi-content-paste</v-icon>
+                    <v-icon v-on="on" color="primary" size="16" @click="paste(item)">mdi-content-paste</v-icon>
                   </template>
                   <span class="subtitle-2">{{ $t('Paste') }}</span>
                 </v-tooltip>
               </v-text-field>
             </div>
             <div class="table-c amount-c">
-              <v-text-field
-                v-model="item.amount"
-                :rules="d_amountRules"
-                :label="$t('Amount')"
-                :hint="$t('Please input amount')"
-              >
+              <v-text-field v-model="item.amount" :rules="d_amountRules" :label="$t('Amount')" :hint="$t('Please input amount')">
                 <div slot="append" class="primary--text">BTC</div>
               </v-text-field>
             </div>
@@ -71,14 +51,7 @@
       <div class="d-flex flex-row justify-end align-center">
         <v-row>
           <v-col cols="4">
-            <v-combobox
-              :value="d_fee"
-              :items="d_fees"
-              :label="$t('Fee')"
-              @input="handleFeeInput($event)"
-              :rules="d_feeRule"
-              outlined
-            >
+            <v-combobox :value="d_fee" :items="d_fees" :label="$t('Fee')" @input="handleFeeInput($event)" :rules="d_feeRule" outlined>
               <div slot="append" class="primary--text">Sat/b</div>
               <template v-slot:item="{ index, item }">
                 <div class="d-flex justify-space-between" style="width: 100%">
@@ -98,6 +71,7 @@
 </template>
 
 <script>
+import Axios from 'axios'
 import clipboard from 'clipboard-polyfill'
 import { getFullNum } from '@/utils/common'
 import UnitHelper from '@abckey/unit-helper'
@@ -155,9 +129,18 @@ export default {
       const _result = (_inNum * 148 + _outNum * 34 + 10) * this.d_fee * 0.00000001
       return getFullNum(_result)
     },
-    c_total: vm => vm.c_totalAmounts + vm.c_totalFees
+    c_total: vm => vm.c_totalAmounts + vm.c_totalFees,
+    c_xpub: vm => vm.$store.__s('usb.xpub'),
+    c_coinInfo: vm => vm.$store.__s('coinInfo')
+  },
+  created() {
+    this.getHistory()
   },
   methods: {
+    async getHistory() {
+      const result = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/utxo/${this.c_xpub}?confirme=true`)
+      console.log(result)
+    },
     delTxOut(index) {
       this.d_txOut.splice(index, 1)
     },

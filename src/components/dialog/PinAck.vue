@@ -94,7 +94,7 @@ export default {
   },
   watch: {
     async c_msg(msg) {
-      if (msg.type === 'PinMatrixRequest') {
+      if (msg?.type === 'PinMatrixRequest') {
         this.d_show = true
         if (msg.data.type === 'PinMatrixRequestType_Current') this.d_title = 'PIN'
         if (msg.data.type === 'PinMatrixRequestType_NewFirst') this.d_title = 'Enter a new PIN'

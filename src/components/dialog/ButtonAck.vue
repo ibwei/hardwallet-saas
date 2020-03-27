@@ -17,7 +17,7 @@ export default {
   },
   watch: {
     c_msg(msg) {
-      if (msg.type === 'ButtonRequest') this.d_show = true
+      if (msg?.type === 'ButtonRequest') this.d_show = true
       else this.d_show = false
     }
   },
@@ -35,6 +35,6 @@ export default {
 
 <style lang="scss" scoped>
 .card-text {
-  line-height: 4rem
+  line-height: 4rem;
 }
 </style>

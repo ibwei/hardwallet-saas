@@ -25,7 +25,7 @@ export default {
   },
   watch: {
     c_msg(msg) {
-      if (msg.type === 'Failure') {
+      if (msg?.type === 'Failure') {
         this.d_whiteList.map(item => {
           console.log(item)
           if (msg.data.code.indexOf(item) === -1) {
