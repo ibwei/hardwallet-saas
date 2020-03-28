@@ -5,7 +5,7 @@
         <v-icon size="100" color="info">mdi-usb</v-icon>
         <h1 class="display-1 mt-6">{{ $t('Please Connect ABCKEY') }}</h1>
       </div>
-      <v-btn dark rounded color="primary" @click="m_connect" class="mt-6">
+      <v-btn dark rounded color="primary" @click="connect" class="mt-6">
         <v-icon dark>mdi-plus</v-icon>
         <span class="subtitle-2 pl-2">{{ $t('Check For Device') }}</span>
       </v-btn>
@@ -16,7 +16,7 @@
 <script>
 export default {
   name: 'Connect',
-  data() {
+  data () {
     return {}
   },
   computed: {
@@ -27,11 +27,8 @@ export default {
      * @method  connect - usbdevice
      * @return void
      */
-    async m_connect() {
-      await this.$usb.add(res => {
-        console.log('you have already choose device')
-        this.$usb.syncVuex(res)
-      })
+    async connect () {
+      await this.$usb.add()
     }
   }
 }
