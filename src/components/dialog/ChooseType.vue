@@ -29,7 +29,7 @@
               <v-sheet v-if="item.selected" width="100%" color="grey lighten-3" class="d-flex justify-center pa-2 justify-content-center align-items-sm-center">
                 <v-col cols="1">
                   <div class="d-flex justify-center">
-                    <img :src="require(`../../assets/cointype/${item.briefName}.png`)" height="25" width="auto" />
+                    <img :src="`https://s2.coinmarketcap.com/static/img/coins/64x64/${item.iconIndex}.png`" height="25" width="auto" />
                   </div>
                 </v-col>
                 <v-col cols="4" justify="left">
@@ -44,7 +44,7 @@
               <v-sheet v-else width="100%" :color="item.briefName.toLowerCase() === c_coinType ? 'grey lighten-4' : ''" class="d-flex flex-row pa-2 justify-center justify-content-center align-items-center" style="cursor:pointer" @click="m_displaySelect(item.id)">
                 <v-col cols="1">
                   <div class="d-flex justify-center">
-                    <img :src="require(`../../assets/cointype/${item.briefName}.png`)" height="25" width="auto" />
+                    <img :src="`https://s2.coinmarketcap.com/static/img/coins/64x64/${item.iconIndex}.png`" height="25" width="auto" />
                   </div>
                 </v-col>
                 <v-col cols="4" class="justify-start text-left">
@@ -85,67 +85,83 @@ export default {
       d_coinTypeList: [
         {
           name: 'Bitcoin',
-          briefName: 'BTC'
+          briefName: 'BTC',
+          iconIndex: '1'
         },
         {
           name: 'Bitcoin Cash',
-          briefName: 'BCH'
+          briefName: 'BCH',
+          iconIndex: '1831'
         },
         {
           name: 'Bitcoin Gold',
-          briefName: 'BTG'
+          briefName: 'BTG',
+          iconIndex: '2083'
         },
         {
           name: 'Dash',
-          briefName: 'DASH'
+          briefName: 'DASH',
+          iconIndex: '131'
         },
         {
           name: 'Digibyte',
-          briefName: 'DGB'
+          briefName: 'DGB',
+          iconIndex: '109'
         },
         {
           name: 'Dogecoin',
-          briefName: 'DOGE'
+          briefName: 'DOGE',
+          iconIndex: '74'
         },
         {
           name: 'Litecoin',
-          briefName: 'LTC'
+          briefName: 'LTC',
+          iconIndex: '2'
         },
         {
           name: 'Namecoin',
-          briefName: 'NMC'
+          briefName: 'NMC',
+          iconIndex: '3'
         },
         {
           name: 'Vertcoin',
-          briefName: 'VTC'
+          briefName: 'VTC',
+          iconIndex: '99'
         },
         {
           name: 'Zcash',
-          briefName: 'ZEC'
+          briefName: 'ZEC',
+          iconIndex: '1437'
         },
         {
           name: 'Ethereum',
-          briefName: 'ETH'
+          briefName: 'ETH',
+          iconIndex: '1027'
         },
         {
           name: 'Ethereum Classic',
-          briefName: 'ETC'
+          briefName: 'ETC',
+          iconIndex: '1321'
         },
         {
           name: 'NEM',
-          briefName: 'XEM'
+          briefName: 'XEM',
+          iconIndex: '873'
         },
         {
           name: 'Stellar',
-          briefName: 'XLM'
+          briefName: 'XLM',
+          iconIndex: '512'
         },
         {
           name: 'Cardano',
-          briefName: 'ADA'
+          briefName: 'ADA',
+          iconIndex: '2010'
         },
         {
           name: 'Tezos',
-          briefName: 'XTZ'
+          briefName: 'XTZ',
+          iconIndex: '2011'
         }
       ]
     }
