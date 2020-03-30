@@ -48,15 +48,15 @@ export default {
     c_pageLoading: vm => vm.$store.__s('pageLoading'),
     c_isConnect: vm => vm.$store.__s('usb.connect')
   },
-  async created() {
+  async created () {
     const coinType = this.$store.__s('coinType').toLowerCase()
     this.$store.__s('coinInfo', coinbook[coinType])
   },
   watch: {
-    $route() {
+    $route () {
       window.document.title = this.$route.meta.title ? this.$route.meta.title : 'abckey-webusb'
     },
-    async c_isConnect(value) {
+    async c_isConnect (value) {
       if (value === true) await this.$usb.cmd('Initialize')
     }
   }

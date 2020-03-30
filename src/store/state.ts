@@ -5,5 +5,6 @@ export default {
   coinInfo: null,
   cashUnitItems: ['CNY', 'USD'],
   cashUnit: 'CNY',
-  pageLoading: false
+  pageLoading: false,
+  navbarFold: true
 }
