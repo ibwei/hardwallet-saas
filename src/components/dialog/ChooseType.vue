@@ -82,95 +82,16 @@ export default {
       d_selectType: '',
       d_dialog: false,
       d_filterTypeList: [],
-      d_coinTypeList: [
-        {
-          name: 'Bitcoin',
-          briefName: 'BTC',
-          iconIndex: '1'
-        },
-        {
-          name: 'Bitcoin Cash',
-          briefName: 'BCH',
-          iconIndex: '1831'
-        },
-        {
-          name: 'Bitcoin Gold',
-          briefName: 'BTG',
-          iconIndex: '2083'
-        },
-        {
-          name: 'Dash',
-          briefName: 'DASH',
-          iconIndex: '131'
-        },
-        {
-          name: 'Digibyte',
-          briefName: 'DGB',
-          iconIndex: '109'
-        },
-        {
-          name: 'Dogecoin',
-          briefName: 'DOGE',
-          iconIndex: '74'
-        },
-        {
-          name: 'Litecoin',
-          briefName: 'LTC',
-          iconIndex: '2'
-        },
-        {
-          name: 'Namecoin',
-          briefName: 'NMC',
-          iconIndex: '3'
-        },
-        {
-          name: 'Vertcoin',
-          briefName: 'VTC',
-          iconIndex: '99'
-        },
-        {
-          name: 'Zcash',
-          briefName: 'ZEC',
-          iconIndex: '1437'
-        },
-        {
-          name: 'Ethereum',
-          briefName: 'ETH',
-          iconIndex: '1027'
-        },
-        {
-          name: 'Ethereum Classic',
-          briefName: 'ETC',
-          iconIndex: '1321'
-        },
-        {
-          name: 'NEM',
-          briefName: 'XEM',
-          iconIndex: '873'
-        },
-        {
-          name: 'Stellar',
-          briefName: 'XLM',
-          iconIndex: '512'
-        },
-        {
-          name: 'Cardano',
-          briefName: 'ADA',
-          iconIndex: '2010'
-        },
-        {
-          name: 'Tezos',
-          briefName: 'XTZ',
-          iconIndex: '2011'
-        }
-      ]
+      d_coinTypeList: []
     }
   },
   computed: {
     c_show: vm => vm.$store.__s('dialog.chooseType'),
-    c_coinType: vm => vm.$store.__s('coinType')
+    c_coinType: vm => vm.$store.__s('coinType'),
+    c_coinTypeList: vm => vm.$store.__s('coinTypeList')
   },
   created() {
+    this.d_coinTypeList = this.c_coinTypeList
     this.d_coinTypeList.forEach((item, index) => {
       item.id = index
       item.seleted = false
