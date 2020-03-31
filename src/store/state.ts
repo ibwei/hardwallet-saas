@@ -87,5 +87,6 @@ export default {
       briefName: 'XTZ',
       iconIndex: '2011'
     }
-  ]
+  ],
+  navbarFold: true
 }
