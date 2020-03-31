@@ -29,7 +29,7 @@
               <v-sheet v-if="item.selected" width="100%" color="grey lighten-3" class="d-flex justify-center pa-2 justify-content-center align-items-sm-center">
                 <v-col cols="1">
                   <div class="d-flex justify-center">
-                    <img :src="`https://s2.coinmarketcap.com/static/img/coins/64x64/${item.iconIndex}.png`" height="25" width="auto" />
+                    <img :src="require(`../../assets/cointype/${item.briefName}.png`)" height="25" width="auto" />
                   </div>
                 </v-col>
                 <v-col cols="4" justify="left">
@@ -44,7 +44,7 @@
               <v-sheet v-else width="100%" :color="item.briefName.toLowerCase() === c_coinType ? 'grey lighten-4' : ''" class="d-flex flex-row pa-2 justify-center justify-content-center align-items-center" style="cursor:pointer" @click="m_displaySelect(item.id)">
                 <v-col cols="1">
                   <div class="d-flex justify-center">
-                    <img :src="`https://s2.coinmarketcap.com/static/img/coins/64x64/${item.iconIndex}.png`" height="25" width="auto" />
+                    <img :src="require(`../../assets/cointype/${item.briefName}.png`)" height="25" width="auto" />
                   </div>
                 </v-col>
                 <v-col cols="4" class="justify-start text-left">
@@ -82,16 +82,79 @@ export default {
       d_selectType: '',
       d_dialog: false,
       d_filterTypeList: [],
-      d_coinTypeList: []
+      d_coinTypeList: [
+        {
+          name: 'Bitcoin',
+          briefName: 'BTC'
+        },
+        {
+          name: 'Bitcoin Cash',
+          briefName: 'BCH'
+        },
+        {
+          name: 'Bitcoin Gold',
+          briefName: 'BTG'
+        },
+        {
+          name: 'Dash',
+          briefName: 'DASH'
+        },
+        {
+          name: 'Digibyte',
+          briefName: 'DGB'
+        },
+        {
+          name: 'Dogecoin',
+          briefName: 'DOGE'
+        },
+        {
+          name: 'Litecoin',
+          briefName: 'LTC'
+        },
+        {
+          name: 'Namecoin',
+          briefName: 'NMC'
+        },
+        {
+          name: 'Vertcoin',
+          briefName: 'VTC'
+        },
+        {
+          name: 'Zcash',
+          briefName: 'ZEC'
+        },
+        {
+          name: 'Ethereum',
+          briefName: 'ETH'
+        },
+        {
+          name: 'Ethereum Classic',
+          briefName: 'ETC'
+        },
+        {
+          name: 'NEM',
+          briefName: 'XEM'
+        },
+        {
+          name: 'Stellar',
+          briefName: 'XLM'
+        },
+        {
+          name: 'Cardano',
+          briefName: 'ADA'
+        },
+        {
+          name: 'Tezos',
+          briefName: 'XTZ'
+        }
+      ]
     }
   },
   computed: {
     c_show: vm => vm.$store.__s('dialog.chooseType'),
-    c_coinType: vm => vm.$store.__s('coinType'),
-    c_coinTypeList: vm => vm.$store.__s('coinTypeList')
+    c_coinType: vm => vm.$store.__s('coinType')
   },
   created() {
-    this.d_coinTypeList = this.c_coinTypeList
     this.d_coinTypeList.forEach((item, index) => {
       item.id = index
       item.seleted = false
