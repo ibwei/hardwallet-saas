@@ -29,7 +29,7 @@
             >{{ $t('Change') }}</v-btn>
           </div>
           <div class="caption font-weight-medium">
-            <span>{{ c_coinInfo.name }}</span>
+            <span>{{ coinInfo.name }}</span>
             <span></span>
           </div>
         </div>
@@ -104,6 +104,7 @@
 </template>
 <script>
 import CoinBook from '@/utils/coinbook'
+import { mapState } from 'vuex'
 export default {
   name: 'SideNavBar',
   props: {
@@ -142,7 +143,7 @@ export default {
     }
   },
   computed: {
-    // ...mapState(['version', 'usb', 'app', 'cashUnitItems', 'cashUnitIndex', 'coinInfo']),
+    ...mapState(['version', 'usb', 'app', 'cashUnitItems', 'cashUnitIndex', 'coinInfo']),
     c_currentRootLevel () {
       return this.d_selectedId.split('-')[0]
     },
