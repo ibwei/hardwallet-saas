@@ -49,19 +49,19 @@
         </div>
       </div>
       <div class="d-flex flex-row justify-end align-center">
-        <v-row>
-          <v-col cols="4">
-            <v-combobox :value="d_fee" :items="d_fees" :label="$t('Fee')" @input="handleFeeInput($event)" :rules="d_feeRule" outlined>
+        <v-row justify="center">
+          <v-col cols="4" class="offset-5">
+            <v-combobox :value="d_fee" :items="d_feeList" :label="$t('Fee')" dense @input="handleFeeInput($event)" :rules="d_feeRule" outlined>
               <div slot="append" class="primary--text">Sat/b</div>
-              <template v-slot:item="{ index, item }">
+              <template v-slot:item="{ item }">
                 <div class="d-flex justify-space-between" style="width: 100%">
-                  <span>{{ item.text }}:</span>
-                  <span>{{ item.value }} Sat/b</span>
+                  <span>{{ d_feeHelpList[item].text }}:</span>
+                  <span>{{ item }} Sat/b</span>
                 </div>
               </template>
             </v-combobox>
           </v-col>
-          <v-col cols="4" class="offset-4 text-sm-right pa-0">
+          <v-col cols="3" class="text-sm-right pa-0 mt-2">
             <v-btn color="primary" large @click="checkAndSend()">{{ $t('Check and send') }}</v-btn>
           </v-col>
         </v-row>
@@ -79,6 +79,7 @@ export default {
   name: 'Send',
   data() {
     return {
+      d_feeUrl: 'https://bitcoinfees.earn.com/api/v1/fees/recommended',
       d_txOut: [
         {
           address: '',
@@ -92,27 +93,16 @@ export default {
           return pattern.test(value) || this.$t('Invalid amount')
         }
       ],
+      d_fee: '4',
       d_feeRule: [
-        value => {
-          const pattern = /^[1-9]\d*$/
-          return pattern.test(value) || this.$t('Invalid fee')
+        fee => {
+          const pattern = /^[1-9][0-9]?/
+          console.log('检测结果', pattern.test(fee))
+          return pattern.test(fee) ? true : this.$t('Invalid fee')
         }
       ],
-      d_fee: '15',
-      d_fees: [
-        {
-          text: this.$t('high'),
-          value: '19'
-        },
-        {
-          text: this.$t('middle'),
-          value: '15'
-        },
-        {
-          text: this.$t('low'),
-          value: '1'
-        }
-      ]
+      d_feeList: [19, 15, 1],
+      d_feeHelpList: {}
     }
   },
   computed: {
@@ -134,9 +124,42 @@ export default {
     c_coinInfo: vm => vm.$store.__s('coinInfo')
   },
   created() {
-    this.getHistory()
+    this.$nextTick(() => {
+      this.getHistory()
+      this.getFeePerSatoshis()
+    })
   },
   methods: {
+    /**
+     * get fee satoshi/byte from internet
+     */
+
+    async getFeePerSatoshis() {
+      const result = await Axios.get(this.d_feeUrl)
+      if (result.status !== 200) {
+        return
+      }
+      if (result.data.fastestFee === result.data.halfHourFee) {
+        result.data.halfHourFee--
+      }
+      this.d_feeList = [result.data.fastestFee, result.data.halfHourFee, result.data.hourFee]
+      this.d_fee = this.d_feeList[0]
+      for (let i = 0; i < 3; i++) {
+        if (i === 0) {
+          this.d_feeHelpList[this.d_feeList[i]] = {
+            text: this.$t('high')
+          }
+        } else if (i === 1) {
+          this.d_feeHelpList[this.d_feeList[i]] = {
+            text: this.$t('middle')
+          }
+        } else {
+          this.d_feeHelpList[this.d_feeList[i]] = {
+            text: this.$t('low')
+          }
+        }
+      }
+    },
     async getHistory() {
       const result = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/utxo/${this.c_xpub}?confirme=true`)
       console.log(result)
@@ -154,9 +177,11 @@ export default {
       })
     },
     handleFeeInput(fee) {
-      console.log(fee)
-      this.d_fee = fee.value
+      if (fee) {
+        this.d_fee = fee
+      }
     },
+
     async checkAndSend() {
       // const map1 = this.d_txOut.map(x => {
       //   address: x.address,
@@ -228,11 +253,6 @@ export default {
         Fee: '费率',
         Review: '核对'
       }
-    }
-  },
-  watch: {
-    d_fee(e) {
-      console.log(e)
     }
   }
 }

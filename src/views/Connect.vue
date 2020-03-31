@@ -16,7 +16,7 @@
 <script>
 export default {
   name: 'Connect',
-  data () {
+  data() {
     return {}
   },
   computed: {
@@ -27,7 +27,7 @@ export default {
      * @method  connect - usbdevice
      * @return void
      */
-    async connect () {
+    async connect() {
       await this.$usb.add()
     }
   }
