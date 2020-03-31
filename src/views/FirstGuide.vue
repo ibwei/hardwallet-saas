@@ -54,18 +54,6 @@
 <script>
 import MixUsb from '@/mixins/usb'
 export default {
-  mixins: [MixUsb],
-  computed: {
-    c_msg: vm => vm.$store.__s('usb.msg')
-  },
-  watch: {
-    c_msg(msg) {
-      if (msg.data.message === 'Device successfully initialized' || msg.data.message === 'Device recovered') {
-        this.$store.__s('usb.connect', false)
-        this.$router.push({ path: '/' })
-        this.$store.__s('usb.initialized', true)
-      }
-    }
-  }
+  mixins: [MixUsb]
 }
 </script>
