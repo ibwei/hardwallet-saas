@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app v-if="c_isInitialized">
     <v-app-bar app color="blue lighten-3">
       <v-toolbar-title>初始化设备</v-toolbar-title>
       <v-spacer />
@@ -56,11 +56,12 @@ import MixUsb from '@/mixins/usb'
 export default {
   mixins: [MixUsb],
   computed: {
-    c_msg: vm => vm.$store.__s('usb.msg')
+    c_msg: vm => vm.$store.__s('usb.msg'),
+    c_isInitialized: vm => vm.c_msg.data.message === 'Device successfully initialized' || vm.c_msg.data.message === 'Device recovered'
   },
   watch: {
-    c_msg(msg) {
-      if (msg.data.message === 'Device successfully initialized' || msg.data.message === 'Device recovered') {
+    c_msg() {
+      if (this.c_isInitialized) {
         this.$store.__s('usb.connect', false)
         this.$router.push({ path: '/' })
         this.$store.__s('usb.initialized', true)
