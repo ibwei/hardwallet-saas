@@ -11,6 +11,10 @@
           <loading v-show="c_pageLoading" />
           <router-view />
         </v-container>
+        <v-footer class="pa-3" dark absolute>
+          <v-spacer></v-spacer>
+          <div class="body-2">&copy;&nbsp;ABCKEY&nbsp;{{ new Date().getFullYear() }}</div>
+        </v-footer>
       </v-content>
       <dialog-choose-type />
       <dialog-language />
@@ -48,15 +52,15 @@ export default {
     c_pageLoading: vm => vm.$store.__s('pageLoading'),
     c_isConnect: vm => vm.$store.__s('usb.connect')
   },
-  async created () {
+  async created() {
     const coinType = this.$store.__s('coinType').toLowerCase()
     this.$store.__s('coinInfo', coinbook[coinType])
   },
   watch: {
-    $route () {
+    $route() {
       window.document.title = this.$route.meta.title ? this.$route.meta.title : 'abckey-webusb'
     },
-    async c_isConnect (value) {
+    async c_isConnect(value) {
       if (value === true) await this.$usb.cmd('Initialize')
     }
   }
