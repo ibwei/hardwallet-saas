@@ -12,23 +12,43 @@
             <div class="table-c action-c">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-icon class="close-icon" v-on="on" :disabled="d_txOut.length <= 1" @click="delTxOut(index)">mdi-close</v-icon>
+                  <v-icon
+                    class="close-icon"
+                    v-on="on"
+                    :disabled="d_txOut.length <= 1"
+                    @click="delTxOut(index)"
+                  >mdi-close</v-icon>
                 </template>
                 <span>{{ $t('Delete') }}</span>
               </v-tooltip>
             </div>
             <div class="table-c address-c subtitle-2">
-              <v-text-field v-model="item.address" :rules="d_addressRules" :label="$t('Address')" :hint="$t('Please input address')">
+              <v-text-field
+                v-model="item.address"
+                :rules="d_addressRules"
+                :label="$t('Address')"
+                :hint="$t('Please input address')"
+              >
                 <v-tooltip top slot="append">
                   <template v-slot:activator="{ on }">
-                    <v-icon v-on="on" color="primary" size="16" @click="paste(item)">mdi-content-paste</v-icon>
+                    <v-icon
+                      v-on="on"
+                      color="primary"
+                      size="16"
+                      @click="paste(item)"
+                    >mdi-content-paste</v-icon>
                   </template>
                   <span class="subtitle-2">{{ $t('Paste') }}</span>
                 </v-tooltip>
               </v-text-field>
             </div>
             <div class="table-c amount-c">
-              <v-text-field v-model="item.amount" :rules="d_amountRules" :label="$t('Amount')" :hint="$t('Please input amount')">
+              <v-text-field
+                v-model="item.amount"
+                :rules="d_amountRules"
+                :label="$t('Amount')"
+                :hint="$t('Please input amount')"
+              >
                 <div slot="append" class="primary--text">BTC</div>
               </v-text-field>
             </div>
@@ -51,7 +71,15 @@
       <div class="d-flex flex-row justify-end align-center">
         <v-row justify="center">
           <v-col cols="4" class="offset-5">
-            <v-combobox :value="d_fee" :items="d_feeList" :label="$t('Fee')" dense @input="handleFeeInput($event)" :rules="d_feeRule" outlined>
+            <v-combobox
+              :value="d_fee"
+              :items="d_feeList"
+              :label="$t('Fee')"
+              dense
+              @input="handleFeeInput($event)"
+              :rules="d_feeRule"
+              outlined
+            >
               <div slot="append" class="primary--text">Sat/b</div>
               <template v-slot:item="{ item }">
                 <div class="d-flex justify-space-between" style="width: 100%">
@@ -73,13 +101,17 @@
 <script>
 import Axios from 'axios'
 import clipboard from 'clipboard-polyfill'
+import BN from 'bignumber.js'
 import { getFullNum } from '@/utils/common'
 import UnitHelper from '@abckey/unit-helper'
 export default {
   name: 'Send',
-  data() {
+  data () {
     return {
       d_feeUrl: 'https://bitcoinfees.earn.com/api/v1/fees/recommended',
+      d_utxoList: [],
+      d_needFee: false,
+      d_endUtxo: false,
       d_txOut: [
         {
           address: '',
@@ -97,7 +129,6 @@ export default {
       d_feeRule: [
         fee => {
           const pattern = /^[1-9][0-9]?/
-          console.log('检测结果', pattern.test(fee))
           return pattern.test(fee) ? true : this.$t('Invalid fee')
         }
       ],
@@ -106,14 +137,22 @@ export default {
     }
   },
   computed: {
-    c_totalAmounts() {
-      let sum = 0
+    c_totalAmounts () {
+      const sum = BN('0')
       for (const key in this.d_txOut) {
-        sum += Number(this.d_txOut[key].amount)
+        sum.plus(this.d_txOut[key].amount)
       }
       return sum
     },
-    c_totalFees() {
+    c_utxoTotal () {
+      let sum = BN('0')
+      const len = this.d_utxoList.length
+      for (let i = 0; i < len; i++) {
+        sum = sum.plus(this.d_utxoList[i].value)
+      }
+      return sum
+    },
+    c_totalFees () {
       const _inNum = 0
       const _outNum = this.d_txOut.length
       const _result = (_inNum * 148 + _outNum * 34 + 10) * this.d_fee * 0.00000001
@@ -121,20 +160,20 @@ export default {
     },
     c_total: vm => vm.c_totalAmounts + vm.c_totalFees,
     c_xpub: vm => vm.$store.__s('usb.xpub'),
-    c_coinInfo: vm => vm.$store.__s('coinInfo')
+    c_coinInfo: vm => vm.$store.__s('coinInfo'),
+    c_coinProtocol: vm => vm.$store.__s('coinProtocol')
   },
-  created() {
+  created () {
     this.$nextTick(() => {
-      this.getHistory()
+      this.getUtxoList()
       this.getFeePerSatoshis()
     })
   },
   methods: {
     /**
-     * get fee satoshi/byte from internet
+     *  @method - get fee satoshi/byte from internet
      */
-
-    async getFeePerSatoshis() {
+    async getFeePerSatoshis () {
       const result = await Axios.get(this.d_feeUrl)
       if (result.status !== 200) {
         return
@@ -160,48 +199,84 @@ export default {
         }
       }
     },
-    async getHistory() {
+    async getUtxoList () {
       const result = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/utxo/${this.c_xpub}?confirme=true`)
-      console.log(result)
+      if (result.status === 200) {
+        this.d_utxoList = result.data
+      } else {
+        console.log('network is wrong')
+      }
     },
-    delTxOut(index) {
+    /**
+     *  @method - get fee satoshi/byte from internet
+     */
+    checkRawBalance () {
+      console.log(this.c_utxoTotal.toString(10))
+      console.log(
+        BN(this.c_totalFees)
+          .plus(this.c_totalAmounts)
+          .toString(10)
+      )
+      const divi = BN(this.c_utxoTotal).lt(BN(this.c_totalFees).plus(this.c_totalAmounts))
+      if (divi) {
+        console.log('余额不足', divi)
+        return false
+      }
+      return true
+    },
+    delTxOut (index) {
       this.d_txOut.splice(index, 1)
     },
-    async paste(item) {
+    async paste (item) {
       item.address = await clipboard.readText()
     },
-    addRecipient() {
+    addRecipient () {
       this.d_txOut.push({
         address: '',
         amount: ''
       })
     },
-    handleFeeInput(fee) {
+    handleFeeInput (fee) {
       if (fee) {
         this.d_fee = fee
       }
     },
 
-    async checkAndSend() {
-      // const map1 = this.d_txOut.map(x => {
-      //   address: x.address,
-      //   amount: UnitHelper(x.amount, 'btc_sat').toString()
-      // });
-      const outputs = this.d_txOut.map(function(item) {
-        return {
-          address: item.address,
-          amount: UnitHelper(item.amount, 'btc_sat').toString(),
-          script_type: 'PAYTOADDRESS'
-        }
-      })
-      console.log('Out', outputs)
-      const proto = {
-        coin_name: 'Bitcoin',
+    async checkAndSend () {
+      this.checkRawBalance()
+      // start calculate output
+      const outputs = []
+      const outputsItem = {
+        address: '',
+        amount: '',
+        script_type: 'PAYTOADDRESS'
+      }
+    },
+
+    async  signTx () {
+      const result = await this.$usb.signTx({
+        coin_name: 'bitcoin',
         inputs: [
           {
-            address_n: [2147483697, 2147483650, 2147483648, 0, 0],
-            amount: '1251912615515151598',
-            prev_hash: 'f6ceb5e14b4cb7bd8a2b1922bd2d91596de3be447c806141f225c3d77a0e99eb',
+            address_n: [2147483693, 0, 0, 0],
+            amount: '12519198',
+            prev_hash: 'b83afccb701bf3cb5702c3ebfbf4acb217b2e578fc0f70576858fa2d96a432dc',
+            prev_index: 0,
+            script_type: 'SPENDP2SHWITNESS',
+            sequence: 4294967293
+          },
+          {
+            address_n: [2147483697, 2147483650, 2147483648, 0, 1],
+            amount: '12519198',
+            prev_hash: 'f6ceb5e14b4cb7bd8a2b1922bd2d91556de3be447c806141f225c3d77a0e99eb',
+            prev_index: 0,
+            script_type: 'SPENDP2SHWITNESS',
+            sequence: 4294967295
+          },
+          {
+            address_n: [2147483697, 2147483650, 2147483648, 0, 2],
+            amount: '12519198',
+            prev_hash: 'f6ceb5e14b4c47bd8a2b1922bd2d91556de3be447c806141f225c3d77a0e99eb',
             prev_index: 0,
             script_type: 'SPENDP2SHWITNESS',
             sequence: 4294967295
@@ -209,21 +284,23 @@ export default {
         ],
         outputs: [
           {
-            address: '1CXAKbLJW5PZiFRH5nANuDKhaPJ5TKepXD',
+            address: 'MX7rnVKyFrupJkAyLLWQy3QPt29vYcwsTN',
             amount: '12519063',
             script_type: 'PAYTOADDRESS'
           },
           {
-            address_n: [2147483697, 2147483650, 2147483648, 0, 0],
+            address: 'MX7rnVKyFrupJkAyLLWQy3QPt29vYcwsTN',
+            amount: '1251',
+            script_type: 'PAYTOADDRESS'
+          },
+          {
+            address: 'MX7rnVKyFrupJkAyLLWQy3QPt29vYcwsTN',
             amount: '1251',
             script_type: 'PAYTOADDRESS'
           }
-        ],
-        version: 1,
-        lock_time: 0
-      }
-      const result = await this.$usb.signTx(proto)
-      console.log(`checkAndSend`, result)
+        ]
+      })
+      console.log('signTx', result)
     }
   },
   i18n: {
