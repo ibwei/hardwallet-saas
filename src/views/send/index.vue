@@ -49,7 +49,7 @@
                 :label="$t('Amount')"
                 :hint="$t('Please input amount')"
               >
-                <div slot="append" class="primary--text">BTC</div>
+                <div slot="append" class="primary--text">{{c_coinInfo.symbol.toUpperCase()}}</div>
               </v-text-field>
             </div>
           </div>
@@ -63,9 +63,19 @@
           </v-btn>
         </div>
         <div class="right body-2">
-          <v-chip label class="chip">{{ $t('Amounts') }} {{ c_totalAmounts }} BTC</v-chip>
-          <v-chip label class="chip">{{ $t('Fees') }} {{ c_totalFees }} BTC</v-chip>
-          <v-chip label color="success" class="chip">{{ $t('Total') }} {{ c_total }} BTC</v-chip>
+          <v-chip
+            label
+            class="chip"
+          >{{ $t('Amounts') }} {{ UnitHelper(c_totalAmounts, 'sat_btc').toNumber() }} {{ c_coinInfo.symbol.toUpperCase() }}</v-chip>
+          <v-chip
+            label
+            class="chip"
+          >{{ $t('Fees') }} {{ UnitHelper(c_totalFees, 'sat_btc').toNumber() }} {{ c_coinInfo.symbol.toUpperCase() }}</v-chip>
+          <v-chip
+            label
+            color="success"
+            class="chip"
+          >{{ $t('Total') }} {{ UnitHelper(c_total, 'sat_btc').toNumber() }} {{ c_coinInfo.symbol.toUpperCase() }}</v-chip>
         </div>
       </div>
       <div class="d-flex flex-row justify-end align-center">
@@ -102,23 +112,26 @@
 import Axios from 'axios'
 import clipboard from 'clipboard-polyfill'
 import BN from 'bignumber.js'
-import { getFullNum } from '@/utils/common'
 import UnitHelper from '@abckey/unit-helper'
+import AddressHelper from '@abckey/address-helper'
 export default {
   name: 'Send',
   data () {
     return {
       d_feeUrl: 'https://bitcoinfees.earn.com/api/v1/fees/recommended',
       d_utxoList: [],
+      d_maxPaidIndex: 0,
       d_needFee: false,
       d_endUtxo: false,
+      UnitHelper,
+      d_extraFee: 0,
       d_txOut: [
         {
           address: '',
-          amount: ''
+          amount: '0'
         }
       ],
-      d_addressRules: [value => !!value || this.$t('Invalid address')],
+      d_addressRules: [value => AddressHelper.test(value, this.c_coinInfo.symbol) || this.$t('Invalid address')],
       d_amountRules: [
         value => {
           const pattern = /^[+]{0,1}[1-9]\d*$|^[+]{0,1}(0\.\d*[1-9])$|^[+]{0,1}([1-9]\d*\.\d*[0-9])$/
@@ -138,11 +151,11 @@ export default {
   },
   computed: {
     c_totalAmounts () {
-      const sum = BN('0')
+      let sum = BN('0')
       for (const key in this.d_txOut) {
-        sum.plus(this.d_txOut[key].amount)
+        sum = sum.plus(this.d_txOut[key].amount)
       }
-      return sum
+      return sum.times(100000000)
     },
     c_utxoTotal () {
       let sum = BN('0')
@@ -153,15 +166,20 @@ export default {
       return sum
     },
     c_totalFees () {
-      const _inNum = 0
-      const _outNum = this.d_txOut.length
-      const _result = (_inNum * 148 + _outNum * 34 + 10) * this.d_fee * 0.00000001
-      return getFullNum(_result)
+      const sizeIn = BN(this.d_maxPaidIndex).times(148)
+      const sizeOut = BN(this.d_txOut.length).times(34)
+      const sat = BN(sizeIn)
+        .plus(sizeOut)
+        .plus(10)
+        .times(this.d_fee)
+      return sat.plus(this.d_extraFee)
     },
-    c_total: vm => vm.c_totalAmounts + vm.c_totalFees,
+    c_total: vm => vm.c_totalAmounts.plus(vm.c_totalFees),
     c_xpub: vm => vm.$store.__s('usb.xpub'),
     c_coinInfo: vm => vm.$store.__s('coinInfo'),
-    c_coinProtocol: vm => vm.$store.__s('coinProtocol')
+    c_coinProtocol: vm => vm.$store.__s('coinProtocol'),
+    c_pageLoading: vm => vm.$store.__s('pageLoading'),
+    c_usb: vm => vm.$store.__s('usb')
   },
   created () {
     this.$nextTick(() => {
@@ -210,19 +228,40 @@ export default {
     /**
      *  @method - get fee satoshi/byte from internet
      */
-    checkRawBalance () {
-      console.log(this.c_utxoTotal.toString(10))
-      console.log(
-        BN(this.c_totalFees)
-          .plus(this.c_totalAmounts)
-          .toString(10)
-      )
-      const divi = BN(this.c_utxoTotal).lt(BN(this.c_totalFees).plus(this.c_totalAmounts))
-      if (divi) {
-        console.log('余额不足', divi)
-        return false
+    checkTxOutRules () {
+      // start check the the output list
+      const pattern = /^[+]{0,1}[1-9]\d*$|^[+]{0,1}(0\.\d*[1-9])$|^[+]{0,1}([1-9]\d*\.\d*[0-9])$/
+      const len = this.d_txOut.length
+      for (let i = 0; i < len; i++) {
+        const output = this.d_txOut[i]
+        if (!pattern.test(output.amount) || !output.amount) {
+          console.log('请输入有效的数量')
+          return false
+        }
+        if (!AddressHelper.test(output.address, this.c_coinInfo.symbol)) {
+          console.log('请输入有效的地址')
+          return false
+        }
       }
       return true
+    },
+    /**
+     * @method - get the input index of utxoList
+     */
+    getMaxPaidIndex () {
+      let sum = BN('0')
+      const len = this.d_utxoList.length
+      let i = 0
+      for (; i < len; i++) {
+        sum = sum.plus(this.d_utxoList[i].value)
+        if (sum.gt(this.c_totalAmounts.plus(this.c_totalFees))) {
+          this.d_maxPaidIndex = i
+          break
+        }
+      }
+      if (i === len) {
+        console.log('余额不足')
+      }
     },
     delTxOut (index) {
       this.d_txOut.splice(index, 1)
@@ -233,7 +272,7 @@ export default {
     addRecipient () {
       this.d_txOut.push({
         address: '',
-        amount: ''
+        amount: 0
       })
     },
     handleFeeInput (fee) {
@@ -241,66 +280,90 @@ export default {
         this.d_fee = fee
       }
     },
-
-    async checkAndSend () {
-      this.checkRawBalance()
-      // start calculate output
-      const outputs = []
-      const outputsItem = {
-        address: '',
-        amount: '',
-        script_type: 'PAYTOADDRESS'
+    getAddressN (pathString) {
+      const address_n = []
+      const path = pathString.match(/\/[0-9]+('|H)?/g)
+      for (const item of path) {
+        let id = parseInt(item.match(/[0-9]+/g)[0])
+        if (item.match(/('|H)/g)) id = (id | 0x80000000) >>> 0
+        address_n.push(id)
       }
+      return address_n
     },
+    /**
+     * @method - checkRules and banlance ,then send
+     */
+    async checkAndSend () {
+      this.$store.__s('pageLoading', true)
+      if (!this.checkTxOutRules()) {
+        return
+      }
+      await this.signTx()
+      this.$store.__s('pageLoading', false)
+    },
+    async signTx () {
+      // Organize output data
+      const outputs = this.d_txOut.map(item => {
+        const newItem = item
+        newItem.script_type = 'PAYTOADDRESS'
+        return newItem
+      })
+      // Organize input data and calculate change
+      const inputs = []
+      let prePaidCount = BN(0)
+      let change = 0
+      for (let i = 0; i <= this.d_maxPaidIndex; i++) {
+        const item = {}
+        item.address_n = this.getAddressN(this.d_utxoList[i].path)
+        item.amount = this.d_utxoList[i].value
+        item.prev_hash = this.d_utxoList[i].txid
+        item.prev_index = this.d_utxoList[i].vout
+        item.script_type = this.d_utxoList[i].path.includes('49') ? 'SPENDP2SHWITNESS' : 'SPENDADDRESS'
+        const result = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/tx/${this.d_utxoList[i].txid}`)
+        console.log(result)
+        item.sequence = result.data.vin[0].sequence
+        prePaidCount = prePaidCount.plus(this.d_utxoList[i].value)
+        inputs.push(item)
+      }
+      console.log(inputs)
+      if (prePaidCount.eq(this.c_totalAmounts.plus(this.c_totalFees))) {
+        change = 0
+      } else {
+        change = prePaidCount.minus(this.c_totalAmounts.plus(this.c_totalFees))
+        if (BN('0.0001').times('100000000').lt(change)) {
+          console.log('过于零碎的支付')
+          this.d_extraFee = BN('0.0001').times('100000000')
+        }
+      }
 
-    async  signTx () {
+      // get change address
+      const res = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/xpub/${this.c_usb.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
+      const usedTokens = res.data.usedTokens ? res.data.usedTokens : '0'
+
+      if (change) {
+        outputs.push({
+          address_n: this.getAddressN(`${this.c_coinProtocol}'/${this.c_coinInfo.slip44}'/0'/1/${usedTokens}`),
+          amount: change.toNumber()
+        })
+      }
+      console.log(this.c_coinInfo.name)
       const result = await this.$usb.signTx({
-        coin_name: 'bitcoin',
-        inputs: [
-          {
-            address_n: [2147483693, 0, 0, 0],
-            amount: '12519198',
-            prev_hash: 'b83afccb701bf3cb5702c3ebfbf4acb217b2e578fc0f70576858fa2d96a432dc',
-            prev_index: 0,
-            script_type: 'SPENDP2SHWITNESS',
-            sequence: 4294967293
-          },
-          {
-            address_n: [2147483697, 2147483650, 2147483648, 0, 1],
-            amount: '12519198',
-            prev_hash: 'f6ceb5e14b4cb7bd8a2b1922bd2d91556de3be447c806141f225c3d77a0e99eb',
-            prev_index: 0,
-            script_type: 'SPENDP2SHWITNESS',
-            sequence: 4294967295
-          },
-          {
-            address_n: [2147483697, 2147483650, 2147483648, 0, 2],
-            amount: '12519198',
-            prev_hash: 'f6ceb5e14b4c47bd8a2b1922bd2d91556de3be447c806141f225c3d77a0e99eb',
-            prev_index: 0,
-            script_type: 'SPENDP2SHWITNESS',
-            sequence: 4294967295
-          }
-        ],
-        outputs: [
-          {
-            address: 'MX7rnVKyFrupJkAyLLWQy3QPt29vYcwsTN',
-            amount: '12519063',
-            script_type: 'PAYTOADDRESS'
-          },
-          {
-            address: 'MX7rnVKyFrupJkAyLLWQy3QPt29vYcwsTN',
-            amount: '1251',
-            script_type: 'PAYTOADDRESS'
-          },
-          {
-            address: 'MX7rnVKyFrupJkAyLLWQy3QPt29vYcwsTN',
-            amount: '1251',
-            script_type: 'PAYTOADDRESS'
-          }
-        ]
+        coin_name: this.c_coinInfo.name,
+        inputs,
+        outputs
       })
       console.log('signTx', result)
+    }
+  },
+  watch: {
+    d_txOut: {
+      handler () {
+        this.getMaxPaidIndex()
+      },
+      deep: true
+    },
+    c_totalAmounts (newAmounts) {
+      console.log(newAmounts)
     }
   },
   i18n: {
