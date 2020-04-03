@@ -1,5 +1,6 @@
 export default {
   zhCN: {
+    name: '中文（简体）',
     Close: '关闭',
     Save: '保存',
     home: {},

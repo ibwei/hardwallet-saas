@@ -7,7 +7,7 @@ import VueI18n from 'vue-i18n'
 import Axios from 'axios'
 
 import Store from '@/store'
-import messages from './messages/enUS'
+import messages from './messages/en'
 
 Vue.use(VueI18n)
 
@@ -33,7 +33,7 @@ const i18n = new VueI18n({
  */
 function _set(lang: string): string {
   i18n.locale = lang
-  i18n.fallbackLocale = lang
+  // i18n.fallbackLocale = lang
   Axios.defaults.headers.common['Accept-Language'] = lang
   Store.__s('app.language', lang)
   return lang

@@ -32,7 +32,6 @@ import Loading from '@/views/components/Loading'
 import LoadData from '@/views/LoadData'
 import FirstGuide from '@/views/FirstGuide'
 import coinbook from '@/utils/coinbook'
-
 export default {
   name: 'App',
   components: {
@@ -49,18 +48,18 @@ export default {
     c_isConnect: vm => vm.$store.__s('usb.connect'),
     c_msg: vm => vm.$store.__s('usb.msg')
   },
-  async created () {
+  async created() {
     const coinType = this.$store.__s('coinType').toLowerCase()
     this.$store.__s('coinInfo', coinbook[coinType])
   },
   watch: {
-    $route () {
+    $route() {
       window.document.title = this.$route.meta.title ? this.$route.meta.title : 'abckey-webusb'
     },
-    async c_isConnect (value) {
+    async c_isConnect(value) {
       if (value === true) await this.$usb.cmd('Initialize')
     },
-    c_msg (msg) {
+    c_msg(msg) {
       if (msg.data.message === 'Device successfully initialized' || msg.data.message === 'Device recovered') {
         this.$router.push({ path: '/' })
         this.$store.__s('usb.initialized', false)
