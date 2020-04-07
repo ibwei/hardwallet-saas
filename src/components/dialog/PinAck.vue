@@ -68,8 +68,6 @@
           <v-col>
             <div class="flex-grow-1"></div>
             <v-btn @click="enterPin()" color="primary" large depressed block>{{ $t('Enter PIN') }}</v-btn>
-            <br />
-            <v-btn @click="init()" color="error" large depressed block>{{ $t('Cancel') }}</v-btn>
           </v-col>
         </v-row>
       </v-card-text>
@@ -118,10 +116,6 @@ export default {
     async enterPin() {
       this.d_loading = true
       await this.$usb.cmd('PinMatrixAck', { pin: this.d_pin })
-    },
-    async init() {
-      await this.$usb.cmd('Initialize')
-      this.d_show = false
     }
   },
   i18n: {
