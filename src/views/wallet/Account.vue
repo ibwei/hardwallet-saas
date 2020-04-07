@@ -1,10 +1,6 @@
 <template>
   <v-container class="account-wrap">
-    <wallet-account
-      :name="c_coinInfo.name"
-      :currency="c_cashUnitItems[c_cashUnitIndex]"
-      :xpub="c_xpub"
-    />
+    <wallet-account :coin="c_coinInfo.name" :cash="c_cashUnitItems[c_cashUnitIndex]" :xpub="c_xpub" />
   </v-container>
 </template>
 

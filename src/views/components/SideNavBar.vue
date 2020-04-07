@@ -8,7 +8,7 @@
         <div class="d-flex flex-column justify-start align-start text-left">
           <div class="d-flex justify-start align-center">
             <span class="subtitle-1">{{ coinInfo.symbol.toUpperCase() }}</span>
-            <v-btn x-small color="blue lighten-2 ml-3 caption" @click="$store.__s('dialog.chooseType', true)" dark>{{ $t('Change') }}</v-btn>
+            <v-btn small rounded color="primary" class="ml-4 caption" @click="$store.__s('dialog.chooseType', true)">{{ $t('Change') }}</v-btn>
           </div>
           <div class="caption font-weight-medium">
             <span>{{ coinInfo.name }}</span>
@@ -22,39 +22,45 @@
     </v-row>
     <v-row>
       <div class="side-navbar">
-        <div class="nav-area">
-          <div v-for="(item, index) in d_routerList" :key="index" link class="pa-0">
-            <div class="pt-3 pb-3" :class="[item.id === d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'black--text', c_fold ? 'flex-colomn' : 'flexrow  pl-4']" @click="menuClick(item.id)">
-              <div class="dot mr-4" :class="item.id === d_selectedId ? 'blue' : 'white'" v-if="!c_fold"></div>
-              <i class="icon pr-2" v-html="item.icon"></i>
-              <div class="body-2" v-if="!c_fold">{{ $t(item.name) }}</div>
-              <div class="icon text-right flex-grow-1 pr-4">
-                <i class="icon text-right" style="font-size:26px;" :class="item.id === c_currentRootLevel ? '' : 'black--text'" v-if="item.children" v-html="item.id === c_currentRootLevel ? '&#xe625;' : '&#xe664;'"></i>
-              </div>
-            </div>
-            <transition-group name="fade">
-              <template v-if="index == c_currentRootLevel">
-                <div v-for="(child, childId) in d_routerList[index].children" :key="childId" @click="menuClick(child.id)" class="d-flex justify-start align-center pt-3 pb-3 pl-6" :class="child.id === d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'black--text'">
-                  <div class="dot mr-4" :class="child.id === d_selectedId ? 'blue' : 'white'"></div>
-                  <i class="icon pr-3" v-html="child.icon"></i>
-                  <div class="body-2">{{ child.name }}</div>
+        <v-list dense class="nav-area">
+          <v-list-item-group>
+            <v-list-item v-for="(item, index) in d_routerList" :key="index" link class="pa-0" :class="[item.id === d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'grey--text darken-3--text']">
+              <v-list-item-content>
+                <div class="pt-1 pb-1" :class="[item.id === d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'grey--text darken-3--text', c_fold ? 'flex-colomn' : 'flexrow  pl-4']" @click="menuClick(item.id)">
+                  <div class="dot mr-4" :class="item.id === d_selectedId ? 'blue' : 'white'" v-if="!c_fold"></div>
+                  <i class="icon pr-2" v-html="item.icon"></i>
+                  <div class="body-2" v-if="!c_fold">{{ $t(item.name) }}</div>
+                  <div class="icon text-right flex-grow-1 pr-4">
+                    <i class="icon text-right" style="font-size:26px;" :class="item.id == c_currentRootLevel ? '' : 'grey--text darken-3--text'" v-if="item.children" v-html="item.id === c_currentRootLevel ? '&#xe625;' : '&#xe664;'"></i>
+                  </div>
                 </div>
-              </template>
-            </transition-group>
-          </div>
-        </div>
-        <div style="heigth:60px">
-          <v-btn v-show="c_fold" tile large color="primary" icon>
-            <v-icon>mdi-cached</v-icon>
+                <transition-group name="fade">
+                  <template v-if="index == c_currentRootLevel">
+                    <div v-for="(child, childId) in d_routerList[index].children" :key="childId" @click="menuClick(child.id)" class="d-flex justify-start align-center pt-3 pb-3 pl-6" :class="child.id === d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'black--text'">
+                      <div class="dot mr-4" :class="child.id === d_selectedId ? 'blue' : 'white'"></div>
+                      <i class="icon pr-3" v-html="child.icon"></i>
+                      <div class="body-2">{{ child.name }}</div>
+                    </div>
+                  </template>
+                </transition-group>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </div>
+      <v-col cols="12" class="”pa-0" style="heigth:60px;width:100%;">
+        <div class="pa-0 ma-0">
+          <v-btn v-show="c_fold" tile color="primary" rounded icon>
+            <v-icon>mdi-translate</v-icon>
           </v-btn>
-          <v-btn v-show="!c_fold" class="change-language" large color="primary" @click="$store.__s('dialog.language', true)">{{ $t('Change Language') }}</v-btn>
+          <v-btn v-show="!c_fold" class="change-language" rounded color="primary" @click="$store.__s('dialog.language', true)"><v-icon size="medium" class="pr-4">mdi-translate</v-icon>{{ $t('name') }}</v-btn>
           <v-divider class="mt-5 pb-3" style="width:100%;" />
           <div class="d-flex justify-center align-center pt-3 pb-4">
             <img src="../../assets/logo.png" class="logo-picture" alt />
             <span v-if="!c_fold" class="product-name headline-1 pl-4">{{ this.d_brandName }}</span>
           </div>
         </div>
-      </div>
+      </v-col>
     </v-row>
   </v-navigation-drawer>
 </template>
@@ -154,7 +160,7 @@ export default {
           })
         }
       })
-      this.d_selectedId = '0'
+      this.d_selectedId = '1'
     },
     menuClick(id) {
       const isRootLevel = !id.includes('-')
@@ -225,6 +231,7 @@ export default {
 }
 .coin-type {
   border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.4);
   box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.4);
   cursor: pointer;
 }
@@ -235,13 +242,14 @@ export default {
   box-sizing: border-box;
   width: 100%;
   padding: 0;
-  min-height: calc(100vh - 110px);
+  min-height: calc(100vh - 268px);
   display: flex;
   flex-flow: column nowrap;
 }
 
 .nav-area {
   flex: 1;
+  width: 100%;
   cursor: pointer;
 }
 
@@ -252,6 +260,7 @@ export default {
 }
 .icon {
   font-size: 20px;
+  font-weight: bold;
 }
 .reverse {
   transform: rotate(180deg);

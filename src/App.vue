@@ -36,7 +36,6 @@ import Loading from '@/views/components/Loading'
 import LoadData from '@/views/LoadData'
 import FirstGuide from '@/views/FirstGuide'
 import coinbook from '@/utils/coinbook'
-
 export default {
   name: 'App',
   components: {
@@ -64,7 +63,7 @@ export default {
     async c_isConnect(value) {
       if (value === true) await this.$usb.cmd('Initialize')
     },
-    c_msg (msg) {
+    c_msg(msg) {
       if (msg.data.message === 'Device successfully initialized' || msg.data.message === 'Device recovered') {
         this.$router.push({ path: '/' })
         this.$store.__s('usb.initialized', false)

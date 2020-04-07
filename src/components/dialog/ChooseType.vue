@@ -19,17 +19,30 @@
       <v-divider></v-divider>
       <v-row>
         <v-col cols="10" class="offset-1">
-          <v-text-field :placeholder="$t('Enter Keywords to Search')" @input="m_filterTypeList" hide-details="auto"></v-text-field>
+          <v-text-field
+            :placeholder="$t('Enter Keywords to Search')"
+            @input="m_filterTypeList"
+            hide-details="auto"
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-container id="scroll-target" style="height:400px;" class="overflow-y-auto">
         <v-row>
           <template v-for="(item, index) in d_filterTypeList">
             <v-col class="d-flex" justify="center" cols="12" :key="index">
-              <v-sheet v-if="item.selected" width="100%" color="grey lighten-3" class="d-flex justify-center pa-2 justify-content-center align-items-sm-center">
+              <v-sheet
+                v-if="item.selected"
+                width="100%"
+                color="grey lighten-3"
+                class="d-flex justify-center pa-2 justify-content-center align-items-sm-center"
+              >
                 <v-col cols="1">
                   <div class="d-flex justify-center">
-                    <img :src="require(`../../assets/cointype/${item.briefName}.png`)" height="25" width="auto" />
+                    <img
+                      :src="require(`../../assets/cointype/${item.briefName}.png`)"
+                      height="25"
+                      width="auto"
+                    />
                   </div>
                 </v-col>
                 <v-col cols="4" justify="left">
@@ -41,10 +54,21 @@
                   </div>
                 </v-col>
               </v-sheet>
-              <v-sheet v-else width="100%" :color="item.briefName.toLowerCase() === c_coinType ? 'grey lighten-4' : ''" class="d-flex flex-row pa-2 justify-center justify-content-center align-items-center" style="cursor:pointer" @click="m_displaySelect(item.id)">
+              <v-sheet
+                v-else
+                width="100%"
+                :color="item.briefName.toLowerCase() === c_coinType ? 'grey lighten-4' : ''"
+                class="d-flex flex-row pa-2 justify-center justify-content-center align-items-center"
+                style="cursor:pointer"
+                @click="m_displaySelect(item.id)"
+              >
                 <v-col cols="1">
                   <div class="d-flex justify-center">
-                    <img :src="require(`../../assets/cointype/${item.briefName}.png`)" height="25" width="auto" />
+                    <img
+                      :src="require(`../../assets/cointype/${item.briefName}.png`)"
+                      height="25"
+                      width="auto"
+                    />
                   </div>
                 </v-col>
                 <v-col cols="4" class="justify-start text-left">
@@ -62,7 +86,10 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="default darken-1" text @click="d_dialog = false">
-          <span class="subtitle-2 blue-grey--text pl-2 pr-2" @click="$store.__s('dialog.chooseType', false)">{{ $t('Cancel') }}</span>
+          <span
+            class="subtitle-2 blue-grey--text pl-2 pr-2"
+            @click="$store.__s('dialog.chooseType', false)"
+          >{{ $t('Cancel') }}</span>
         </v-btn>
         <v-btn color="green darken-1" text @click="d_dialog = false">
           <span class="subtitle-2 success--text pl-2 pr-2" @click="m_confirm">{{ $t('Confirm') }}</span>
@@ -76,7 +103,7 @@
 import coinbook from '@/utils/coinbook'
 export default {
   name: 'DialogChooseType',
-  data() {
+  data () {
     return {
       d_preSelectedIndex: 0,
       d_selectType: '',
@@ -154,7 +181,7 @@ export default {
     c_show: vm => vm.$store.__s('dialog.chooseType'),
     c_coinType: vm => vm.$store.__s('coinType')
   },
-  created() {
+  created () {
     this.d_coinTypeList.forEach((item, index) => {
       item.id = index
       item.seleted = false
@@ -168,7 +195,7 @@ export default {
      * @param {number} index - this unique id of the selected type  when user choose
      * @return void
      */
-    m_displaySelect(index) {
+    m_displaySelect (index) {
       if (this.c_coinType.toUpperCase() === this.d_filterTypeList[index].briefName) {
         return
       }
@@ -183,7 +210,7 @@ export default {
      * @method filterTypeList - when you input a keywords of coin type,the coinTypeList will be filter
      * @param {string} keywords - the keywords by user input
      */
-    m_filterTypeList(keywords) {
+    m_filterTypeList (keywords) {
       const key = keywords.toLowerCase()
       this.d_filterTypeList = this.d_coinTypeList.filter(item => {
         const name = item.name.toLowerCase()
@@ -191,11 +218,11 @@ export default {
         return name.includes(key) || briefName.includes(key)
       })
     },
-    m_confirm() {
+    m_confirm () {
       this.$store.__s('coinType', this.d_selectType)
       const coinName = this.d_selectType.toLowerCase()
       this.$store.__s('coinInfo', coinbook[coinName])
-      if (Reflect.has(coinbook[coinName], '49')) {
+      if (Reflect.has(coinbook[coinName].bip, '49')) {
         this.$store.__s('coinProtocol', 49)
       } else {
         this.$store.__s('coinProtocol', 44)

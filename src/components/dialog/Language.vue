@@ -6,7 +6,7 @@
         <v-divider></v-divider>
         <v-card-text style="height: 300px;">
           <v-radio-group v-model="d_language" column>
-            <v-radio label="English" value="enUS"></v-radio>
+            <v-radio label="English" value="en"></v-radio>
             <v-radio label="中文 (简体)" value="zhCN"></v-radio>
             <v-radio label="中文 (繁体)" value="zhTW"></v-radio>
             <v-radio label="한국어" value="ko"></v-radio>
@@ -35,26 +35,26 @@ export default {
   computed: {
     c_language: vm => vm.$store.__s('app.language'),
     c_show: {
-      get() {
+      get () {
         return this.$store.__s('dialog.language')
       },
-      set(val) {
+      set (val) {
         this.$store.__s('dialog.language', val)
       }
     }
   },
   watch: {
-    c_show(val) {
+    c_show (val) {
       if (val) this.d_language = this.c_language
     }
   },
   methods: {
-    lang() {
+    lang () {
       setLang(this.d_language)
       this.setVuetifyLang(TranslateTable[this.d_language])
       this.c_show = false
     },
-    setVuetifyLang(language) {
+    setVuetifyLang (language) {
       this.$vuetify.lang.current = language
     }
   },

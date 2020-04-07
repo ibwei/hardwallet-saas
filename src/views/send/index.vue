@@ -1,5 +1,6 @@
 <template>
   <v-container class="pa-0 send-wrap" fluid>
+    <bordercast :show="d_bordercastShow" v-if="d_bordercastShow" @close-dialog="closeBordercast" :signHash="d_signHash" />
     <v-card class="pa-3">
       <div class="table">
         <div class="table-header px-3">
@@ -12,44 +13,24 @@
             <div class="table-c action-c">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-icon
-                    class="close-icon"
-                    v-on="on"
-                    :disabled="d_txOut.length <= 1"
-                    @click="delTxOut(index)"
-                  >mdi-close</v-icon>
+                  <v-icon class="close-icon" v-on="on" :disabled="d_txOut.length <= 1" @click="delTxOut(index)">mdi-close</v-icon>
                 </template>
                 <span>{{ $t('Delete') }}</span>
               </v-tooltip>
             </div>
             <div class="table-c address-c subtitle-2">
-              <v-text-field
-                v-model="item.address"
-                :rules="d_addressRules"
-                :label="$t('Address')"
-                :hint="$t('Please input address')"
-              >
+              <v-text-field v-model="item.address" :rules="d_addressRules" :label="$t('Address')" :hint="$t('Please input address')">
                 <v-tooltip top slot="append">
                   <template v-slot:activator="{ on }">
-                    <v-icon
-                      v-on="on"
-                      color="primary"
-                      size="16"
-                      @click="paste(item)"
-                    >mdi-content-paste</v-icon>
+                    <v-icon v-on="on" color="primary" size="16" @click="paste(item)">mdi-content-paste</v-icon>
                   </template>
                   <span class="subtitle-2">{{ $t('Paste') }}</span>
                 </v-tooltip>
               </v-text-field>
             </div>
             <div class="table-c amount-c">
-              <v-text-field
-                v-model="item.amount"
-                :rules="d_amountRules"
-                :label="$t('Amount')"
-                :hint="$t('Please input amount')"
-              >
-                <div slot="append" class="primary--text">{{c_coinInfo.symbol.toUpperCase()}}</div>
+              <v-text-field v-model="item.amount" :rules="d_amountRules" :label="$t('Amount')" :hint="$t('Please input amount')">
+                <div slot="append" class="primary--text">{{ c_coinInfo.symbol.toUpperCase() }}</div>
               </v-text-field>
             </div>
           </div>
@@ -63,33 +44,15 @@
           </v-btn>
         </div>
         <div class="right body-2">
-          <v-chip
-            label
-            class="chip"
-          >{{ $t('Amounts') }} {{ UnitHelper(c_totalAmounts, 'sat_btc').toNumber() }} {{ c_coinInfo.symbol.toUpperCase() }}</v-chip>
-          <v-chip
-            label
-            class="chip"
-          >{{ $t('Fees') }} {{ UnitHelper(c_totalFees, 'sat_btc').toNumber() }} {{ c_coinInfo.symbol.toUpperCase() }}</v-chip>
-          <v-chip
-            label
-            color="success"
-            class="chip"
-          >{{ $t('Total') }} {{ UnitHelper(c_total, 'sat_btc').toNumber() }} {{ c_coinInfo.symbol.toUpperCase() }}</v-chip>
+          <v-chip label class="chip">{{ $t('Amounts') }} {{ UnitHelper(c_totalAmounts, 'sat_btc').toNumber() }} {{ c_coinInfo.symbol.toUpperCase() }}</v-chip>
+          <v-chip label class="chip">{{ $t('Fees') }} {{ UnitHelper(c_totalFees, 'sat_btc').toNumber() }} {{ c_coinInfo.symbol.toUpperCase() }}</v-chip>
+          <v-chip label color="success" class="chip">{{ $t('Total') }} {{ UnitHelper(c_total, 'sat_btc').toNumber() }} {{ c_coinInfo.symbol.toUpperCase() }}</v-chip>
         </div>
       </div>
       <div class="d-flex flex-row justify-end align-center">
         <v-row justify="center">
           <v-col cols="4" class="offset-5">
-            <v-combobox
-              :value="d_fee"
-              :items="d_feeList"
-              :label="$t('Fee')"
-              dense
-              @input="handleFeeInput($event)"
-              :rules="d_feeRule"
-              outlined
-            >
+            <v-combobox :value="d_fee" :items="d_feeList" :label="$t('Fee')" dense @input="handleFeeInput($event)" :rules="d_feeRule" outlined>
               <div slot="append" class="primary--text">Sat/b</div>
               <template v-slot:item="{ item }">
                 <div class="d-flex justify-space-between" style="width: 100%">
@@ -114,9 +77,13 @@ import clipboard from 'clipboard-polyfill'
 import BN from 'bignumber.js'
 import UnitHelper from '@abckey/unit-helper'
 import AddressHelper from '@abckey/address-helper'
+import Bordercast from './components/Bordercast'
 export default {
   name: 'Send',
-  data () {
+  components: {
+    Bordercast
+  },
+  data() {
     return {
       d_feeUrl: 'https://bitcoinfees.earn.com/api/v1/fees/recommended',
       d_utxoList: [],
@@ -125,6 +92,8 @@ export default {
       d_endUtxo: false,
       UnitHelper,
       d_extraFee: 0,
+      d_signHash: '',
+      d_bordercastShow: false,
       d_txOut: [
         {
           address: '',
@@ -150,14 +119,14 @@ export default {
     }
   },
   computed: {
-    c_totalAmounts () {
+    c_totalAmounts() {
       let sum = BN('0')
       for (const key in this.d_txOut) {
         sum = sum.plus(this.d_txOut[key].amount)
       }
       return sum.times(100000000)
     },
-    c_utxoTotal () {
+    c_utxoTotal() {
       let sum = BN('0')
       const len = this.d_utxoList.length
       for (let i = 0; i < len; i++) {
@@ -165,7 +134,7 @@ export default {
       }
       return sum
     },
-    c_totalFees () {
+    c_totalFees() {
       const sizeIn = BN(this.d_maxPaidIndex).times(148)
       const sizeOut = BN(this.d_txOut.length).times(34)
       const sat = BN(sizeIn)
@@ -181,7 +150,7 @@ export default {
     c_pageLoading: vm => vm.$store.__s('pageLoading'),
     c_usb: vm => vm.$store.__s('usb')
   },
-  created () {
+  created() {
     this.$nextTick(() => {
       this.getUtxoList()
       this.getFeePerSatoshis()
@@ -191,7 +160,7 @@ export default {
     /**
      *  @method - get fee satoshi/byte from internet
      */
-    async getFeePerSatoshis () {
+    async getFeePerSatoshis() {
       const result = await Axios.get(this.d_feeUrl)
       if (result.status !== 200) {
         return
@@ -217,38 +186,41 @@ export default {
         }
       }
     },
-    async getUtxoList () {
+    async getUtxoList() {
       const result = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/utxo/${this.c_xpub}?confirme=true`)
       if (result.status === 200) {
         this.d_utxoList = result.data
       } else {
-        console.log('network is wrong')
+        this.$message.error(this.$t('The network breakdown!'))
       }
     },
     /**
      *  @method - get fee satoshi/byte from internet
      */
-    checkTxOutRules () {
+    checkTxOutRules() {
       // start check the the output list
       const pattern = /^[+]{0,1}[1-9]\d*$|^[+]{0,1}(0\.\d*[1-9])$|^[+]{0,1}([1-9]\d*\.\d*[0-9])$/
       const len = this.d_txOut.length
       for (let i = 0; i < len; i++) {
         const output = this.d_txOut[i]
         if (!pattern.test(output.amount) || !output.amount) {
-          console.log('请输入有效的数量')
+          this.$message.warning(this.$t('Please enter a valid quantity'))
           return false
         }
         if (!AddressHelper.test(output.address, this.c_coinInfo.symbol)) {
-          console.log('请输入有效的地址')
+          this.$message.warning(this.$t('Please enter a valid Address'))
           return false
         }
       }
       return true
     },
+    closeBordercast() {
+      this.d_bordercastShow = false
+    },
     /**
      * @method - get the input index of utxoList
      */
-    getMaxPaidIndex () {
+    getMaxPaidIndex() {
       let sum = BN('0')
       const len = this.d_utxoList.length
       let i = 0
@@ -260,27 +232,27 @@ export default {
         }
       }
       if (i === len) {
-        console.log('余额不足')
+        this.$message.warning(this.$t('The available balance is insufficient for payment!'))
       }
     },
-    delTxOut (index) {
+    delTxOut(index) {
       this.d_txOut.splice(index, 1)
     },
-    async paste (item) {
+    async paste(item) {
       item.address = await clipboard.readText()
     },
-    addRecipient () {
+    addRecipient() {
       this.d_txOut.push({
         address: '',
         amount: 0
       })
     },
-    handleFeeInput (fee) {
+    handleFeeInput(fee) {
       if (fee) {
         this.d_fee = fee
       }
     },
-    getAddressN (pathString) {
+    getAddressN(pathString) {
       const address_n = []
       const path = pathString.match(/\/[0-9]+('|H)?/g)
       for (const item of path) {
@@ -293,21 +265,31 @@ export default {
     /**
      * @method - checkRules and banlance ,then send
      */
-    async checkAndSend () {
+    async checkAndSend() {
       this.$store.__s('pageLoading', true)
       if (!this.checkTxOutRules()) {
+        this.$store.__s('pageLoading', false)
         return
       }
       await this.signTx()
       this.$store.__s('pageLoading', false)
     },
-    async signTx () {
+    async signTx() {
       // Organize output data
-      const outputs = this.d_txOut.map(item => {
-        const newItem = item
-        newItem.script_type = 'PAYTOADDRESS'
-        return newItem
-      })
+      const outputs = []
+      const outLength = this.d_txOut.length
+      for (let i = 0; i < outLength; i++) {
+        const outItem = {}
+        const item = this.d_txOut[i]
+        outItem.amount = BN(item.amount)
+          .times(100000000)
+          .toNumber()
+        outItem.script_type = 'PAYTOADDRESS'
+        outItem.address = item.address
+        outputs.push(outItem)
+      }
+      console.log('------------------')
+      console.log('输出地址', outputs)
       // Organize input data and calculate change
       const inputs = []
       let prePaidCount = BN(0)
@@ -315,60 +297,83 @@ export default {
       for (let i = 0; i <= this.d_maxPaidIndex; i++) {
         const item = {}
         item.address_n = this.getAddressN(this.d_utxoList[i].path)
+        console.log(this.d_utxoList[i].path)
         item.amount = this.d_utxoList[i].value
         item.prev_hash = this.d_utxoList[i].txid
         item.prev_index = this.d_utxoList[i].vout
         item.script_type = this.d_utxoList[i].path.includes('49') ? 'SPENDP2SHWITNESS' : 'SPENDADDRESS'
         const result = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/tx/${this.d_utxoList[i].txid}`)
-        console.log(result)
         item.sequence = result.data.vin[0].sequence
         prePaidCount = prePaidCount.plus(this.d_utxoList[i].value)
         inputs.push(item)
       }
-      console.log(inputs)
+      console.log('------------------')
+      console.log('输入地址', inputs)
+
+      change = prePaidCount.minus(this.c_totalAmounts.plus(this.c_totalFees))
+
       if (prePaidCount.eq(this.c_totalAmounts.plus(this.c_totalFees))) {
-        change = 0
-      } else {
+        this.d_extraFee = 0
+      }
+      if (
+        BN('0.0001')
+          .times('100000000')
+          .gt(change)
+      ) {
+        // need extra fees
+        this.$message.info(this.t('If the payment is too fragmentary, additional 0.0001 currency handling fee will be paid'))
+        this.d_extraFee = BN('0.0001').times('100000000')
         change = prePaidCount.minus(this.c_totalAmounts.plus(this.c_totalFees))
-        if (BN('0.0001').times('100000000').lt(change)) {
-          console.log('过于零碎的支付')
-          this.d_extraFee = BN('0.0001').times('100000000')
-        }
       }
 
       // get change address
       const res = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/xpub/${this.c_usb.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
       const usedTokens = res.data.usedTokens ? res.data.usedTokens : '0'
-
-      if (change) {
-        outputs.push({
-          address_n: this.getAddressN(`${this.c_coinProtocol}'/${this.c_coinInfo.slip44}'/0'/1/${usedTokens}`),
-          amount: change.toNumber()
-        })
+      const changeObject = {
+        address_n: this.getAddressN(`m/${this.c_coinProtocol}'/${this.c_coinInfo.slip44}'/0'/1/${usedTokens}`),
+        amount: change.toNumber(),
+        script_type: this.c_coinProtocol === 49 ? 'PAYTOP2SHWITNESS' : 'PAYTOADDRESS'
       }
-      console.log(this.c_coinInfo.name)
+      console.log(this.c_coinProtocol === 49 ? 'PAYTOP2SHWITNESS' : 'PAYTOADDRESS')
+      // 零钱地址
+      console.log('零钱path', `${this.c_coinProtocol}'/${this.c_coinInfo.slip44}'/0'/1/${usedTokens}`)
+      if (change) {
+        outputs.push(changeObject)
+      }
       const result = await this.$usb.signTx({
         coin_name: this.c_coinInfo.name,
         inputs,
         outputs
       })
       console.log('signTx', result)
+      const signText = result?.data?.serialized_tx
+      if (signText) {
+        this.d_signHash = signText
+        this.d_bordercastShow = true
+      } else {
+        this.$message.error(this.$t('Transaction signature failed!'))
+      }
     }
   },
   watch: {
     d_txOut: {
-      handler () {
+      handler() {
         this.getMaxPaidIndex()
       },
       deep: true
-    },
-    c_totalAmounts (newAmounts) {
-      console.log(newAmounts)
     }
   },
   i18n: {
     messages: {
       zhCN: {
+        'Transaction signature failed': '签名交易失败',
+        'Transaction signature success': '签名交易成功',
+        'Please enter a valid Address': '请输入有效的地址',
+        'The network breakdown!': '网络异常',
+        'Please enter a valid quantity': '请输入有效的金额',
+        'The available balance is insufficient for payment!': '可用余额不够支付,可能导致签名失败',
+        'The amount or address you entered is invalid!': '你输入的金额或者地址无效',
+        'If the payment is too fragmentary, additional 0.0001 currency handling fee will be paid': '过于零碎的支付，额外支付0.0001币种手续费',
         Address: '接收地址',
         Amount: '发送金额',
         Delete: '删除',

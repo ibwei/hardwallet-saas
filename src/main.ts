@@ -4,10 +4,11 @@ import router from './router'
 import store from './store'
 import i18n from './i18n'
 import vuetify from './plugins/vuetify'
-
 import '@/components'
 import './plugins'
 import App from './App.vue'
+import Message from '@/views/components/message/index'
+Vue.use(Message)
 
 Vue.config.productionTip = false
 

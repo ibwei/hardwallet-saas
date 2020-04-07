@@ -2,6 +2,17 @@
 // @ts-nocheck
 // encode html tag
 
+export function copyText(test) {
+  console.log('copy', test)
+  const tag = document.createElement('input');
+  tag.setAttribute('id', 'cp_input');
+  tag.value = test;
+  document.getElementsByTagName('body')[0].appendChild(tag);
+  document.getElementById('cp_input').select();
+  document.execCommand('copy');
+  document.getElementById('cp_input').remove();
+}
+
 export function getMousePos(event) {
   var e = event || window.event
   var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft
