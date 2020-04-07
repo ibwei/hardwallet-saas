@@ -12,6 +12,10 @@
           <router-view />
         </v-container>
       </v-content>
+      <v-footer class="pa-3" dark absolute>
+        <v-spacer></v-spacer>
+        <div class="body-2">&copy;&nbsp;ABCKEY&nbsp;{{ new Date().getFullYear() }}</div>
+      </v-footer>
       <dialog-choose-type />
       <dialog-language />
       <dialog-button-ack />

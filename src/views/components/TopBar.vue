@@ -33,31 +33,34 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
-      d_menuItems: [{
-        name: 'Settings',
-        icon: '',
-        url: ''
-      }, {
-        name: 'Refresh',
-        icon: '',
-        url: '/'
-      }]
+      d_menuItems: [
+        {
+          name: 'Settings',
+          icon: '',
+          url: ''
+        },
+        {
+          name: 'Refresh',
+          icon: '',
+          url: '/'
+        }
+      ]
     }
   },
   computed: {
-    c_deviceName () {
+    c_deviceName() {
       if (this.$store.__s('usb.connect')) return this.$store.__s('usb.label') ? this.$store.__s('usb.label') : this.$store.__s('usb.product')
       else return 'Waiting for connect'
     }
   },
   methods: {
-    changeNavFold () {
+    changeNavFold() {
       const fold = this.$store.__s('navbarFold')
       this.$store.__s('navbarFold', !fold)
     },
-    menuClick (index) {
+    menuClick(index) {
       if (this.d_menuItems[index].name === 'Refresh') {
         window.location.reload()
       }
