@@ -2,7 +2,7 @@
   <div class="receive-wrap">
     <div class="qr" v-show="this.d_selectedId > -1">
       <div id="qrcode"></div>
-      <div class>{{ `/${this.c_protocol}'/${this.c_coinInfo.slip44}'/0'/0'/${this.d_selectedId}` }}</div>
+      <div class>{{ `m/${this.c_protocol}'/${this.c_coinInfo.slip44}'/0'/0/${this.d_selectedId}` }}</div>
     </div>
     <v-snackbar v-model="d_alertShow" top>{{ d_errorText }}</v-snackbar>
     <v-overlay v-model="d_overlay"></v-overlay>
@@ -162,9 +162,12 @@ export default {
       const coordinate = getMousePos(e)
       this.d_overlay = true
       document.getElementsByClassName('qr')[0].style.top = coordinate.y - 60 + 'px'
+      console.log(this.c_protocol)
+
       await this.$usb.getAddr({
-        address_n: [(this.c_protocol | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.d_addressList[this.d_selectedId].index],
-        script_type: 'SPENDP2SHWITNESS',
+        coin_name: this.c_coinInfo.name,
+        address_n: [(this.c_protocol | 0x80000000) >>> 0, (this.coinInfo.slip44 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.d_addressList[this.d_selectedId].index],
+        script_type: this.c_protocol === 49 ? 'SPENDP2SHWITNESS' : 'SPENDADDRESS',
         show_display: true
       })
       this._hideOverlay()
@@ -184,12 +187,12 @@ export default {
       })
       console.log(qr)
     },
-    copyAddress (index) {
+    copyAddress () {
       if (!this.d_overlay) {
         return
       }
       const oInput = document.createElement('input')
-      oInput.value = this.d_addressList[index]
+      oInput.value = this.d_addressList[this.d_selectedId].newAddress
       document.body.appendChild(oInput)
       oInput.select()
       document.execCommand('Copy')
@@ -214,8 +217,9 @@ export default {
       }
       try {
         const result = await this.$usb.getAddr({
+          coin_name: this.c_coinInfo.name,
           address_n: [(this.c_protocol | 0x80000000) >>> 0, (this.coinInfo.slip44 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.d_currentInex],
-          script_type: 'SPENDP2SHWITNESS',
+          script_type: this.c_protocol === 49 ? 'SPENDP2SHWITNESS' : 'SPENDADDRESS',
           show_display: false
         })
         this.d_currentAddress = result.data.address

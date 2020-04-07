@@ -50,7 +50,8 @@ export default {
   computed: {
     c_usb: vm => vm.$store.__s('usb'),
     c_pageLoading: vm => vm.$store.__s('pageLoading'),
-    c_isConnect: vm => vm.$store.__s('usb.connect')
+    c_isConnect: vm => vm.$store.__s('usb.connect'),
+    c_msg: vm => vm.$store.__s('usb.msg')
   },
   async created() {
     const coinType = this.$store.__s('coinType').toLowerCase()
@@ -62,6 +63,12 @@ export default {
     },
     async c_isConnect(value) {
       if (value === true) await this.$usb.cmd('Initialize')
+    },
+    c_msg (msg) {
+      if (msg.data.message === 'Device successfully initialized' || msg.data.message === 'Device recovered') {
+        this.$router.push({ path: '/' })
+        this.$store.__s('usb.initialized', false)
+      }
     }
   }
 }
