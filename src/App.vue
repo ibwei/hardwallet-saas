@@ -8,6 +8,16 @@
         <v-container fluid class="pa-0">
           <side-navbar />
           <top-bar />
+          <v-alert prominent type="error" v-if="c_needsBackup">
+            <v-row align="center">
+              <v-col
+                class="grow"
+              >Your device is not backed up. To ensure the safety of your funds, please backup immediately!</v-col>
+              <v-col class="shrink">
+                <v-btn @click="m_backupDevice">👉backup now</v-btn>
+              </v-col>
+            </v-row>
+          </v-alert>
           <loading v-show="c_pageLoading" />
           <router-view />
         </v-container>
@@ -36,8 +46,10 @@ import Loading from '@/views/components/Loading'
 import LoadData from '@/views/LoadData'
 import FirstGuide from '@/views/FirstGuide'
 import coinbook from '@/utils/coinbook'
+import UsbMixin from '@/mixins/usb'
 export default {
   name: 'App',
+  mixins: [UsbMixin],
   components: {
     SideNavbar,
     Connect,
@@ -50,7 +62,8 @@ export default {
     c_usb: vm => vm.$store.__s('usb'),
     c_pageLoading: vm => vm.$store.__s('pageLoading'),
     c_isConnect: vm => vm.$store.__s('usb.connect'),
-    c_msg: vm => vm.$store.__s('usb.msg')
+    c_msg: vm => vm.$store.__s('usb.msg'),
+    c_needsBackup: vm => vm.$store.__s('usb.needsBackup')
   },
   async created() {
     const coinType = this.$store.__s('coinType').toLowerCase()
