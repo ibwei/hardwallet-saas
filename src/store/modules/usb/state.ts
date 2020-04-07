@@ -15,5 +15,6 @@ export default {
   xpub: '',
   label: '',
   passphraseProtection: false,
-  initialized: true
+  initialized: true,
+  needsBackup: null
 }
