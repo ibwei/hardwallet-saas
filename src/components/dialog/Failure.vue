@@ -1,8 +1,9 @@
 <template>
   <v-dialog v-model="d_show" max-width="450" persistent scrollable>
     <v-card>
-      <v-card-title class="headline">{{ $t('Failure') }}</v-card-title>
-      <v-card-text class="headline">{{ $t(this.d_msg) }}</v-card-text>
+      <v-card-title class="subtitle-1">{{ $t('Failure') }}</v-card-title>
+      <v-divider></v-divider>
+      <v-card-text class="subtitle-2">{{ $t(this.d_msg) }}</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn @click="d_show = false">{{ $t('Close') }}</v-btn>

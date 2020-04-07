@@ -3,38 +3,27 @@
     <!-- {{c_cashUnitIndex}} -->
     <v-card min-width="900">
       <v-card-title>{{ $t('General') }}</v-card-title>
+      <v-divider></v-divider>
       <v-card-text class="d-flex">
-        <v-btn
-          color="primary"
-          @click="$store.__s('dialog.setLabel', true)"
-        >{{ $t('Edit Device Label') }}</v-btn>
+        <v-btn rounded color="primary" @click="$store.__s('dialog.setLabel', true)">{{ $t('Edit Device Label') }}</v-btn>
         <v-sheet :max-width="$store.__s('app.language') === 'zhCN' ? 180 : 250">
-          <v-select
-            class="ml-5"
-            v-model="c_cashUnit"
-            :items="c_cashUnitItems"
-            :label="$t('Switch Fiat Unit')"
-            dense
-            outlined
-          />
+          <v-select class="ml-5" v-model="c_cashUnit" :items="c_cashUnitItems" :label="$t('Switch Fiat Unit')" dense outlined />
         </v-sheet>
       </v-card-text>
     </v-card>
     <v-card min-width="900" class="mt-5">
       <v-card-title>{{ $t('Safe') }}</v-card-title>
+      <v-divider></v-divider>
       <v-card-text class="d-flex">
-        <v-btn color="primary" @click="setPin">{{ $t('Modify PIN') }}</v-btn>
-        <v-btn
-          class="ml-5"
-          :color="c_passphraseProtection ? 'error' : 'success'"
-          @click="setPassphrase"
-        >{{ $t( c_passphraseProtection ? 'Disabled Passphrase' : 'Enable Passphrase' ) }}</v-btn>
-        <v-btn class="ml-5" color="primary" @click="checkSeed">{{ $t('Verification Mnemonics') }}</v-btn>
-        <v-btn class="ml-5" color="error" @click="wipeDevice">{{ $t('Wipe Device') }}</v-btn>
+        <v-btn rounded color="primary" @click="setPin">{{ $t('Modify PIN') }}</v-btn>
+        <v-btn rounded class="ml-5" :color="c_passphraseProtection ? 'error' : 'success'" @click="setPassphrase">{{ $t(c_passphraseProtection ? 'Disabled Passphrase' : 'Enable Passphrase') }}</v-btn>
+        <v-btn rounded class="ml-5" color="primary" @click="checkSeed">{{ $t('Verification Mnemonics') }}</v-btn>
+        <v-btn rounded class="ml-5" color="error" @click="wipeDevice">{{ $t('Wipe Device') }}</v-btn>
       </v-card-text>
     </v-card>
     <v-card min-width="900" class="mt-5">
       <v-card-title>{{ $t('Version') }}</v-card-title>
+      <v-divider></v-divider>
       <v-card-text class="d-flex">
         <div>{{ $t('Firmware Version') }}: {{ c_firmVersion }}</div>
         <div class="ml-10">{{ $t('Software Version') }}: {{ app.version }}</div>

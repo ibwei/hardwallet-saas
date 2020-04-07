@@ -1,28 +1,20 @@
 <template>
-  <div class="top-bar">
-    <div
-      class="d-flex flex-row justify-space align-center blue lighten-3 shadow pt-1 pb-1"
-      style="width:100%;"
-    >
-      <div class="icon-area white--text" @click="changeNavFold">
+  <div class="top-bar app-primary-bg">
+    <div class="d-flex flex-row justify-space align-center pt-1 pb-1" style="width:100%;">
+      <v-btn class="icon-area ml-4" icon @click="changeNavFold">
         <i class="icon menu-icon">&#xe647;</i>
-      </div>
-      <div
-        class="brand-button pa-1 pl-4 pr-4 mt-3 mr-2 blue lighten-5 d-flex flex-row justify-between align-center"
-      >
+      </v-btn>
+      <div class="brand-button pa-1 pl-4 pr-4 mt-2   d-flex flex-row justify-between align-center">
         <v-menu offset-y>
           <template v-slot:activator="{ on }">
-            <div class="body-2" v-on="on">{{ c_deviceName }}</div>
-            <i class="icon pl-2">&#xe606;</i>
+            <v-btn rounded color="#E4F2FD" v-on="on">
+              <div class="body-2 text--secondary">{{ c_deviceName }}</div>
+              <i class="icon pl-2">&#xe606;</i>
+            </v-btn>
           </template>
-          <v-list class="mt-4">
-            <v-list-item
-              v-for="(item, index) in d_menuItems"
-              :key="index"
-              @click.native="menuClick(index)"
-              style="cursor:pointer"
-            >
-              <v-list-item-title>{{ item.name }}</v-list-item-title>
+          <v-list>
+            <v-list-item v-for="(item, index) in d_menuItems" :key="index" @click.native="menuClick(index)" style="cursor:pointer">
+              <v-list-item-title>{{ $t(item.name) }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -33,33 +25,47 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
-      d_menuItems: [{
-        name: 'Settings',
-        icon: '',
-        url: ''
-      }, {
-        name: 'Refresh',
-        icon: '',
-        url: '/'
-      }]
+      d_menuItems: [
+        {
+          name: 'Settings',
+          icon: '',
+          url: ''
+        },
+        {
+          name: 'Refresh',
+          icon: '',
+          url: '/'
+        }
+      ]
     }
   },
   computed: {
-    c_deviceName () {
+    c_deviceName() {
       if (this.$store.__s('usb.connect')) return this.$store.__s('usb.label') ? this.$store.__s('usb.label') : this.$store.__s('usb.product')
       else return 'Waiting for connect'
     }
   },
   methods: {
-    changeNavFold () {
+    changeNavFold() {
       const fold = this.$store.__s('navbarFold')
       this.$store.__s('navbarFold', !fold)
     },
-    menuClick (index) {
+    menuClick(index) {
       if (this.d_menuItems[index].name === 'Refresh') {
         window.location.reload()
+      }
+      if (this.d_menuItems[index].name === 'Settings') {
+        this.$router.push({ path: '/setting' })
+      }
+    }
+  },
+  i18n: {
+    messages: {
+      zhCN: {
+        Refresh: '退出',
+        Settings: '设置'
       }
     }
   }
@@ -73,14 +79,19 @@ export default {
 .top-bar {
   width: 100%;
   position: relative;
+  height: 60px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
 }
 .icon-area {
   cursor: pointer;
-  padding-left: 10px;
 }
 .menu-icon {
   font-size: 30px;
   font-weight: 300;
+  color: #fff;
 }
 .brand-button {
   border-radius: 20px;

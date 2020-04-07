@@ -10,9 +10,6 @@
         <span class="subtitle-2 pl-2">{{ $t('Check For Device') }}</span>
       </v-btn>
     </div>
-    <div>
-      <v-divider class="mx-4"></v-divider>
-    </div>
     <div class="footer">
       <span class="subtitle-2">&copy; abckey.com</span>
     </div>

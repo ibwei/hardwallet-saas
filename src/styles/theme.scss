@@ -45,3 +45,19 @@
   margin-left : 0;
   margin-right: 0;
 }
+
+.text---primary {
+  color: #2c73d2;
+}
+
+
+$app-primary  :rgba(44, 115, 210, 0.8);
+$app-secondary:rgba(44, 115, 210, 0.6);
+
+.app-primary-bg {
+  background-color: $app-primary;
+}
+
+.app-secondary-bg {
+  background-color: $app-secondary;
+}

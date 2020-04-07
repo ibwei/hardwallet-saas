@@ -1,8 +1,9 @@
 <template>
   <v-dialog v-model="d_show" max-width="450" persistent scrollable>
-    <v-card height="150">
-      <v-card-title class="title">{{ $t('ButtonAck') }}</v-card-title>
-      <v-card-text class="subtitle-1 card-text">{{ $t('Confirm the action on your device!') }}</v-card-text>
+    <v-card>
+      <v-card-title class="subtitle-1">{{ $t('ButtonAck') }}</v-card-title>
+      <v-divider></v-divider>
+      <v-card-text class="subtitle-2 card-text">{{ $t('Confirm the action on your device!') }}</v-card-text>
     </v-card>
   </v-dialog>
 </template>

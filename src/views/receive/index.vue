@@ -38,7 +38,7 @@
                 </tbody>
               </template>
             </v-simple-table>
-            <v-btn small class="blue lighten-1 white--text d-flex mt-4" style="width:auto;max-width:180px;" @click="getAddr">
+            <v-btn medium rounded color="primary" class="d-flex mt-4" style="width:auto;max-width:180px;" @click="getAddr">
               <i class="icon" style="font-size:20px;">&#xe612;</i>
               <span>{{ $t('More Address') }}</span>
             </v-btn>

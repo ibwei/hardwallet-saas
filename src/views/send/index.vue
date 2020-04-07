@@ -3,21 +3,13 @@
     <bordercast :show="d_bordercastShow" v-if="d_bordercastShow" @close-dialog="closeBordercast" :signHash="d_signHash" />
     <v-card class="pa-3">
       <div class="table">
-        <div class="table-header px-3">
-          <div class="table-c action-c"></div>
+        <div class="table-header px-3 app-secondary-bg">
           <div class="table-c address-c subtitle-2">{{ $t('Address') }}</div>
           <div class="table-c amount-c subtitle-2">{{ $t('Amount') }}</div>
+          <div class="table-c action-c subtitle-2">{{ $t('Delete') }}</div>
         </div>
         <div class="table-body">
           <div class="table-r px-3" v-for="(item, index) in d_txOut" :key="index">
-            <div class="table-c action-c">
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-icon class="close-icon" v-on="on" :disabled="d_txOut.length <= 1" @click="delTxOut(index)">mdi-close</v-icon>
-                </template>
-                <span>{{ $t('Delete') }}</span>
-              </v-tooltip>
-            </div>
             <div class="table-c address-c subtitle-2">
               <v-text-field v-model="item.address" :rules="d_addressRules" :label="$t('Address')" :hint="$t('Please input address')">
                 <v-tooltip top slot="append">
@@ -33,20 +25,28 @@
                 <div slot="append" class="primary--text">{{ c_coinInfo.symbol.toUpperCase() }}</div>
               </v-text-field>
             </div>
+            <div class="table-c action-c">
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-icon class="close-icon" v-on="on" :disabled="d_txOut.length <= 1" @click="delTxOut(index)">mdi-close</v-icon>
+                </template>
+                <span>{{ $t('Delete') }}</span>
+              </v-tooltip>
+            </div>
           </div>
         </div>
       </div>
       <div class="form">
         <div class="left">
-          <v-btn class="plus-btn" color="primary" @click="addRecipient()">
+          <v-btn rounded class="plus-btn" color="primary" @click="addRecipient()">
             <v-icon size="16">mdi-plus</v-icon>
             {{ $t('Add recipient') }}
           </v-btn>
         </div>
         <div class="right body-2">
-          <v-chip label class="chip">{{ $t('Amounts') }} {{ UnitHelper(c_totalAmounts, 'sat_btc').toNumber() }} {{ c_coinInfo.symbol.toUpperCase() }}</v-chip>
-          <v-chip label class="chip">{{ $t('Fees') }} {{ UnitHelper(c_totalFees, 'sat_btc').toNumber() }} {{ c_coinInfo.symbol.toUpperCase() }}</v-chip>
-          <v-chip label color="success" class="chip">{{ $t('Total') }} {{ UnitHelper(c_total, 'sat_btc').toNumber() }} {{ c_coinInfo.symbol.toUpperCase() }}</v-chip>
+          <v-chip outlined class="chip body-2">{{ $t('Amounts') }} {{ UnitHelper(c_totalAmounts, 'sat_btc').toNumber() }} {{ c_coinInfo.symbol.toUpperCase() }}</v-chip>
+          <v-chip outlined class="chip body-2">{{ $t('Fees') }} {{ UnitHelper(c_totalFees, 'sat_btc').toNumber() }} {{ c_coinInfo.symbol.toUpperCase() }}</v-chip>
+          <v-chip outlined color="primary" class="chip">{{ $t('Total') }} {{ UnitHelper(c_total, 'sat_btc').toNumber() }} {{ c_coinInfo.symbol.toUpperCase() }}</v-chip>
         </div>
       </div>
       <div class="d-flex flex-row justify-end align-center">
@@ -62,8 +62,8 @@
               </template>
             </v-combobox>
           </v-col>
-          <v-col cols="3" class="text-sm-right pa-0 mt-2">
-            <v-btn color="primary" large @click="checkAndSend()">{{ $t('Check and send') }}</v-btn>
+          <v-col cols="3" class="text-sm-right pa-0 mt-3">
+            <v-btn color="success" rounded @click="checkAndSend()">{{ $t('Check and send') }}</v-btn>
           </v-col>
         </v-row>
       </div>
@@ -392,7 +392,7 @@ export default {
         high: '高',
         middle: '中',
         low: '低',
-        Amounts: '总额',
+        Amounts: '发送总额',
         Fees: '手续费',
         Total: '合计',
         Fee: '费率',
@@ -410,9 +410,9 @@ export default {
 }
 .table {
   margin-bottom: 12px;
+  border: 1px solid rgba(44, 115, 210, 0.6);
   .table-header {
     text-transform: capitalize;
-    background-color: rgba(0, 0, 0, 0.02);
   }
   .table-r {
     font-size: 14px;
@@ -429,15 +429,22 @@ export default {
       align-items: center;
       position: relative;
       padding: 0 10px;
+      color: #fff;
       &.action-c {
-        width: 80px;
+        width: 120px;
+        cursor: pointer;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        align-items: center;
       }
       &.address-c {
         flex: 3;
       }
       &.amount-c {
         flex: 1;
-        justify-content: flex-end;
+        justify-content: flex-start;
+        cursor: pointer;
       }
     }
   }

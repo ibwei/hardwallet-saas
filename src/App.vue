@@ -5,9 +5,9 @@
       <first-guide v-else-if="!c_usb.initialized" />
       <load-data v-else-if="!c_usb.xpub" />
       <v-content v-else class="blue lighten-5" style="min-height:100vh;">
+        <top-bar />
         <v-container fluid class="pa-0">
           <side-navbar />
-          <top-bar />
           <loading v-show="c_pageLoading" />
           <router-view />
         </v-container>

@@ -1,8 +1,8 @@
 <template>
   <v-navigation-drawer :value="true" class="elevation-4" app permanent :width="c_fold ? 90 : 250" @mouseenter.native="changeFold(false)">
-    <v-row class="d-flex align-center text-left" :class="c_fold ? 'justify-center' : 'justify-start'">
+    <v-row class="d-flex align-center text-left ma-0" :class="c_fold ? 'justify-center' : 'justify-start'">
       <v-col :cols="c_fold ? '12' : '4'">
-        <img @click="$store.__s('dialog.chooseType', true)" :src="c_coinPicture" class="ma-2 mt-4 coin-type" height="50" width="auto" />
+        <img @click="$store.__s('dialog.chooseType', true)" :src="c_coinPicture" class="ma-2 mt-4 coin-type" height="40" width="auto" />
       </v-col>
       <v-col cols="8" class="pa-0" v-if="!c_fold">
         <div class="d-flex flex-column justify-start align-start text-left">
@@ -17,26 +17,24 @@
         </div>
       </v-col>
     </v-row>
-    <v-row>
-      <v-divider />
-    </v-row>
-    <v-row>
+    <v-divider class="ma-0 pa-0" />
+    <v-row class="ma-0">
       <div class="side-navbar">
         <v-list dense class="nav-area">
-          <v-list-item-group>
-            <v-list-item v-for="(item, index) in d_routerList" :key="index" link class="pa-0" :class="[item.id === d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'grey--text darken-3--text']">
+          <v-list-item-group class="pa-0 ma-0">
+            <v-list-item v-for="(item, index) in d_routerList" :key="index" link class="pa-0" :class="[item.id === d_selectedId ? 'blue lighten-4 text---primary' : 'text--secondary']">
               <v-list-item-content>
-                <div class="pt-1 pb-1" :class="[item.id === d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'grey--text darken-3--text', c_fold ? 'flex-colomn' : 'flexrow  pl-4']" @click="menuClick(item.id)">
+                <div class="pt-1 pb-1" :class="[item.id === d_selectedId ? 'text---primary' : 'darken-2--text', c_fold ? 'flex-colomn' : 'flexrow  pl-4']" @click="menuClick(item.id)">
                   <div class="dot mr-4" :class="item.id === d_selectedId ? 'blue' : 'white'" v-if="!c_fold"></div>
                   <i class="icon pr-2" v-html="item.icon"></i>
                   <div class="body-2" v-if="!c_fold">{{ $t(item.name) }}</div>
                   <div class="icon text-right flex-grow-1 pr-4">
-                    <i class="icon text-right" style="font-size:26px;" :class="item.id == c_currentRootLevel ? '' : 'grey--text darken-3--text'" v-if="item.children" v-html="item.id === c_currentRootLevel ? '&#xe625;' : '&#xe664;'"></i>
+                    <i class="icon text-right" style="font-size:26px;" :class="item.id == c_currentRootLevel ? '' : 'darken-2--text'" v-if="item.children" v-html="item.id === c_currentRootLevel ? '&#xe625;' : '&#xe664;'"></i>
                   </div>
                 </div>
                 <transition-group name="fade">
                   <template v-if="index == c_currentRootLevel">
-                    <div v-for="(child, childId) in d_routerList[index].children" :key="childId" @click="menuClick(child.id)" class="d-flex justify-start align-center pt-3 pb-3 pl-6" :class="child.id === d_selectedId ? 'blue lighten-4 blue--text lighten-3--text' : 'black--text'">
+                    <div v-for="(child, childId) in d_routerList[index].children" :key="childId" @click="menuClick(child.id)" class="d-flex justify-start align-center pt-3 pb-3 pl-6" :class="child.id === d_selectedId ? 'blue lighten-4 text---primary ' : 'daken-2--text'">
                       <div class="dot mr-4" :class="child.id === d_selectedId ? 'blue' : 'white'"></div>
                       <i class="icon pr-3" v-html="child.icon"></i>
                       <div class="body-2">{{ child.name }}</div>
@@ -48,14 +46,14 @@
           </v-list-item-group>
         </v-list>
       </div>
-      <v-col cols="12" class="”pa-0" style="heigth:60px;width:100%;">
+      <v-col cols="12" class="pa-0" style="heigth:60px;width:100%;">
         <div class="pa-0 ma-0">
           <v-btn v-show="c_fold" tile color="primary" rounded icon>
             <v-icon>mdi-translate</v-icon>
           </v-btn>
-          <v-btn v-show="!c_fold" class="change-language" rounded color="primary" @click="$store.__s('dialog.language', true)"><v-icon size="medium" class="pr-4">mdi-translate</v-icon>{{ $t('name') }}</v-btn>
-          <v-divider class="mt-5 pb-3" style="width:100%;" />
-          <div class="d-flex justify-center align-center pt-3 pb-4">
+          <v-btn v-show="!c_fold" class="change-language pl-6 pr-6" rounded color="primary" @click="$store.__s('dialog.language', true)"><v-icon size="medium" class="pr-4">mdi-translate</v-icon>{{ $t('name') }}</v-btn>
+          <v-divider class="mt-5 pb-3" />
+          <div class="d-flex justify-center align-center pt-2 pb-2">
             <img src="../../assets/logo.png" class="logo-picture" alt />
             <span v-if="!c_fold" class="product-name headline-1 pl-4">{{ this.d_brandName }}</span>
           </div>
@@ -242,7 +240,8 @@ export default {
   box-sizing: border-box;
   width: 100%;
   padding: 0;
-  min-height: calc(100vh - 268px);
+  margin: 0;
+  min-height: calc(100vh - 250px);
   display: flex;
   flex-flow: column nowrap;
 }
@@ -280,6 +279,7 @@ export default {
 .change-language {
   height: 60px;
   bottom: 0;
+  min-width: 300px;
 }
 .logo-picture {
   height: 30px;
