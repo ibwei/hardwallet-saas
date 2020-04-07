@@ -58,7 +58,7 @@ webusb.onMsg(e => {
     Store.__s('usb.initialized', e.data.initialized)
     Store.__s('usb.needsBackup', e.data.needs_backup)
   }
-  if (e.type === 'Success' || e.data.message === "Device successfully initialized") location.replace('/')
+  if (e.type === 'Success' || e.data.message === "Device successfully initialized") window.location.replace(process.env.NODE_ENV === 'production' ? '/pro' : '/')
   if (e.type === 'PublicKey') Store.__s('usb.xpub', e.data.xpub)
 })
 

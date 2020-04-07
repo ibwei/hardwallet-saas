@@ -12,7 +12,7 @@
             <v-row align="center">
               <v-col class="grow">Your device is not backed up. To ensure the safety of your funds, please backup immediately!</v-col>
               <v-col class="shrink">
-                <v-btn @click="m_backupDevice">👉backup now</v-btn>
+                <v-btn rounded @click="m_backupDevice">👉backup now</v-btn>
               </v-col>
             </v-row>
           </v-alert>
@@ -64,6 +64,7 @@ export default {
     c_needsBackup: vm => vm.$store.__s('usb.needsBackup')
   },
   async created() {
+    console.log(process.env.NODE_ENV)
     const coinType = this.$store.__s('coinType').toLowerCase()
     this.$store.__s('coinInfo', coinbook[coinType])
   },

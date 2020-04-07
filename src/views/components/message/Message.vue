@@ -27,7 +27,7 @@ export default {
         case 'info':
           return '&#xe89e;'
         case 'error':
-          return '&#xe68c;;'
+          return '&#xe68c;'
         case 'success':
           return '&#xe78d;'
         case 'warning':
