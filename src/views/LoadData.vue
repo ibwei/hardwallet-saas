@@ -2,7 +2,7 @@
   <v-container class="fill-height">
     <v-layout class="d-flex justify-center align-center text-center">
       <div>
-        <v-progress-circular indeterminate size="188" color="primary">{{ c_brand.name === 'ABCKEY' ? $t('Loading ABCKEY') : $t('Loading DF-UKey') }}</v-progress-circular>
+        <v-progress-circular indeterminate size="188" color="primary">{{ brand.name === 'ABCKEY' ? $t('Loading ABCKEY') : $t('Loading DF-UKey') }}</v-progress-circular>
       </div>
     </v-layout>
   </v-container>
@@ -10,6 +10,7 @@
 
 <script>
 import UsbMixin from '@/mixins/usb'
+import { mapState } from 'vuex'
 export default {
   name: 'LoadData',
   mixins: [UsbMixin],
@@ -18,7 +19,7 @@ export default {
     if (this.$route.path !== '/wallet/account') this.$router.push({ path: '/wallet/account' })
   },
   computed: {
-    c_brand: $vm => $vm.store.__s('brand')
+    ...mapState(['brand'])
   },
   i18n: {
     message: {

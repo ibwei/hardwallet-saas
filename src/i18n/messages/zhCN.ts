@@ -16,6 +16,7 @@ export default {
     'Enter Passphrase': '请输入密码短语',
     'Enter Word': '确认输入',
     'Enter PIN': '确认PIN码',
-    'Network Error!': '网络异常'
+    'Network Error!': '网络异常',
+    'Initialize Device': '初始化设备'
   }
 }

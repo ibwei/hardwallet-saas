@@ -1,6 +1,5 @@
 export default {
   language: '',
   theme: 'light',
-  version: '0.0.1',
-  buildPath: '/pro'
+  version: '0.0.1'
 }

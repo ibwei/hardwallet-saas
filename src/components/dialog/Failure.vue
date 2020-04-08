@@ -28,7 +28,6 @@ export default {
     c_msg(msg) {
       if (msg?.type === 'Failure') {
         this.d_whiteList.map(item => {
-          console.log(item)
           if (msg.data.code.indexOf(item) === -1) {
             this.d_show = true
             this.d_msg = msg.data.message
@@ -41,9 +40,17 @@ export default {
   i18n: {
     messages: {
       zhCN: {
-        'Action cancelled by user': '用户取消了此操作',
         'Wrong word retyped': '多次输入了错误的单词',
-        'PIN mismatch': 'PIN码不匹配'
+        'PIN mismatch': 'PIN码不匹配',
+        'Access denied.': '拒绝访问。',
+        'Unpaired device.': '未配对设备。',
+        'No device selected.': '未选择设备。',
+        'The transfer was cancelled.': '传输已取消。',
+        "Cannot read property 'requestDevice' of undefined": '您的浏览器未支持 WebUSB。',
+        'Device not initialized': '设备未初始化。',
+        'Unknown message': '未知消息。',
+        'Device disconnected': '设备已断开',
+        'Action cancelled by user': '操作已取消。'
       }
     }
   }
