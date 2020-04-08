@@ -41,7 +41,7 @@ export default {
     startTimer() {
       window.setTimeout(() => {
         this.show = false
-      }, 3000)
+      }, 5000)
     }
   }
 }
@@ -65,6 +65,7 @@ export default {
   z-index: 9999999999;
   border-radius: 4px;
   text-align: left;
+  padding-right: 30px;
   .content {
     display: flex;
     flex-flow: row nowrap;

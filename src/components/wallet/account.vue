@@ -62,7 +62,7 @@
                   <td class="caption">{{ $t('Address Count') }}</td>
                   <td class="text-right">
                     <span :class="[d_loading.upBalance && 'blur']">
-                      <b>{{ d_addressCount }}</b>
+                      <b>{{ d_addressCount ? d_addressCount : 0 }}</b>
                     </span>
                   </td>
                 </tr>

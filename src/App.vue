@@ -18,10 +18,6 @@
           </v-alert>
           <loading v-show="c_pageLoading" />
           <router-view />
-          <v-footer class="pa-3" dark absolute>
-            <v-spacer></v-spacer>
-            <div class="body-2">&copy;&nbsp;ABCKEY&nbsp;{{ new Date().getFullYear() }}</div>
-          </v-footer>
         </v-container>
       </v-content>
       <dialog-choose-type />
@@ -64,7 +60,6 @@ export default {
     c_needsBackup: vm => vm.$store.__s('usb.needsBackup')
   },
   async created() {
-    console.log(process.env.NODE_ENV)
     const coinType = this.$store.__s('coinType').toLowerCase()
     this.$store.__s('coinInfo', coinbook[coinType])
   },

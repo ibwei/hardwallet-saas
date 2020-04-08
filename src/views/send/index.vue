@@ -44,9 +44,33 @@
           </v-btn>
         </div>
         <div class="right body-2">
-          <v-chip outlined class="chip body-2">{{ $t('Amounts') }} {{ UnitHelper(c_totalAmounts, 'sat_btc').toNumber() }} {{ c_coinInfo.symbol.toUpperCase() }}</v-chip>
-          <v-chip outlined class="chip body-2">{{ $t('Fees') }} {{ UnitHelper(c_totalFees, 'sat_btc').toNumber() }} {{ c_coinInfo.symbol.toUpperCase() }}</v-chip>
-          <v-chip outlined color="primary" class="chip">{{ $t('Total') }} {{ UnitHelper(c_total, 'sat_btc').toNumber() }} {{ c_coinInfo.symbol.toUpperCase() }}</v-chip>
+          <v-chip outlined class="chip body-2"
+            >{{ $t('Amounts') }}
+            {{
+              UnitHelper(c_totalAmounts, 'sat_btc')
+                .decimalPlaces(8)
+                .toString(10)
+            }}
+            {{ c_coinInfo.symbol.toUpperCase() }}</v-chip
+          >
+          <v-chip outlined class="chip body-2"
+            >{{ $t('Fees') }}
+            {{
+              UnitHelper(c_totalFees, 'sat_btc')
+                .format(8)
+                .toString(10)
+            }}
+            {{ c_coinInfo.symbol.toUpperCase() }}</v-chip
+          >
+          <v-chip outlined color="primary" class="chip"
+            >{{ $t('Total') }}
+            {{
+              UnitHelper(c_total, 'sat_btc')
+                .format(8)
+                .toString(10)
+            }}
+            {{ c_coinInfo.symbol.toUpperCase() }}</v-chip
+          >
         </div>
       </div>
       <div class="d-flex flex-row justify-end align-center">
@@ -204,11 +228,11 @@ export default {
       for (let i = 0; i < len; i++) {
         const output = this.d_txOut[i]
         if (!pattern.test(output.amount) || !output.amount) {
-          this.$message.warning(this.$t('Please enter a valid quantity'))
+          this.$message.error(this.$t('Please enter a valid quantity'))
           return false
         }
         if (!AddressHelper.test(output.address, this.c_coinInfo.symbol)) {
-          this.$message.warning(this.$t('Please enter a valid Address'))
+          this.$message.error(this.$t('Please enter a valid Address'))
           return false
         }
       }
@@ -216,6 +240,7 @@ export default {
     },
     closeBordercast() {
       this.d_bordercastShow = false
+      this.d_txOut = []
     },
     /**
      * @method - get the input index of utxoList
@@ -232,7 +257,7 @@ export default {
         }
       }
       if (i === len) {
-        this.$message.warning(this.$t('The available balance is insufficient for payment!'))
+        this.$message.error(this.$t('The available balance is insufficient for payment!'))
       }
     },
     delTxOut(index) {
@@ -248,9 +273,7 @@ export default {
       })
     },
     handleFeeInput(fee) {
-      if (fee) {
-        this.d_fee = fee
-      }
+      this.d_fee = fee
     },
     getAddressN(pathString) {
       const address_n = []

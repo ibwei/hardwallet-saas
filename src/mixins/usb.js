@@ -8,7 +8,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['coinInfo']),
+    ...mapState(['coinInfo', 'brand']),
     c_addressN() {
       const address_n = []
       const path = this.c_path.match(/\/[0-9]+('|H)?/g)
@@ -56,7 +56,7 @@ export default {
         passphrase_protection: false,
         pin_protection: false,
         language: 'en-US',
-        label: 'ABCKEY',
+        label: this.brand.name,
         enforce_wordlist: false
       }
       await this.$usb.cmd('RecoveryDevice', proto)
@@ -68,7 +68,7 @@ export default {
         passphrase_protection: false,
         pin_protection: false,
         language: 'en-US',
-        label: 'ABCKEY',
+        label: this.brand.name,
         skip_backup: true,
         no_backup: false,
         backup_type: 0

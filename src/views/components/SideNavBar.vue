@@ -23,8 +23,8 @@
         <v-list dense class="nav-area">
           <v-list-item-group class="pa-0 ma-0">
             <v-list-item v-for="(item, index) in d_routerList" :key="index" link class="pa-0" :class="[item.id === d_selectedId ? 'blue lighten-4 text---primary' : 'text--secondary']">
-              <v-list-item-content>
-                <div class="pt-1 pb-1" :class="[item.id === d_selectedId ? 'text---primary' : 'darken-2--text', c_fold ? 'flex-colomn' : 'flexrow  pl-4']" @click="menuClick(item.id)">
+              <v-list-item-content @click="menuClick(item.id)">
+                <div class="pt-1 pb-1" :class="[item.id === d_selectedId ? 'text---primary' : 'darken-2--text', c_fold ? 'flex-colomn' : 'flexrow  pl-4']">
                   <div class="dot mr-4" :class="item.id === d_selectedId ? 'blue' : 'white'" v-if="!c_fold"></div>
                   <i class="icon pr-2" v-html="item.icon"></i>
                   <div class="body-2" v-if="!c_fold">{{ $t(item.name) }}</div>
@@ -54,8 +54,8 @@
           <v-btn v-show="!c_fold" class="change-language pl-6 pr-6" rounded color="primary" @click="$store.__s('dialog.language', true)"><v-icon size="medium" class="pr-4">mdi-translate</v-icon>{{ $t('name') }}</v-btn>
           <v-divider class="mt-5 pb-3" />
           <div class="d-flex justify-center align-center pt-2 pb-2">
-            <img src="../../assets/logo.png" class="logo-picture" alt />
-            <span v-if="!c_fold" class="product-name headline-1 pl-4">{{ this.d_brandName }}</span>
+            <img :src="c_logo" class="logo-picture" alt />
+            <span v-if="!c_fold" class="product-name subtitle-2 pl-4">&copy;&nbsp;{{ brand.name }}&nbsp;{{ new Date().getFullYear() }}</span>
           </div>
         </div>
       </v-col>
@@ -103,7 +103,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['version', 'usb', 'app', 'cashUnitItems', 'cashUnitIndex', 'coinInfo']),
+    ...mapState(['version', 'usb', 'app', 'cashUnitItems', 'cashUnitIndex', 'coinInfo', 'brand']),
     c_currentRootLevel() {
       return this.d_selectedId.split('-')[0]
     },
@@ -113,7 +113,10 @@ export default {
     },
     isDeviceConnect: vm => vm.usb.connect,
     c_coinType: vm => vm.$store.__s('coinType'),
-    c_fold: vm => vm.$store.__s('navbarFold')
+    c_fold: vm => vm.$store.__s('navbarFold'),
+    c_logo() {
+      return require(`@/assets/${this.brand.logo}`)
+    }
   },
   watch: {
     $route() {
@@ -158,7 +161,7 @@ export default {
           })
         }
       })
-      this.d_selectedId = '1'
+      this.d_selectedId = '0'
     },
     menuClick(id) {
       const isRootLevel = !id.includes('-')
@@ -241,7 +244,7 @@ export default {
   width: 100%;
   padding: 0;
   margin: 0;
-  min-height: calc(100vh - 250px);
+  min-height: calc(100vh - 220px);
   display: flex;
   flex-flow: column nowrap;
 }

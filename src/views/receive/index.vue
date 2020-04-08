@@ -170,7 +170,15 @@ export default {
     },
     async getUsedTokens() {
       this.$store.__s('pageLoading', true)
-      const result = await Axios.get(`https://api.abckey.com/${this.coinInfo.symbol}/xpub/${this.usb.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
+      let result = null
+      try {
+        result = await Axios({ method: 'get', url: `https://api.abckey.com/${this.coinInfo.symbol}/xpub/${this.usb.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`, timeout: 1000 * 10 })
+      } catch (error) {
+        console.log(error)
+        this.$store.__s('pageLoading', false)
+        this.$message.error(this.$t('Network Error!'))
+      }
+
       this.d_receiveList = result.data.tokens ? result.data.tokens : []
       this.d_currentInex = result.data.usedTokens ? result.data.usedTokens : '0'
       this.d_currentAddress = this.d_currentInex
