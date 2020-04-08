@@ -10,9 +10,9 @@
           <side-navbar />
           <v-alert prominent type="error" v-if="c_needsBackup">
             <v-row align="center">
-              <v-col class="grow">Your device is not backed up. To ensure the safety of your funds, please backup immediately!</v-col>
+              <v-col class="grow">{{ $t('Your device is not backed up. To ensure the safety of your funds, please backup immediately!') }}</v-col>
               <v-col class="shrink">
-                <v-btn @click="m_backupDevice">👉backup now</v-btn>
+                <v-btn @click="m_backupDevice">👉{{ $t('Backup Now') }}</v-btn>
               </v-col>
             </v-row>
           </v-alert>
@@ -78,6 +78,14 @@ export default {
       if (msg.data.message === 'Device successfully initialized' || msg.data.message === 'Device recovered') {
         this.$router.push({ path: '/' })
         this.$store.__s('usb.initialized', false)
+      }
+    }
+  },
+  i18n: {
+    messages: {
+      zhCN: {
+        'Your device is not backed up. To ensure the safety of your funds, please backup immediately!': '您的设备未备份。 为了确保您的资金安全，请立即备份！',
+        'Backup Now': '立即备份'
       }
     }
   }
