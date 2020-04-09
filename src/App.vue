@@ -57,6 +57,8 @@ export default {
     c_pageLoading: vm => vm.$store.__s('pageLoading'),
     c_isConnect: vm => vm.$store.__s('usb.connect'),
     c_msg: vm => vm.$store.__s('usb.msg'),
+    c_brand: vm => vm.$store.__s('brand'),
+    c_coinInfo: vm => vm.$store.__s('coinInfo'),
     c_needsBackup: vm => vm.$store.__s('usb.needsBackup')
   },
   async created() {
@@ -65,14 +67,14 @@ export default {
   },
   watch: {
     $route() {
-      window.document.title = this.$route.meta.title ? this.$route.meta.title : 'abckey-webusb'
+      window.document.title = this.$route.meta.title ? this.$route.meta.title : this.c_brand.name
     },
     async c_isConnect(value) {
       if (value === true) await this.$usb.cmd('Initialize')
     },
     c_msg(msg) {
       if (msg.data.message === 'Device successfully initialized' || msg.data.message === 'Device recovered') {
-        this.$router.push({ path: '/' })
+        this.$router.push({ path: `/${this.c_coinInfo.symbol}/wallet/account/` })
         this.$store.__s('usb.initialized', false)
       }
     }

@@ -19,9 +19,9 @@
     </v-card>
   </v-dialog>
 </template>
-
 <script>
 import * as clipboard from 'clipboard-polyfill'
+import Axios from 'axios'
 export default {
   props: {
     show: Boolean,
@@ -38,6 +38,9 @@ export default {
   created() {
     this.d_show = this.$props.show
   },
+  computed: {
+    c_coinInfo: vm => vm.$store.__s('coinInfo')
+  },
   methods: {
     copyAndColse() {
       try {
@@ -47,19 +50,30 @@ export default {
       } catch (error) {
         this.$message.error(this.$t('Copy failed'))
       }
-      this._close()
+      this._close('mannual')
     },
-    autoBordercast() {
-      console.log('auto')
-      this._close()
+    async autoBordercast() {
+      let res = null
+      try {
+        res = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/sendtx/${this.$props.signHash}`)
+        if (res.data.result) {
+          this._close('auto', res.data.result)
+        } else {
+          this.$message.error(this.$t('Unable to broadcast, please check whether the rate is too low'))
+        }
+      } catch (e) {
+        this.$message.error(this.$t('Network error,manual broadcast is recommended!'))
+      }
     },
-    _close() {
-      this.$emit('close-dialog')
+    _close(type, transactionHash) {
+      this.$emit('close-dialog', type, transactionHash)
     }
   },
   i18n: {
     messages: {
       zhCN: {
+        'Unable to broadcast, please check whether the rate is too low': '无法广播，请检查费率是否过低',
+        'Network error,manual broadcast is recommended!': '网络错误，建议手动广播',
         'Transaction signed successfully': '签名交易成功',
         'Copy signature': '复制签名',
         'Broadcast now': '马上广播',

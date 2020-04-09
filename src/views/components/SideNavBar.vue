@@ -128,9 +128,9 @@ export default {
      */
     isDeviceConnect(e) {
       if (e === true) {
-        this.$router.push('/wallet/account')
+        this.$router.push(`${this.coinInfo.symbol}/wallet/account`)
       } else {
-        this.$router.push('/')
+        this.$router.push({ path: this.brand.buildPaht })
       }
     },
     c_coinType() {
@@ -175,10 +175,18 @@ export default {
         if (url === this.$route.path) {
           return
         }
-        this.$router.push(url)
+        if (id === '3') {
+          this.$router.push({ path: url })
+        } else {
+          this.$router.push({ path: `/${this.coinInfo.symbol}${url}` })
+        }
+        return
+      }
+      const url = this.d_routerList[Number(id)].url
+      if (id === '3') {
+        this.$router.push({ path: url })
       } else {
-        const url = this.d_routerList[Number(id)].url
-        this.$router.push(url)
+        this.$router.push({ path: `/${this.coinInfo.symbol}${url}` })
       }
     }
   },

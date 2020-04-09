@@ -18,7 +18,7 @@ export default {
   },
   watch: {
     c_msg(msg) {
-      if (msg?.type === 'ButtonRequest') this.d_show = true
+      if (msg?.type === 'ButtonRequest' && msg.data?.code !== 'ButtonRequest_Address') this.d_show = true
       else this.d_show = false
     }
   },

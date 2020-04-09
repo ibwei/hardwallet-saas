@@ -1,4 +1,18 @@
 {
+  "eth": {
+    "chain": "eth",
+    "chain_id": 1,
+    "slip44": 60,
+    "shortcut": "ETH",
+    "name": "Ethereum",
+    "symbol": "eth",
+    "rskip60": false,
+    "url": "https://www.ethereum.org",
+    "blockbook": ["https://eth1.trezor.io", "https://eth2.trezor.io"],
+    "bip": {
+      "44": [76066276, 76067358]
+    }
+  },
   "bch": {
     "market_id": "bitcoin-cash",
     "slip44": 145,

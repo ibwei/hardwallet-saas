@@ -25,7 +25,7 @@ export default {
         return `m/${this.c_purpose}'/${coinIndex}'/0'`
       } catch (error) {
         console.log('get coin type is error!', error)
-        this.$router.push({ path: '/' })
+        this.$router.push({ path: process.env.NODE === 'production' ? this.brand.buildPath : '/' })
       }
     },
     c_purpose() {

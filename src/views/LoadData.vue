@@ -10,16 +10,21 @@
 
 <script>
 import UsbMixin from '@/mixins/usb'
+import ETH from '@/mixins/eth'
 import { mapState } from 'vuex'
 export default {
   name: 'LoadData',
-  mixins: [UsbMixin],
+  mixins: [UsbMixin, ETH],
   async created() {
-    await this.m_getPublickKey()
-    if (this.$route.path !== '/wallet/account') this.$router.push({ path: '/wallet/account' })
+    if (this.coinInfo.symbol === 'eth') {
+      await this.ethGetPublicKey()
+    } else {
+      await this.m_getPublickKey()
+    }
+    if (this.$route.path !== `${this.coinInfo.symbol}/wallet/account`) this.$router.push({ path: `/${this.coinInfo.symbol}/wallet/account` })
   },
   computed: {
-    ...mapState(['brand'])
+    ...mapState(['brand', 'coinInfo'])
   },
   i18n: {
     message: {

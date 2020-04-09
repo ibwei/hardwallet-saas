@@ -3,7 +3,7 @@
     <v-overlay v-model="pageLoading" opacity="0.5" :absolute="true">
       <div class="d-flex flex-column align-center justify-center">
         <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
-        <span class="subtitle-1 mt-4">{{$t('Loading')}}</span>
+        <span class="subtitle-1 mt-4">{{ $t('Loading') }}</span>
       </div>
     </v-overlay>
   </div>

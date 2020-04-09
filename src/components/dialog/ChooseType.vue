@@ -41,7 +41,7 @@
                   </div>
                 </v-col>
               </v-sheet>
-              <v-sheet v-else width="100%" :color="item.briefName.toLowerCase() === c_coinType ? 'grey lighten-4' : ''" class="d-flex flex-row pa-2 justify-center justify-content-center align-items-center" style="cursor:pointer" @click="m_displaySelect(item.id)">
+              <v-sheet v-else width="100%" :color="item.briefName.toLowerCase() === c_coinType.toLowerCase() ? 'grey lighten-4' : ''" class="d-flex flex-row pa-2 justify-center justify-content-center align-items-center" style="cursor:pointer" @click="m_displaySelect(item.id)">
                 <v-col cols="1">
                   <div class="d-flex justify-center">
                     <img :src="require(`../../assets/cointype/${item.briefName}.png`)" height="25" width="auto" />
@@ -157,7 +157,7 @@ export default {
   created() {
     this.d_coinTypeList.forEach((item, index) => {
       item.id = index
-      item.seleted = false
+      item.selected = false
       return item
     })
     this.d_filterTypeList = this.d_coinTypeList
@@ -172,11 +172,11 @@ export default {
       if (this.c_coinType.toUpperCase() === this.d_filterTypeList[index].briefName) {
         return
       }
-      const seletedType = this.d_filterTypeList[index]
+      const selectedType = this.d_filterTypeList[index]
       this.d_filterTypeList.splice(this.d_preSelectedIndex, 1, { ...this.d_filterTypeList[this.d_preSelectedIndex], selected: false })
       this.d_filterTypeList.splice(index, 1, { ...this.d_filterTypeList[index], selected: true })
       this.d_preSelectedIndex = index
-      this.d_selectType = seletedType.briefName
+      this.d_selectType = selectedType.briefName
     },
 
     /**
@@ -184,11 +184,17 @@ export default {
      * @param {string} keywords - the keywords by user input
      */
     m_filterTypeList(keywords) {
+      this.d_filterTypeList = []
       const key = keywords.toLowerCase()
-      this.d_filterTypeList = this.d_coinTypeList.filter(item => {
+      let i = 0
+      this.d_coinTypeList.map(item => {
         const name = item.name.toLowerCase()
         const briefName = item.briefName.toLowerCase()
-        return name.includes(key) || briefName.includes(key)
+        if (name.includes(key) || briefName.includes(key)) {
+          item.id = i++
+          item.selected = false
+          this.d_filterTypeList.push(item)
+        }
       })
     },
     m_confirm() {

@@ -1,6 +1,12 @@
 <template>
   <v-container class="pa-0 send-wrap" fluid>
     <bordercast :show="d_bordercastShow" v-if="d_bordercastShow" @close-dialog="closeBordercast" :signHash="d_signHash" />
+    <v-snackbar v-model="d_snackbar" top color="success" :timeout="0">
+      {{ $t('Transaction Hash') }}{{ d_transactionHash }}
+      <v-btn color="#fff" text @click="d_snackbar = false">
+        {{ $t('Close') }}
+      </v-btn>
+    </v-snackbar>
     <v-card class="pa-3">
       <div class="table">
         <div class="table-header px-3 app-secondary-bg">
@@ -21,9 +27,15 @@
               </v-text-field>
             </div>
             <div class="table-c amount-c">
-              <v-text-field v-model="item.amount" :rules="d_amountRules" :label="$t('Amount')" :hint="$t('Please input amount')">
+              <v-text-field v-model="item.amount" :rules="d_amountRules" :label="$t('Amount')" :hint="$t('Please input amount')" @input="showAllIcon">
                 <div slot="append" class="primary--text">{{ c_coinInfo.symbol.toUpperCase() }}</div>
               </v-text-field>
+              <v-tooltip top v-if="!d_clickAll">
+                <template v-slot:activator="{ on }">
+                  <v-icon class="ml-4" @click="sendAllBalance(index)" v-on="on">mdi-publish</v-icon>
+                </template>
+                <span>{{ $t('All Balances') }}</span>
+              </v-tooltip>
             </div>
             <div class="table-c action-c">
               <v-tooltip top>
@@ -109,12 +121,15 @@ export default {
   },
   data() {
     return {
+      d_transactionHash: '',
+      d_snackbar: false,
       d_feeUrl: 'https://bitcoinfees.earn.com/api/v1/fees/recommended',
       d_utxoList: [],
       d_maxPaidIndex: 0,
       d_needFee: false,
       d_endUtxo: false,
       UnitHelper,
+      d_clickAll: false,
       d_extraFee: 0,
       d_signHash: '',
       d_bordercastShow: false,
@@ -159,7 +174,7 @@ export default {
       return sum
     },
     c_totalFees() {
-      const sizeIn = BN(this.d_maxPaidIndex).times(148)
+      const sizeIn = BN(this.d_maxPaidIndex + 1).times(148)
       const sizeOut = BN(this.d_txOut.length).times(34)
       const sat = BN(sizeIn)
         .plus(sizeOut)
@@ -181,6 +196,22 @@ export default {
     })
   },
   methods: {
+    showAllIcon() {
+      this.d_clickAll = false
+    },
+    sendAllBalance(index) {
+      let preListCount = BN('0')
+      for (let i = 0; i < this.d_txOut.length; i++) {
+        if (index !== i) {
+          preListCount = preListCount.plus(this.d_txOut[i].amount)
+        }
+      }
+      preListCount = preListCount.times(100000000)
+      console.log('prelistcount', preListCount)
+      this.d_maxPaidIndex = this.d_utxoList.length - 1
+      this.d_txOut.splice(index, 1, { ...this.d_txOut[index], amount: UnitHelper(this.c_utxoTotal.minus(this.c_totalFees.plus(preListCount)).toNumber(), 'sat_btc') })
+      this.d_clickAll = true
+    },
     /**
      *  @method - get fee satoshi/byte from internet
      */
@@ -238,26 +269,33 @@ export default {
       }
       return true
     },
-    closeBordercast() {
+    closeBordercast(type, transactionHash) {
+      if (type === 'auto') {
+        this.d_snackbar = true
+        this.d_transactionHash = transactionHash
+      }
       this.d_bordercastShow = false
-      this.d_txOut = []
+      this.d_txOut = [
+        {
+          amount: '',
+          address: ''
+        }
+      ]
     },
     /**
      * @method - get the input index of utxoList
      */
+
     getMaxPaidIndex() {
       let sum = BN('0')
       const len = this.d_utxoList.length
       let i = 0
       for (; i < len; i++) {
         sum = sum.plus(this.d_utxoList[i].value)
-        if (sum.gt(this.c_totalAmounts.plus(this.c_totalFees))) {
+        if (sum.gte(this.c_totalAmounts.plus(this.c_totalFees))) {
           this.d_maxPaidIndex = i
           break
         }
-      }
-      if (i === len) {
-        this.$message.error(this.$t('The available balance is insufficient for payment!'))
       }
     },
     delTxOut(index) {
@@ -294,9 +332,17 @@ export default {
         this.$store.__s('pageLoading', false)
         return
       }
-      await this.signTx()
+      try {
+        await this.signTx()
+      } catch (e) {
+        console.log('错误原因：', e)
+        this.$message.error(this.$t('Unknown Error!'))
+      }
       this.$store.__s('pageLoading', false)
     },
+    /**
+     * 签名交易
+     */
     async signTx() {
       // Organize output data
       const outputs = []
@@ -311,16 +357,14 @@ export default {
         outItem.address = item.address
         outputs.push(outItem)
       }
-      console.log('------------------')
       console.log('输出地址', outputs)
       // Organize input data and calculate change
       const inputs = []
       let prePaidCount = BN(0)
-      let change = 0
+      let change = BN(0)
       for (let i = 0; i <= this.d_maxPaidIndex; i++) {
         const item = {}
         item.address_n = this.getAddressN(this.d_utxoList[i].path)
-        console.log(this.d_utxoList[i].path)
         item.amount = this.d_utxoList[i].value
         item.prev_hash = this.d_utxoList[i].txid
         item.prev_index = this.d_utxoList[i].vout
@@ -330,24 +374,20 @@ export default {
         prePaidCount = prePaidCount.plus(this.d_utxoList[i].value)
         inputs.push(item)
       }
-      console.log('------------------')
       console.log('输入地址', inputs)
-
       change = prePaidCount.minus(this.c_totalAmounts.plus(this.c_totalFees))
-
-      if (prePaidCount.eq(this.c_totalAmounts.plus(this.c_totalFees))) {
+      /*   if (prePaidCount.eq(this.c_totalAmounts.plus(this.c_totalFees))) {
         this.d_extraFee = 0
-      }
-      if (
+      } else if (
         BN('0.0001')
           .times('100000000')
           .gt(change)
       ) {
         // need extra fees
-        this.$message.info(this.t('If the payment is too fragmentary, additional 0.0001 currency handling fee will be paid'))
+        this.$message.info(this.$t('If the payment is too fragmentary, additional 0.0001 currency handling fee will be paid'))
         this.d_extraFee = BN('0.0001').times('100000000')
         change = prePaidCount.minus(this.c_totalAmounts.plus(this.c_totalFees))
-      }
+      } */
 
       // get change address
       const res = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/xpub/${this.c_usb.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
@@ -357,10 +397,8 @@ export default {
         amount: change.toNumber(),
         script_type: this.c_coinProtocol === 49 ? 'PAYTOP2SHWITNESS' : 'PAYTOADDRESS'
       }
-      console.log(this.c_coinProtocol === 49 ? 'PAYTOP2SHWITNESS' : 'PAYTOADDRESS')
       // 零钱地址
-      console.log('零钱path', `${this.c_coinProtocol}'/${this.c_coinInfo.slip44}'/0'/1/${usedTokens}`)
-      if (change) {
+      if (changeObject.amount) {
         outputs.push(changeObject)
       }
       const result = await this.$usb.signTx({
@@ -389,6 +427,7 @@ export default {
   i18n: {
     messages: {
       zhCN: {
+        'All Balances': '发送所有余额',
         'Transaction signature failed': '签名交易失败',
         'Transaction signature success': '签名交易成功',
         'Please enter a valid Address': '请输入有效的地址',
@@ -419,7 +458,9 @@ export default {
         Fees: '手续费',
         Total: '合计',
         Fee: '费率',
-        Review: '核对'
+        Review: '核对',
+        'Unknown Error!': '未知错误',
+        'Transaction Hash': '交易哈希'
       }
     }
   }

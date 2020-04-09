@@ -192,7 +192,8 @@
                     <v-tooltip top>
                       <template v-slot:activator="{ on }">
                         <span class="number" v-on="on">
-                          {{ item.txid.replace(/^(.......).+(.......)$/g, '$1 ######### $2') }}
+                          <!--  {{ item.txid.replace(/^(.......).+(.......)$/g, '$1 ######### $2') }} -->
+                          {{ item.txid }}
                         </span>
                       </template>
                       <span>
@@ -336,6 +337,7 @@ export default {
     d_unconfirmedTxs: 0,
     d_transactionCount: 0,
     d_addressCount: 0,
+    d_address: '',
     d_txs: [],
     d_loading: {
       upBalance: false,
@@ -354,6 +356,10 @@ export default {
       this.upAll()
     }
   },
+  computed: {
+    c_coinInfo: vm => vm.$store.__s('coinInfo'),
+    c_protocol: vm => vm.$store.__s('coinProtocol')
+  },
   async created() {
     const path = this.$route.path
     for (;;) {
@@ -363,14 +369,32 @@ export default {
     }
   },
   methods: {
+    async getEthResult() {
+      const result = await this.$usb.cmd('EthereumGetAddress', {
+        address_n: [(this.c_protocol | 0x80000000) >>> 0, (this.c_coinInfo.slip44 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, 0],
+        show_display: false
+      })
+      this.d_address = result.data.address
+      const r = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/address/${this.d_address}?page=1&pageSize=1000&details=txs`)
+      console.log('r', r)
+      return r
+    },
     upAll() {
       this.upBalance()
       this.upRate()
     },
     async upBalance() {
       this.d_loading.upBalance = true
-      const { data } = await Axios.get(`https://api.abckey.com/${this.coin.toLowerCase()}/xpub/${this.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
-      if (data.error) return
+      let result = null
+      if (this.coin === 'eth') {
+        result = await this.getEthResult()
+      } else {
+        result = await Axios.get(`https://api.abckey.com/${this.coin.toLowerCase()}/xpub/${this.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
+      }
+      console.log(result)
+      if (result.error) return
+      const data = result.data
+      console.log('data', data)
       this.d_balance = this.sat2btc(data.balance)
       this.d_totalReceived = this.sat2btc(data.totalReceived)
       this.d_totalSent = this.sat2btc(data.totalSent)

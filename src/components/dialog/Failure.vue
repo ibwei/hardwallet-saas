@@ -26,6 +26,7 @@ export default {
   },
   watch: {
     c_msg(msg) {
+      this.$store.__s('pageLoading', false)
       if (msg?.type === 'Failure') {
         this.d_whiteList.map(item => {
           if (msg.data.code.indexOf(item) === -1) {
