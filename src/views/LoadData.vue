@@ -21,7 +21,7 @@ export default {
     } else {
       await this.m_getPublickKey()
     }
-    if (this.$route.path !== `${this.coinInfo.symbol}/wallet/account`) this.$router.push({ path: `/${this.coinInfo.symbol}/wallet/account` })
+    if (this.$route.path !== `/${this.coinInfo.symbol}/wallet/account`) this.$router.push({ path: `/${this.coinInfo.symbol}/wallet/account` })
   },
   computed: {
     ...mapState(['brand', 'coinInfo'])

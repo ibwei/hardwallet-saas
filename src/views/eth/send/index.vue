@@ -49,54 +49,36 @@
         </div>
       </div>
       <div class="form">
-        <div class="left">
-          <v-btn rounded class="plus-btn" color="primary" @click="addRecipient()">
-            <v-icon size="16">mdi-plus</v-icon>
-            {{ $t('Add recipient') }}
-          </v-btn>
-        </div>
         <div class="right body-2">
           <v-chip outlined class="chip body-2"
             >{{ $t('Amounts') }}
-            {{
-              UnitHelper(c_totalAmounts, 'sat_btc')
-                .decimalPlaces(8)
-                .toString(10)
-            }}
+            {{ UnitHelper(c_totalAmounts, 'wei_eth').toString(10) }}
             {{ c_coinInfo.symbol.toUpperCase() }}</v-chip
           >
           <v-chip outlined class="chip body-2"
             >{{ $t('Fees') }}
-            {{
-              UnitHelper(c_totalFees, 'sat_btc')
-                .format(8)
-                .toString(10)
-            }}
+            {{ UnitHelper(c_totalFees, 'wei_eth').toString(10) }}
             {{ c_coinInfo.symbol.toUpperCase() }}</v-chip
           >
           <v-chip outlined color="primary" class="chip"
             >{{ $t('Total') }}
-            {{
-              UnitHelper(c_total, 'sat_btc')
-                .format(8)
-                .toString(10)
-            }}
+            {{ UnitHelper(c_total, 'wei_eth').toString(10) }}
             {{ c_coinInfo.symbol.toUpperCase() }}</v-chip
           >
         </div>
       </div>
       <div class="d-flex flex-row justify-end align-center">
-        <v-row justify="center">
-          <v-col cols="4" class="offset-5">
-            <v-combobox :value="d_fee" :items="d_feeList" :label="$t('Fee')" dense @input="handleFeeInput($event)" :rules="d_feeRule" outlined>
-              <div slot="append" class="primary--text">Sat/b</div>
-              <template v-slot:item="{ item }">
-                <div class="d-flex justify-space-between" style="width: 100%">
-                  <span>{{ d_feeHelpList[item].text }}:</span>
-                  <span>{{ item }} Sat/b</span>
-                </div>
+        <v-row>
+          <v-col cols="9">
+            <div class="subtitle-2 text-left mb-4">{{ $t('Transaction Fee') }}</div>
+            <v-slider thumb-label v-model="d_zoom" ticks="always" persistent-hint :max="d_fastest" :min="d_safeLow">
+              <template v-slot:prepend>
+                <span class="subtitle-2" @click="zoomOut">low</span>
               </template>
-            </v-combobox>
+              <template v-slot:append>
+                <span @click="zoomIn" class="subtitle-2">hight</span>
+              </template>
+            </v-slider>
           </v-col>
           <v-col cols="3" class="text-sm-right pa-0 mt-3">
             <v-btn color="success" rounded @click="checkAndSend()">{{ $t('Check and send') }}</v-btn>
@@ -110,24 +92,31 @@
 <script>
 import Axios from 'axios'
 import clipboard from 'clipboard-polyfill'
-import BN from 'bignumber.js'
 import UnitHelper from '@abckey/unit-helper'
 import AddressHelper from '@abckey/address-helper'
 import Bordercast from './components/Bordercast'
+import ETH from '@/mixins/eth'
 export default {
   name: 'Send',
   components: {
     Bordercast
   },
+  mixins: [ETH],
   data() {
     return {
+      d_media: 0,
+      d_alarm: 0,
+      d_zoom: 5,
+      d_safeLow: '5',
+      d_average: '8',
+      d_fast: '13',
+      d_fastest: '20',
       d_transactionHash: '',
       d_snackbar: false,
-      d_feeUrl: 'https://bitcoinfees.earn.com/api/v1/fees/recommended',
+      d_gasUrl: 'https://ethgasstation.info/api/ethgasAPI.json?api-key=1f1087b62ec4dc2e2f80a991426c26f9380b2a8d25821836da5bb65ed8ce',
+      d_gasLimit: 21000,
       d_utxoList: [],
       d_maxPaidIndex: 0,
-      d_needFee: false,
-      d_endUtxo: false,
       UnitHelper,
       d_clickAll: false,
       d_extraFee: 0,
@@ -136,7 +125,7 @@ export default {
       d_txOut: [
         {
           address: '',
-          amount: '0'
+          amount: 0
         }
       ],
       d_addressRules: [value => AddressHelper.test(value, this.c_coinInfo.symbol) || this.$t('Invalid address')],
@@ -146,105 +135,71 @@ export default {
           return pattern.test(value) || this.$t('Invalid amount')
         }
       ],
-      d_fee: '4',
-      d_feeRule: [
-        fee => {
-          const pattern = /^[1-9][0-9]?/
-          return pattern.test(fee) ? true : this.$t('Invalid fee')
-        }
-      ],
-      d_feeList: [19, 15, 1],
       d_feeHelpList: {}
     }
   },
   computed: {
     c_totalAmounts() {
-      let sum = BN('0')
-      for (const key in this.d_txOut) {
-        sum = sum.plus(this.d_txOut[key].amount)
-      }
-      return sum.times(100000000)
+      return UnitHelper(this.d_txOut[0].amount, 'eth_wei')
     },
     c_utxoTotal() {
-      let sum = BN('0')
-      const len = this.d_utxoList.length
-      for (let i = 0; i < len; i++) {
-        sum = sum.plus(this.d_utxoList[i].value)
-      }
-      return sum
+      return UnitHelper(this.d_utxoList[0].amount)
     },
     c_totalFees() {
-      const sizeIn = BN(this.d_maxPaidIndex + 1).times(148)
-      const sizeOut = BN(this.d_txOut.length).times(34)
-      const sat = BN(sizeIn)
-        .plus(sizeOut)
-        .plus(10)
-        .times(this.d_fee)
-      return sat.plus(this.d_extraFee)
+      const fee = UnitHelper(this.d_zoom).plus(this.d_gasLimit)
+      return UnitHelper(fee, 'gwei_wei')
     },
     c_total: vm => vm.c_totalAmounts.plus(vm.c_totalFees),
     c_xpub: vm => vm.$store.__s('usb.xpub'),
     c_coinInfo: vm => vm.$store.__s('coinInfo'),
     c_coinProtocol: vm => vm.$store.__s('coinProtocol'),
     c_pageLoading: vm => vm.$store.__s('pageLoading'),
-    c_usb: vm => vm.$store.__s('usb')
+    c_usb: vm => vm.$store.__s('usb'),
+    eth: vm => vm.$store.__s('eth')
   },
   created() {
     this.$nextTick(() => {
       this.getUtxoList()
-      this.getFeePerSatoshis()
+      this.getFeeRate()
     })
   },
   methods: {
+    zoomOut() {
+      this.d_zoom = this.d_safeLow
+    },
+    zoomIn() {
+      this.d_zoom = this.d_fastest
+    },
     showAllIcon() {
       this.d_clickAll = false
     },
-    sendAllBalance(index) {
-      let preListCount = BN('0')
-      for (let i = 0; i < this.d_txOut.length; i++) {
-        if (index !== i) {
-          preListCount = preListCount.plus(this.d_txOut[i].amount)
-        }
+    sendAllBalance() {
+      this.d_txOut.amount = this.c_utxoTotal.minus(this.c_totalFees).toNumber()
+      if (this.c_utxoTotal.toNumber() === 0) {
+        this.$message.error(this.$t('Balance is empty!'))
+        return
       }
-      preListCount = preListCount.times(100000000)
-      console.log('prelistcount', preListCount)
-      this.d_maxPaidIndex = this.d_utxoList.length - 1
-      this.d_txOut.splice(index, 1, { ...this.d_txOut[index], amount: UnitHelper(this.c_utxoTotal.minus(this.c_totalFees.plus(preListCount)).toNumber(), 'sat_btc') })
       this.d_clickAll = true
     },
     /**
      *  @method - get fee satoshi/byte from internet
      */
-    async getFeePerSatoshis() {
-      const result = await Axios.get(this.d_feeUrl)
+    async getFeeRate() {
+      const result = await Axios.get(this.d_gasUrl)
       if (result.status !== 200) {
         return
       }
-      if (result.data.fastestFee === result.data.halfHourFee) {
-        result.data.halfHourFee--
-      }
-      this.d_feeList = [result.data.fastestFee, result.data.halfHourFee, result.data.hourFee]
-      this.d_fee = this.d_feeList[0]
-      for (let i = 0; i < 3; i++) {
-        if (i === 0) {
-          this.d_feeHelpList[this.d_feeList[i]] = {
-            text: this.$t('high')
-          }
-        } else if (i === 1) {
-          this.d_feeHelpList[this.d_feeList[i]] = {
-            text: this.$t('middle')
-          }
-        } else {
-          this.d_feeHelpList[this.d_feeList[i]] = {
-            text: this.$t('low')
-          }
-        }
-      }
+      console.log(result)
+      this.d_safeLow = String(Math.floor(result.data.safeLow / 10))
+      this.d_average = String(Math.floor(result.data.average / 10))
+      this.d_fast = String(Math.floor(result.data.fast / 10))
+      this.d_fastest = String(Math.floor(result.data.fastest / 10))
     },
     async getUtxoList() {
-      const result = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/utxo/${this.c_xpub}?confirme=true`)
-      if (result.status === 200) {
-        this.d_utxoList = result.data
+      const address = await this.ethGetAddress()
+      const result = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/address/${address}?details=basic`)
+      if (result.status === 200 && !result.error) {
+        this.d_utxoList.push({ amount: result?.data?.balance ? result?.data?.balance : 0, address: result?.data?.address, nonce: result.data.nonce })
       } else {
         this.$message.error(this.$t('The network breakdown!'))
       }
@@ -287,31 +242,17 @@ export default {
      */
 
     getMaxPaidIndex() {
-      let sum = BN('0')
-      const len = this.d_utxoList.length
-      let i = 0
-      for (; i < len; i++) {
-        sum = sum.plus(this.d_utxoList[i].value)
-        if (sum.gte(this.c_totalAmounts.plus(this.c_totalFees))) {
-          this.d_maxPaidIndex = i
-          break
-        }
-      }
+      this.d_maxPaidIndex = 0
     },
     delTxOut(index) {
+      if (this.d_txOut.length === 1) {
+        this.$message.warning(this.$t("The last one can't be delete!"))
+        return
+      }
       this.d_txOut.splice(index, 1)
     },
     async paste(item) {
       item.address = await clipboard.readText()
-    },
-    addRecipient() {
-      this.d_txOut.push({
-        address: '',
-        amount: 0
-      })
-    },
-    handleFeeInput(fee) {
-      this.d_fee = fee
     },
     getAddressN(pathString) {
       const address_n = []
@@ -332,79 +273,39 @@ export default {
         this.$store.__s('pageLoading', false)
         return
       }
+      await this.signTx()
       try {
-        await this.signTx()
       } catch (e) {
         console.log('错误原因：', e)
         this.$message.error(this.$t('Unknown Error!'))
       }
       this.$store.__s('pageLoading', false)
     },
+    toHex(num) {
+      let res = UnitHelper(num).toString(16)
+      if (res.length % 2 !== 0) res = `0${res}`
+      return res
+    },
+
     /**
      * 签名交易
      */
     async signTx() {
+      console.log(this.c_totalAmounts.toString(16))
+      let value = this.c_totalAmounts.toString(16)
+      if (value.length % 2 !== 0) {
+        value = `0${value}`
+      }
+      console.log(value)
       // Organize output data
-      const outputs = []
-      const outLength = this.d_txOut.length
-      for (let i = 0; i < outLength; i++) {
-        const outItem = {}
-        const item = this.d_txOut[i]
-        outItem.amount = BN(item.amount)
-          .times(100000000)
-          .toNumber()
-        outItem.script_type = 'PAYTOADDRESS'
-        outItem.address = item.address
-        outputs.push(outItem)
-      }
-      console.log('输出地址', outputs)
-      // Organize input data and calculate change
-      const inputs = []
-      let prePaidCount = BN(0)
-      let change = BN(0)
-      for (let i = 0; i <= this.d_maxPaidIndex; i++) {
-        const item = {}
-        item.address_n = this.getAddressN(this.d_utxoList[i].path)
-        item.amount = this.d_utxoList[i].value
-        item.prev_hash = this.d_utxoList[i].txid
-        item.prev_index = this.d_utxoList[i].vout
-        item.script_type = this.d_utxoList[i].path.includes('49') ? 'SPENDP2SHWITNESS' : 'SPENDADDRESS'
-        const result = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/tx/${this.d_utxoList[i].txid}`)
-        item.sequence = result.data.vin[0].sequence
-        prePaidCount = prePaidCount.plus(this.d_utxoList[i].value)
-        inputs.push(item)
-      }
-      console.log('输入地址', inputs)
-      change = prePaidCount.minus(this.c_totalAmounts.plus(this.c_totalFees))
-      /*   if (prePaidCount.eq(this.c_totalAmounts.plus(this.c_totalFees))) {
-        this.d_extraFee = 0
-      } else if (
-        BN('0.0001')
-          .times('100000000')
-          .gt(change)
-      ) {
-        // need extra fees
-        this.$message.info(this.$t('If the payment is too fragmentary, additional 0.0001 currency handling fee will be paid'))
-        this.d_extraFee = BN('0.0001').times('100000000')
-        change = prePaidCount.minus(this.c_totalAmounts.plus(this.c_totalFees))
-      } */
-
-      // get change address
-      const res = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/xpub/${this.c_usb.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
-      const usedTokens = res.data.usedTokens ? res.data.usedTokens : '0'
-      const changeObject = {
-        address_n: this.getAddressN(`m/${this.c_coinProtocol}'/${this.c_coinInfo.slip44}'/0'/1/${usedTokens}`),
-        amount: change.toNumber(),
-        script_type: this.c_coinProtocol === 49 ? 'PAYTOP2SHWITNESS' : 'PAYTOADDRESS'
-      }
-      // 零钱地址
-      if (changeObject.amount) {
-        outputs.push(changeObject)
-      }
-      const result = await this.$usb.signTx({
-        coin_name: this.c_coinInfo.name,
-        inputs,
-        outputs
+      const result = await this.$usb.cmd('EthereumSignTx', {
+        address_n: [(44 | 0x80000000) >>> 0, (this.c_coinInfo.slip44 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.eth.account],
+        nonce: Buffer.from(this.toHex(this.d_utxoList[0].nonce), 'hex'),
+        gas_price: Buffer.from(this.toHex(UnitHelper(this.d_zoom, 'gwei_wei')), 'hex'),
+        gas_limit: Buffer.from(this.toHex(this.d_gasLimit), 'hex'),
+        to: this.d_txOut[0].address,
+        chain_id: 1,
+        value: Buffer.from(value, 'hex')
       })
       console.log('signTx', result)
       const signText = result?.data?.serialized_tx
@@ -427,6 +328,8 @@ export default {
   i18n: {
     messages: {
       zhCN: {
+        'Balance is empty!': '账户余额为空',
+        'Transaction Fee': '交易手续费',
         'All Balances': '发送所有余额',
         'Transaction signature failed': '签名交易失败',
         'Transaction signature success': '签名交易成功',

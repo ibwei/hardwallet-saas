@@ -5,10 +5,9 @@
         <v-col class="grow">{{ $t('Your browser is not support webusb.') }}</v-col>
       </v-row>
     </v-alert>
-
     <div class="content">
-      <div class="d-flex flex-row justify-center align-center">
-        <img class="mr-4" :src="c_logo" height="30" />
+      <div class="d-flex flex-column justify-center align-center">
+        <img :src="c_logo" height="90" />
         <h1 class="title">{{ c_brand.name === 'abckey' ? $t('Please Connect ABCKEY') : $t('Please Connect DF_UKey...') }}</h1>
       </div>
       <v-btn dark rounded color="primary" :disabled="d_usb ? false : true" @click="connect" class="mt-6">
@@ -84,6 +83,7 @@ export default {
   flex-flow: column nowrap;
   justify-content: center;
   align-content: center;
+  margin-top: -100px;
 }
 .footer {
   height: 80px;

@@ -299,6 +299,10 @@ export default {
       }
     },
     delTxOut(index) {
+      if (this.d_txOut.length === 1) {
+        this.$message.warning(this.$t("The last one can't be delete!"))
+        return
+      }
       this.d_txOut.splice(index, 1)
     },
     async paste(item) {
