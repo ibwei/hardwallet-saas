@@ -93,9 +93,11 @@
 import Axios from 'axios'
 import clipboard from 'clipboard-polyfill'
 import UnitHelper from '@abckey/unit-helper'
+import AbcUtils from 'abc-utils'
 import AddressHelper from '@abckey/address-helper'
 import Bordercast from './components/Bordercast'
 import ETH from '@/mixins/eth'
+import { Transaction } from 'ethereumjs-tx'
 export default {
   name: 'Send',
   components: {
@@ -146,7 +148,7 @@ export default {
       return UnitHelper(this.d_utxoList[0].amount)
     },
     c_totalFees() {
-      const fee = UnitHelper(this.d_zoom).plus(this.d_gasLimit)
+      const fee = UnitHelper(this.d_zoom).times(this.d_gasLimit)
       return UnitHelper(fee, 'gwei_wei')
     },
     c_total: vm => vm.c_totalAmounts.plus(vm.c_totalFees),
@@ -164,6 +166,9 @@ export default {
     })
   },
   methods: {
+    createRawData(data) {
+      return new Transaction(data).serialize().toString('hex')
+    },
     zoomOut() {
       this.d_zoom = this.d_safeLow
     },
@@ -174,7 +179,7 @@ export default {
       this.d_clickAll = false
     },
     sendAllBalance() {
-      this.d_txOut.amount = this.c_utxoTotal.minus(this.c_totalFees).toNumber()
+      this.d_txOut[0].amount = UnitHelper(this.c_utxoTotal.minus(this.c_totalFees), 'wei_eth')
       if (this.c_utxoTotal.toNumber() === 0) {
         this.$message.error(this.$t('Balance is empty!'))
         return
@@ -189,11 +194,11 @@ export default {
       if (result.status !== 200) {
         return
       }
-      console.log(result)
-      this.d_safeLow = String(Math.floor(result.data.safeLow / 10))
-      this.d_average = String(Math.floor(result.data.average / 10))
-      this.d_fast = String(Math.floor(result.data.fast / 10))
-      this.d_fastest = String(Math.floor(result.data.fastest / 10))
+      this.d_safeLow = Math.floor(result.data.safeLow / 10)
+      this.d_average = Math.floor(result.data.average / 10)
+      this.d_fast = Math.floor(result.data.fast / 10)
+      this.d_fastest = Math.floor(result.data.fastest / 10)
+      this.d_zoom = parseInt(this.d_average)
     },
     async getUtxoList() {
       const address = await this.ethGetAddress()
@@ -230,12 +235,7 @@ export default {
         this.d_transactionHash = transactionHash
       }
       this.d_bordercastShow = false
-      this.d_txOut = [
-        {
-          amount: '',
-          address: ''
-        }
-      ]
+      this.d_txOut[0].amount = 0
     },
     /**
      * @method - get the input index of utxoList
@@ -284,33 +284,68 @@ export default {
     toHex(num) {
       let res = UnitHelper(num).toString(16)
       if (res.length % 2 !== 0) res = `0${res}`
-      return res
+      return String(res)
     },
-
+    toHex1(num) {
+      const res = UnitHelper(num).toString(16)
+      return '0x' + res
+    },
     /**
      * 签名交易
      */
     async signTx() {
-      console.log(this.c_totalAmounts.toString(16))
       let value = this.c_totalAmounts.toString(16)
       if (value.length % 2 !== 0) {
         value = `0${value}`
       }
-      console.log(value)
       // Organize output data
-      const result = await this.$usb.cmd('EthereumSignTx', {
+      const txParams = {
         address_n: [(44 | 0x80000000) >>> 0, (this.c_coinInfo.slip44 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.eth.account],
-        nonce: Buffer.from(this.toHex(this.d_utxoList[0].nonce), 'hex'),
-        gas_price: Buffer.from(this.toHex(UnitHelper(this.d_zoom, 'gwei_wei')), 'hex'),
+        nonce: Buffer.from(this.toHex(Number(this.d_utxoList[0].nonce)), 'hex'),
+        gas_price: Buffer.from(
+          this.toHex(
+            UnitHelper(1, 'gwei_wei')
+              .times(this.d_zoom)
+              .toString(10)
+          ),
+          'hex'
+        ),
         gas_limit: Buffer.from(this.toHex(this.d_gasLimit), 'hex'),
         to: this.d_txOut[0].address,
         chain_id: 1,
         value: Buffer.from(value, 'hex')
-      })
-      console.log('signTx', result)
-      const signText = result?.data?.serialized_tx
-      if (signText) {
-        this.d_signHash = signText
+      }
+
+      const result = await this.$usb.cmd('EthereumSignTx', txParams)
+      console.log(result)
+
+      // The second parameter is not necessary if these values are used
+
+      // const serializedTx = tx.serialize().toString('hex')
+      if (result?.data?.signature_r) {
+        const signatureR = Buffer.from(result.data.signature_r, 'base64').toString('hex')
+        const signatureS = Buffer.from(result.data.signature_s, 'base64').toString('hex')
+        // 广播授权
+        const txData = {
+          nonce: AbcUtils.eth.addHexPrefix(this.toHex(this.d_utxoList[0].nonce)),
+          gasPrice: AbcUtils.eth.addHexPrefix(
+            this.toHex(
+              UnitHelper(1, 'gwei_wei')
+                .times(this.d_zoom)
+                .toString(10)
+            )
+          ),
+          gasLimit: AbcUtils.eth.addHexPrefix(this.toHex(this.d_gasLimit)),
+          to: AbcUtils.eth.addHexPrefix(this.d_txOut[0].address),
+          // value: AbcUtils.eth.addHexPrefix(this.toHex(this.c_totalAmounts.toString())),
+          value: '0x' + value,
+          r: AbcUtils.eth.addHexPrefix(signatureR),
+          s: AbcUtils.eth.addHexPrefix(signatureS),
+          v: AbcUtils.eth.addHexPrefix(this.toHex(result.data.signature_v))
+        }
+        console.log('tx.data', txData)
+        const serializedTx = this.createRawData(txData)
+        this.d_signHash = `0x${serializedTx}`
         this.d_bordercastShow = true
       } else {
         this.$message.error(this.$t('Transaction signature failed!'))

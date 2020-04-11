@@ -66,19 +66,19 @@ export default {
   border-radius: 4px;
   text-align: left;
   padding-right: 30px;
+  padding: 30px;
   .content {
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-start;
     align-items: center;
-    padding-left: 20px;
     font-size: 16px;
     font-weight: bold;
   }
 }
 .m-icon {
   font-size: 20px;
-  margin-right: 10px;
+  margin-right: 20px;
 }
 .init {
   background-color: transparent;
