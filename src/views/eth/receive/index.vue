@@ -250,7 +250,7 @@ export default {
   margin: 20px auto;
 }
 .s-address {
-  width: 350px;
+  width: 380px;
   text-align: center;
   color: rgba(0, 0, 0, 0.2);
   border-radius: 2px;

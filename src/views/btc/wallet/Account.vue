@@ -1,6 +1,6 @@
 <template>
   <v-container class="account-wrap">
-    <wallet-account :coin="c_coinInfo.symbol" :cash="c_cashUnitItems[c_cashUnitIndex]" :xpub="c_xpub" />
+    <wallet-account :coin="c_coinInfo.symbol" :cash="c_cashUnit" :xpub="c_xpub" />
   </v-container>
 </template>
 
@@ -11,6 +11,7 @@ export default {
   name: 'Account',
   mixins: [MixWallet],
   computed: {
+    c_cashUnit: vm => vm.$store.__s('cashUnit'),
     c_xpub: vm => vm.$store.__s('usb.xpub')
   }
 }

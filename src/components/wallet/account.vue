@@ -361,6 +361,7 @@ export default {
     c_protocol: vm => vm.$store.__s('coinProtocol')
   },
   async created() {
+    console.log(this.cash)
     const path = this.$route.path
     for (;;) {
       if (this.$route.path !== path) break

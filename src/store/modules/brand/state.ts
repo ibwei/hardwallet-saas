@@ -1,6 +1,6 @@
 export default {
   name: 'DF-UKey',
-  buildPath: '/pro',
+  buildPath: '/',
   logo: 'dflogo.png',
   favicon: 'favicon.ico',
   domain: 'dfukey.com'

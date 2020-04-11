@@ -1,6 +1,5 @@
 <template>
   <div>
-    <span>bitcoin</span>
     <router-view />
   </div>
 </template>

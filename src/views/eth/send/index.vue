@@ -240,7 +240,6 @@ export default {
     /**
      * @method - get the input index of utxoList
      */
-
     getMaxPaidIndex() {
       this.d_maxPaidIndex = 0
     },
@@ -318,8 +317,6 @@ export default {
 
       const result = await this.$usb.cmd('EthereumSignTx', txParams)
       console.log(result)
-
-      // The second parameter is not necessary if these values are used
 
       // const serializedTx = tx.serialize().toString('hex')
       if (result?.data?.signature_r) {
