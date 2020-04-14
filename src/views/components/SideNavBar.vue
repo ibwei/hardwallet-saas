@@ -120,7 +120,7 @@ export default {
   },
   watch: {
     $route() {
-      window.document.title = this.$route.meta.title ? this.$route.meta.title : 'abckey-webusb'
+      window.document.title = this.$route.meta.title ? this.$route.meta.title : 'dfukey.com'
     },
     /**
      * @method - Hook function - Execute after the device is connected
