@@ -88,6 +88,18 @@ export default {
           briefName: 'BTC'
         },
         {
+          name: 'Ethereum',
+          briefName: 'ETH'
+        },
+        {
+          name: 'Litecoin',
+          briefName: 'LTC'
+        }
+        /*  {
+          name: 'Tether USD',
+          briefName: 'USDT'
+        } */
+        /*  {
           name: 'Bitcoin Cash',
           briefName: 'BCH'
         },
@@ -108,10 +120,6 @@ export default {
           briefName: 'DOGE'
         },
         {
-          name: 'Litecoin',
-          briefName: 'LTC'
-        },
-        {
           name: 'Namecoin',
           briefName: 'NMC'
         },
@@ -122,10 +130,6 @@ export default {
         {
           name: 'Zcash',
           briefName: 'ZEC'
-        },
-        {
-          name: 'Ethereum',
-          briefName: 'ETH'
         },
         {
           name: 'Ethereum Classic',
@@ -146,7 +150,7 @@ export default {
         {
           name: 'Tezos',
           briefName: 'XTZ'
-        }
+        } */
       ]
     }
   },

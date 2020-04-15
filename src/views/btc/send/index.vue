@@ -2,8 +2,10 @@
   <v-container class="pa-0 send-wrap" fluid>
     <bordercast :show="d_bordercastShow" v-if="d_bordercastShow" @close-dialog="closeBordercast" :signHash="d_signHash" />
     <v-snackbar v-model="d_snackbar" top color="success" :timeout="0">
-      {{ $t('Transaction Hash') }}{{ d_transactionHash }}
-      <v-btn color="#fff" text @click="d_snackbar = false">
+      <v-icon color="white" class="mr-4">mdi-cast</v-icon>
+      <span class="subtitle-2  mr-1">{{ $t('TX Hash') }} : </span>
+      <span class="subtitle-1"> {{ this.d_transactionHash }}</span>
+      <v-btn color="#fff" text @click="d_snackbar = close" class="mr-2 ml-2">
         {{ $t('Close') }}
       </v-btn>
     </v-snackbar>

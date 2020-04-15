@@ -1,5 +1,24 @@
 <template>
   <v-container class="pa-0 text-left" fluid>
+    <v-card class="px-3 mb-3">
+      <v-row justify="center" align="center">
+        <v-col cols="2" class="text-center">
+          <span class="subtitle-2">{{ $t('Current Account') }}</span>
+        </v-col>
+        <v-col cols="1">
+          <v-divider vertical style="height:30px;" />
+        </v-col>
+        <v-col cols="6">
+          <span class="subtitle-2">{{ c_address }}</span>
+        </v-col>
+        <v-col cols="1">
+          <v-divider vertical style="height:30px;" />
+        </v-col>
+        <v-col cols="2" class="">
+          <v-btn class="subtitle-2" color="primary" text @click="changeAccount">{{ $t('Change') }}</v-btn>
+        </v-col>
+      </v-row>
+    </v-card>
     <v-card class="px-3">
       <v-row>
         <v-col class="text-center">
@@ -336,7 +355,8 @@ export default {
   mixins: [ETH],
   computed: {
     c_coinInfo: vm => vm.$store.__s('coinInfo'),
-    c_protocol: vm => vm.$store.__s('coinProtocol')
+    c_protocol: vm => vm.$store.__s('coinProtocol'),
+    c_address: vm => vm.$store.__s('eth.address')
   },
   async created() {
     const path = this.$route.path
@@ -347,9 +367,12 @@ export default {
     }
   },
   methods: {
+    changeAccount() {
+      this.$message.info(this.$t('Tips:Currently only supports a single account'))
+    },
     async getEthResult() {
       this.d_address = await this.ethGetAddress()
-      console.log(this.d_address)
+      this.$store.__s('eth.address', this.d_address)
       const r = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/address/${this.d_address}?page=1&pageSize=1000&details=txs`)
       return r
     },
@@ -393,11 +416,7 @@ export default {
         .times(rate)
         .dp(2, 1)
         .toFormat(),
-    unix2utc: time =>
-      new Date(time * 1000)
-        .toJSON()
-        .substr(0, 19)
-        .replace('T', ' '),
+    unix2utc: time => new Date(time * 1000).toLocaleString(),
     _fixTxs(txs) {
       if (!txs) return
       for (let i = 0; i < txs?.length; i++) {
@@ -423,6 +442,9 @@ export default {
   i18n: {
     messages: {
       zhCN: {
+        'Tips:Currently only supports a single account': '目前仅支持单一账户,多用户尚未开放',
+        Change: '切换账号',
+        'Current Account': '当前账号',
         Balance: '余额',
         Convert: '折合',
         Rate: '汇率',

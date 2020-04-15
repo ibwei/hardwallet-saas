@@ -2,7 +2,7 @@
   <v-navigation-drawer :value="true" class="elevation-4" app permanent :width="c_fold ? 90 : 250" @mouseenter.native="changeFold(false)">
     <v-row class="d-flex align-center text-left ma-0" :class="c_fold ? 'justify-center' : 'justify-start'">
       <v-col :cols="c_fold ? '12' : '4'">
-        <img @click="$store.__s('dialog.chooseType', true)" :src="c_coinPicture" class="ma-2 mt-4 coin-type" height="40" width="auto" />
+        <img @click="openTypeDialog" :src="c_coinPicture" class="ma-2 mt-4 coin-type" height="40" width="auto" />
       </v-col>
       <v-col cols="8" class="pa-0" v-if="!c_fold">
         <div class="d-flex flex-column justify-start align-start text-left">
@@ -142,6 +142,10 @@ export default {
     this.initCoinInfo()
   },
   methods: {
+    openTypeDialog() {
+      this.$store.__s('dialog.chooseType', true)
+      this.$store.__s('pageLoading', false)
+    },
     changeFold(status) {
       this.$store.__s('navbarFold', status)
     },

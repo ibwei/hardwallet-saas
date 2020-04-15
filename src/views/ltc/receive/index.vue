@@ -104,11 +104,19 @@ export default {
   computed: {
     ...mapState(['usb', 'pageLoading']),
     c_coinInfo: vm => vm.$store.__s('coinInfo'),
+    c_chooseType: vm => vm.$store.__s('dialog.chooseType'),
     c_protocol() {
       if (Reflect.has(this.c_coinInfo.bip, '49')) {
         return 49
       } else {
         return 44
+      }
+    }
+  },
+  watch: {
+    c_chooseType(newV) {
+      if (newV) {
+        this._hideOverlay()
       }
     }
   },

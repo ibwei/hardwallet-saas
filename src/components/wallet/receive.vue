@@ -404,11 +404,7 @@ export default {
         .times(rate)
         .dp(2, 1)
         .toFormat(),
-    unix2utc: time =>
-      new Date(time * 1000)
-        .toJSON()
-        .substr(0, 19)
-        .replace('T', ' '),
+    unix2utc: time => new Date(time * 1000).toLocaleString(),
     _fixTxs(txs, tokens) {
       for (let i = 0; i < txs.length; i++) {
         const oldValue = i + 1 === txs.length ? 0 : txs[i + 1].value
