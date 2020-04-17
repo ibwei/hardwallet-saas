@@ -142,7 +142,7 @@ export default {
       document.getElementsByClassName('qr')[0].style.top = coordinate.y - 60 + 'px'
       console.log(this.c_protocol)
 
-      await this.$usb.getAddr({
+      await this.$usb.cmd('GetAddress', {
         coin_name: this.c_coinInfo.name,
         address_n: [(this.c_protocol | 0x80000000) >>> 0, (this.coinInfo.slip44 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.d_addressList[this.d_selectedId].index],
         script_type: this.c_protocol === 49 ? 'SPENDP2SHWITNESS' : 'SPENDADDRESS',
@@ -200,7 +200,7 @@ export default {
         return
       }
       try {
-        const result = await this.$usb.getAddr({
+        const result = await this.$usb.cmd('GetAddress', {
           coin_name: this.c_coinInfo.name,
           address_n: [(this.c_protocol | 0x80000000) >>> 0, (this.coinInfo.slip44 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.d_currentInex],
           script_type: this.c_protocol === 49 ? 'SPENDP2SHWITNESS' : 'SPENDADDRESS',

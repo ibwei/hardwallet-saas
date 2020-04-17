@@ -1,13 +1,18 @@
 <template>
   <v-container class="pa-0 send-wrap" fluid>
     <bordercast :show="d_bordercastShow" v-if="d_bordercastShow" @close-dialog="closeBordercast" :signHash="d_signHash" />
-    <v-snackbar v-model="d_snackbar" top color="success" :timeout="0">
-      <v-icon color="white" class="mr-4">mdi-cast</v-icon>
-      <span class="subtitle-2  mr-1">{{ $t('TX Hash') }} : </span>
-      <span class="subtitle-1"> {{ this.d_transactionHash }}</span>
-      <v-btn color="#fff" text @click="d_snackbar = close" class="mr-2 ml-2">
-        {{ $t('Close') }}
-      </v-btn>
+    <v-snackbar v-model="d_snackbar" :vertical="true" :multi-line="true" top color="success" :timeout="0">
+      <div class="d-flex flex-row align-center flex-wrap justify-center ma-2 pa-4">
+        <v-icon color="white" class="mr-4">mdi-cast</v-icon>
+        <v-divider vertical class="mr-3" />
+        <div class="subtitle-1  pr-3 d-flex flex-column" style="word-wrap:break-word;">
+          <span class="subtitle-2  mr-1">{{ $t('TX Hash') }} : </span>
+          <div style="width:500px;height:auto;">{{ this.d_transactionHash }}</div>
+          <v-btn color="#fff" outlined line text @click="d_snackbar = false" class="">
+            {{ $t('Close') }}
+          </v-btn>
+        </div>
+      </div>
     </v-snackbar>
     <v-snackbar v-model="d_error" top color="error" :timeout="0">
       <v-icon color="white" class="mr-4">mdi-wifi-off</v-icon>

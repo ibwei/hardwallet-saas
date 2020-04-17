@@ -1,16 +1,51 @@
 /* eslint-disable */
 // @ts-nocheck
 // encode html tag
+export function utc2Beijing(date) {
+  let timestamp = new Date(Date.parse(date))
+  timestamp = timestamp.getTime()
+  timestamp = timestamp / 1000
+
+  // 增加8个小时，北京时间比utc时间多八个时区
+  timestamp = timestamp + 8 * 60 * 60
+
+  // 时间戳转为时间
+  const beijingDatetime = new Date(parseInt(timestamp) * 1000)
+
+  const year = beijingDatetime.getFullYear()
+  let month = beijingDatetime.getMonth() + 1
+  if (month < 10) {
+    month = `0${month}`
+  }
+  let day = beijingDatetime.getDate()
+  if (day < 10) {
+    day = `0${day}`
+  }
+  let hour = beijingDatetime.getHours()
+  if (hour < 10) {
+    hour = `0${hour}`
+  }
+  let minute = beijingDatetime.getMinutes()
+  if (minute < 10) {
+    minute = `0${minute}`
+  }
+  let second = beijingDatetime.getSeconds()
+  if (second < 10) {
+    second = `0${second}`
+  }
+
+  return `${year}-${month}-${day} ${hour}:${minute}:${second}`
+}
 
 export function copyText(test) {
   console.log('copy', test)
-  const tag = document.createElement('input');
-  tag.setAttribute('id', 'cp_input');
-  tag.value = test;
-  document.getElementsByTagName('body')[0].appendChild(tag);
-  document.getElementById('cp_input').select();
-  document.execCommand('copy');
-  document.getElementById('cp_input').remove();
+  const tag = document.createElement('input')
+  tag.setAttribute('id', 'cp_input')
+  tag.value = test
+  document.getElementsByTagName('body')[0].appendChild(tag)
+  document.getElementById('cp_input').select()
+  document.execCommand('copy')
+  document.getElementById('cp_input').remove()
 }
 
 export function getMousePos(event) {
@@ -78,7 +113,7 @@ export function appendscript(src, text, reload, charset) {
       scriptNode.text = text
     }
     document.getElementsByTagName('head')[0].appendChild(scriptNode)
-  } catch (e) { }
+  } catch (e) {}
 }
 // back to top of window
 export function backTop(btnId) {
@@ -333,18 +368,6 @@ export function getScreenWidth() {
     }
   }
   return smallerSide
-}
-
-export function getScrollXY() {
-  return document.body.scrollTop
-    ? {
-      x: document.body.scrollLeft,
-      y: document.body.scrollTop
-    }
-    : {
-      x: document.documentElement.scrollLeft,
-      y: document.documentElement.scrollTop
-    }
 }
 
 // is valid url
@@ -712,11 +735,15 @@ export function utf8_decode(str_data) {
 
 export function getFullNum(num) {
   //处理非数字
-  if (isNaN(num)) { return num };
+  if (isNaN(num)) {
+    return num
+  }
 
   //处理不需要转换的数字
-  var str = '' + num;
-  if (!/e/i.test(str)) { return num; };
+  var str = '' + num
+  if (!/e/i.test(str)) {
+    return num
+  }
 
-  return (num).toFixed(18).replace(/\.?0+$/, "");
+  return num.toFixed(18).replace(/\.?0+$/, '')
 }

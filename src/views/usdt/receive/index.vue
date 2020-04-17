@@ -26,7 +26,7 @@
                     <td class="text-left">{{ address.index }}</td>
                     <td class="text-left d-flex flex-row justify-start align-center" style="cursor:pointer">
                       <span class="s-address caption pl-2 pr-2" :class="d_selectedId === index ? 'highlight' : ''">
-                        <i class="icon mr-2" style="font-size:20px;" v-html="d_selectedId === index ? '&#xe804;' : '&#xe9cf;'" @click="copyAddress(index)"></i>
+                        <i class="icon mr-2" style="font-size:18px;" v-html="d_selectedId === index ? '&#xe804;' : '&#xe9cf;'" @click="copyAddress(index)"></i>
                         <span v-text="d_selectedId === index ? address.newAddress : address.hideAddress"></span>
                       </span>
                     </td>
@@ -37,10 +37,6 @@
                 </tbody>
               </template>
             </v-simple-table>
-            <!-- <v-btn medium rounded color="primary" class="d-flex mt-4" style="width:auto;max-width:180px;" @click="getAddr">
-              <i class="icon" style="font-size:20px;">&#xe612;</i>
-              <span>{{ $t('More Address') }}</span>
-            </v-btn> -->
             <v-divider></v-divider>
             <span class="d-flex mt-4 ml-2 mr-2 body-2 text-start">{{ $t('PS: For the ETH currency, only fixed address collection is currently supported. In subsequent versions, we will support obtaining multiple address collections.') }}</span>
           </v-card>

@@ -1,19 +1,24 @@
 <template>
   <v-container class="pa-0 send-wrap" fluid>
     <bordercast :show="d_bordercastShow" v-if="d_bordercastShow" @close-dialog="closeBordercast" @error-broadcast="errorBroadcast" :signHash="d_signHash" />
-    <v-snackbar v-model="d_snackbar" top color="success" :timeout="0">
-      <v-icon color="white" class="mr-4">mdi-cast</v-icon>
-      <span class="subtitle-2  mr-1">{{ $t('TX Hash') }} : </span>
-      <span class="subtitle-1"> {{ this.d_transactionHash }}</span>
-      <v-btn color="#fff" text @click="d_snackbar = close" class="mr-2 ml-2">
-        {{ $t('Close') }}
-      </v-btn>
+    <v-snackbar v-model="d_snackbar" :vertical="true" :multi-line="true" top color="success" :timeout="0">
+      <div class="d-flex flex-row align-center flex-wrap justify-center ma-2 pa-4">
+        <v-icon color="white" class="mr-4">mdi-cast</v-icon>
+        <v-divider vertical class="mr-3" />
+        <div class="subtitle-1  pr-3 d-flex flex-column" style="word-wrap:break-word;">
+          <span class="subtitle-2  mr-1">{{ $t('TX Hash') }} : </span>
+          <div style="width:500px;height:auto;">{{ this.d_transactionHash }}</div>
+          <v-btn color="#fff" outlined line text @click="d_snackbar = false" class="">
+            {{ $t('Close') }}
+          </v-btn>
+        </div>
+      </div>
     </v-snackbar>
     <v-snackbar v-model="d_error" top color="error" :timeout="0">
       <v-icon color="white" class="mr-4">mdi-wifi-off</v-icon>
       <span class="subtitle-2  mr-1">{{ $t('Error') }} : </span>
       <span class="subtitle-1"> {{ this.d_errorReason }}</span>
-      <v-btn color="#fff" text @click="d_error = close" class="mr-2 ml-2">
+      <v-btn color="#fff" text @click="d_error = false" class="mr-2 ml-2">
         {{ $t('Close') }}
       </v-btn>
     </v-snackbar>
@@ -60,9 +65,9 @@
       </div>
       <div class="form">
         <div class="d-flex flex-column justify-start align-start pl-2">
-          <div class="subtitle-2" :class="c_utxoTotal.toString(10) !== '0' ? 'primary--text' : 'red--text'">Ethereum{{ $t('Available Balance') }}：{{ UnitHelper(c_utxoTotal, 'wei_eth').toString(10) }} ETH</div>
+          <div class="subtitle-2" :class="c_utxoTotal.toString(10) !== '0' ? 'primary--text' : 'red--text'">Ethereum {{ $t('Available Balance') }}：{{ UnitHelper(c_utxoTotal, 'wei_eth').toString(10) }} ETH</div>
           <div class="subtitle-2" :class="eth.balance.toString(10) !== '0' ? 'primary--text' : 'red--text'">
-            USDT{{ $t('Available Balance') }}：{{
+            USDT {{ $t('Available Balance') }}：{{
               UnitHelper(eth.balance)
                 .div(1000000)
                 .toString(10)
@@ -131,10 +136,10 @@ export default {
       d_average: '8',
       d_fast: '13',
       d_fastest: '20',
-      d_transactionHash: '',
+      d_transactionHash: '0x21e40e3aa5727f918159018b329f141b75100719079cfaf2e8a095f9a112a8c0',
       d_snackbar: false,
       d_gasUrl: 'https://ethgasstation.info/api/ethgasAPI.json?api-key=1f1087b62ec4dc2e2f80a991426c26f9380b2a8d25821836da5bb65ed8ce',
-      d_gasLimit: 21000,
+      d_gasLimit: '88888',
       d_utxoList: [],
       d_maxPaidIndex: 0,
       UnitHelper,
@@ -184,11 +189,25 @@ export default {
   },
   created() {
     this.$nextTick(() => {
+      this.setDefaultGasLimit()
       this.getUtxoList()
       this.getFeeRate()
     })
   },
   methods: {
+    setDefaultGasLimit() {
+      // ETH代币费用88888，在批量数>3后，每多一笔，增加60000
+      const len = this.d_txOut.length
+      if (len > 3) {
+        this.d_gasLimit = UnitHelper(len)
+          .minus(3)
+          .times(60000)
+          .plus(88888)
+          .toString(10)
+      } else {
+        this.d_gasLimit = '88888'
+      }
+    },
     zoomOut() {
       this.d_zoom = this.d_safeLow
     },
@@ -199,7 +218,9 @@ export default {
       this.d_clickAll = false
     },
     sendAllBalance() {
-      this.d_txOut[0].amount = UnitHelper(this.c_utxoTotal, 'wei_eth').toString(10)
+      this.d_txOut[0].amount = UnitHelper(this.eth.balance)
+        .div(1000000)
+        .toString(10)
       if (this.c_utxoTotal.toNumber() === 0) {
         this.$message.error(this.$t('Balance is empty!'))
         return

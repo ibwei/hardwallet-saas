@@ -164,7 +164,7 @@
         <v-expansion-panel-header>
           <v-row align="center" no-gutters>
             <v-col cols="4">
-              <span class="caption grey--text">{{ item.time }}</span>
+              <span class="caption grey--text">{{ utc2Beijing(item.time) }}</span>
             </v-col>
             <v-col cols="4">
               <v-tooltip :disabled="!item.value" top>
@@ -193,7 +193,11 @@
                 <template v-slot:activator="{ on }">
                   <v-chip v-on="on" small label outlined>
                     <v-icon left color="grey" size="22">mdi-wallet-outline</v-icon>
-                    <span>{{ UnitHelper(item.value).toString(10) }}</span>
+                    <span>{{
+                      UnitHelper($store.__s('eth.balance'))
+                        .div(1000000)
+                        .toString(10)
+                    }}</span>
                     <span class="text-uppercase caption ml-1">{{ coin }}</span>
                   </v-chip>
                 </template>
@@ -222,36 +226,36 @@
                   <td>
                     <v-tooltip top>
                       <template v-slot:activator="{ on }">
-                        <span class="number" v-on="on">
+                        <span class="number caption" v-on="on">
                           <!--  {{ item.txid.replace(/^(.......).+(.......)$/g, '$1 ######### $2') }} -->
                           {{ item.transaction_hash }}
                         </span>
                       </template>
                       <span>
-                        <span>{{ item.transaction_hash }}</span>
+                        <span class="caption">{{ item.transaction_hash }}</span>
                       </span>
                     </v-tooltip>
                   </td>
                 </tr>
                 <tr>
                   <td class="caption">{{ $t('Block') }}</td>
-                  <td>{{ item.block_id }}</td>
+                  <td class="caption">{{ item.block_id }}</td>
                 </tr>
                 <tr>
                   <td class="caption">{{ $t('Time') }}</td>
-                  <td>{{ item.time }}</td>
+                  <td class="caption">{{ item.time }}</td>
                 </tr>
                 <tr>
                   <td class="caption">{{ $t('Token Address') }}</td>
-                  <td>{{ item.token_address }}</td>
+                  <td class="caption">{{ item.token_address }}</td>
                 </tr>
                 <tr>
                   <td class="caption">{{ $t('Token Name') }}</td>
-                  <td>{{ item.token_name }}</td>
+                  <td class="caption">{{ item.token_name }}</td>
                 </tr>
                 <tr>
                   <td class="caption">{{ $t('Value') }}</td>
-                  <td>{{ item.value }} USDT</td>
+                  <td class="caption">{{ item.value }} USDT</td>
                 </tr>
               </tbody>
             </template>
@@ -335,6 +339,7 @@ import Axios from 'axios'
 import BN from 'bignumber.js'
 import ETH from '@/mixins/eth'
 import UnitHelper from '@abckey/unit-helper'
+import { utc2Beijing } from '../../../utils/common'
 
 export default {
   props: {
@@ -352,6 +357,7 @@ export default {
     }
   },
   data: () => ({
+    utc2Beijing,
     UnitHelper,
     d_balance: 0,
     d_rate: 0,
