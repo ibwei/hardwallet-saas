@@ -32,7 +32,7 @@
                     <img :src="require(`../../assets/cointype/${item.briefName}.png`)" height="25" width="auto" />
                   </div>
                 </v-col>
-                <v-col cols="4" justify="left">
+                <v-col cols="5" justify="left">
                   <div class="d-flex subtitle-2 pl-2 green--text text-left">
                     {{ `${item.name}(${item.briefName})` }}
                     <div class="pl-5">
@@ -47,7 +47,7 @@
                     <img :src="require(`../../assets/cointype/${item.briefName}.png`)" height="25" width="auto" />
                   </div>
                 </v-col>
-                <v-col cols="4" class="justify-start text-left">
+                <v-col cols="5" class="justify-start text-left">
                   <div class="subtitle-2 pl-2">{{ `${item.name}(${item.briefName})` }}</div>
                 </v-col>
               </v-sheet>
@@ -94,11 +94,11 @@ export default {
         {
           name: 'Litecoin',
           briefName: 'LTC'
-        }
-        /*  {
+        },
+        {
           name: 'Tether USD',
           briefName: 'USDT'
-        } */
+        }
         /*  {
           name: 'Bitcoin Cash',
           briefName: 'BCH'

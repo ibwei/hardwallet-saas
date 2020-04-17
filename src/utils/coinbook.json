@@ -13,6 +13,28 @@
       "44": [76066276, 76067358]
     }
   },
+  "usdt": {
+    "chain": "usdt",
+    "chain_id": 1,
+    "slip44": 60,
+    "shortcut": "USDT",
+    "name": "Tether USD",
+    "symbol": "usdt",
+    "rskip60": false,
+    "url": "https://www.ethereum.org",
+    "blockbook": ["https://eth1.trezor.io", "https://eth2.trezor.io"],
+    "bip": {
+      "44": [76066276, 76067358]
+    },
+    "contract": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+    "testContract": "0xc71cb026d39d10f34b88d73ca4cca85aab2db20c",
+    "usdtBulkContract": "0xaeeb9fb132f2606b5958f82855f67418ef5d569b",
+    "bulkContract": "0xB2eD49c471ff87A3393752BCd42288795B2db891",
+    "testBulkContract": "0x6234b67f19c57fdcc7308521a07af42168347011",
+    "transferOrder": "a9059cbb",
+    "multiSendOrder": "9ec68f0f",
+    "approveOrder": "095ea7b3"
+  },
   "bch": {
     "market_id": "bitcoin-cash",
     "slip44": 145,

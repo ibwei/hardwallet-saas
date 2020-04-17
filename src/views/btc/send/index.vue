@@ -9,6 +9,14 @@
         {{ $t('Close') }}
       </v-btn>
     </v-snackbar>
+    <v-snackbar v-model="d_error" top color="error" :timeout="0">
+      <v-icon color="white" class="mr-4">mdi-wifi-off</v-icon>
+      <span class="subtitle-2  mr-1">{{ $t('Error') }} : </span>
+      <span class="subtitle-1"> {{ this.d_errorReason }}</span>
+      <v-btn color="#fff" text @click="d_error = close" class="mr-2 ml-2">
+        {{ $t('Close') }}
+      </v-btn>
+    </v-snackbar>
     <v-card class="pa-3">
       <div class="table">
         <div class="table-header px-3 app-secondary-bg">
@@ -115,7 +123,7 @@ import clipboard from 'clipboard-polyfill'
 import BN from 'bignumber.js'
 import UnitHelper from '@abckey/unit-helper'
 import AddressHelper from '@abckey/address-helper'
-import Bordercast from './components/Bordercast'
+import Bordercast from '../../components/Bordercast'
 export default {
   name: 'Send',
   components: {
@@ -123,6 +131,8 @@ export default {
   },
   data() {
     return {
+      d_error: false,
+      d_errorReason: '',
       d_transactionHash: '',
       d_snackbar: false,
       d_feeUrl: 'https://bitcoinfees.earn.com/api/v1/fees/recommended',
@@ -200,6 +210,10 @@ export default {
   methods: {
     showAllIcon() {
       this.d_clickAll = false
+    },
+    errorBroadcast(error) {
+      this.d_error = true
+      this.d_errorReason = error
     },
     sendAllBalance(index) {
       let preListCount = BN('0')

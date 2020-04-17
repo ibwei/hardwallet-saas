@@ -1,9 +1,19 @@
 <template>
   <v-container class="pa-0 send-wrap" fluid>
-    <bordercast :show="d_bordercastShow" v-if="d_bordercastShow" @close-dialog="closeBordercast" :signHash="d_signHash" />
+    <bordercast :show="d_bordercastShow" v-if="d_bordercastShow" @close-dialog="closeBordercast" @error-broadcast="errorBroadcast" :signHash="d_signHash" />
     <v-snackbar v-model="d_snackbar" top color="success" :timeout="0">
-      {{ $t('TX Hash') }}:{{ d_transactionHash }}
-      <v-btn color="#fff" text @click="d_snackbar = false" style="padding:20px;">
+      <v-icon color="white" class="mr-4">mdi-cast</v-icon>
+      <span class="subtitle-2  mr-1">{{ $t('TX Hash') }} : </span>
+      <span class="subtitle-1"> {{ this.d_transactionHash }}</span>
+      <v-btn color="#fff" text @click="d_snackbar = close" class="mr-2 ml-2">
+        {{ $t('Close') }}
+      </v-btn>
+    </v-snackbar>
+    <v-snackbar v-model="d_error" top color="error" :timeout="0">
+      <v-icon color="white" class="mr-4">mdi-wifi-off</v-icon>
+      <span class="subtitle-2  mr-1">{{ $t('Error') }} : </span>
+      <span class="subtitle-1"> {{ this.d_errorReason }}</span>
+      <v-btn color="#fff" text @click="d_error = close" class="mr-2 ml-2">
         {{ $t('Close') }}
       </v-btn>
     </v-snackbar>
@@ -49,6 +59,18 @@
         </div>
       </div>
       <div class="form">
+        <div class="d-flex flex-column justify-start align-start pl-2">
+          <div class="subtitle-2" :class="c_utxoTotal.toString(10) !== '0' ? 'primary--text' : 'red--text'">Ethereum{{ $t('Available Balance') }}：{{ UnitHelper(c_utxoTotal, 'wei_eth').toString(10) }} ETH</div>
+          <div class="subtitle-2" :class="eth.balance.toString(10) !== '0' ? 'primary--text' : 'red--text'">
+            USDT{{ $t('Available Balance') }}：{{
+              UnitHelper(eth.balance)
+                .div(1000000)
+                .toString(10)
+            }}
+            USDT
+          </div>
+        </div>
+
         <div class="right body-2">
           <v-chip outlined class="chip body-2"
             >{{ $t('Amounts') }}
@@ -58,13 +80,9 @@
           <v-chip outlined class="chip body-2"
             >{{ $t('Fees') }}
             {{ UnitHelper(c_totalFees, 'wei_eth').toString(10) }}
-            {{ c_coinInfo.symbol.toUpperCase() }}</v-chip
-          >
-          <v-chip outlined color="primary" class="chip"
-            >{{ $t('Total') }}
-            {{ UnitHelper(c_total, 'wei_eth').toString(10) }}
-            {{ c_coinInfo.symbol.toUpperCase() }}</v-chip
-          >
+            ETH
+          </v-chip>
+          <v-chip outlined color="primary" class="chip">{{ $t('Total') }} {{ d_txOut[0].amount }} USDT + {{ UnitHelper(c_totalFees, 'wei_eth').toString(10) }} ETH</v-chip>
         </div>
       </div>
       <div class="d-flex flex-row justify-end align-center">
@@ -93,11 +111,9 @@
 import Axios from 'axios'
 import clipboard from 'clipboard-polyfill'
 import UnitHelper from '@abckey/unit-helper'
-import AbcUtils from 'abc-utils'
 import AddressHelper from '@abckey/address-helper'
-import Bordercast from './components/Bordercast'
+import Bordercast from '../../components/Bordercast'
 import ETH from '@/mixins/eth'
-import { Transaction } from 'ethereumjs-tx'
 export default {
   name: 'Send',
   components: {
@@ -106,6 +122,8 @@ export default {
   mixins: [ETH],
   data() {
     return {
+      d_error: false,
+      d_errorReason: '',
       d_media: 0,
       d_alarm: 0,
       d_zoom: 5,
@@ -130,7 +148,7 @@ export default {
           amount: 0
         }
       ],
-      d_addressRules: [value => AddressHelper.test(value, this.c_coinInfo.symbol) || this.$t('Invalid address')],
+      d_addressRules: [value => AddressHelper.test(value, 'eth') || this.$t('Invalid address')],
       d_amountRules: [
         value => {
           const pattern = /^[+]{0,1}[1-9]\d*$|^[+]{0,1}(0\.\d*[1-9])$|^[+]{0,1}([1-9]\d*\.\d*[0-9])$/
@@ -142,16 +160,21 @@ export default {
   },
   computed: {
     c_totalAmounts() {
-      return UnitHelper(this.d_txOut[0].amount, 'eth_wei')
+      if (this.d_txOut.length > 0) {
+        return UnitHelper(this.d_txOut[0].amount, 'eth_wei')
+      }
+      return UnitHelper(0)
     },
     c_utxoTotal() {
-      return UnitHelper(this.d_utxoList[0].amount)
+      if (this.d_utxoList.length > 0) {
+        return UnitHelper(this.d_utxoList[0].amount)
+      }
+      return UnitHelper(0)
     },
     c_totalFees() {
       const fee = UnitHelper(this.d_zoom).times(this.d_gasLimit)
       return UnitHelper(fee, 'gwei_wei')
     },
-    c_total: vm => vm.c_totalAmounts.plus(vm.c_totalFees),
     c_xpub: vm => vm.$store.__s('usb.xpub'),
     c_coinInfo: vm => vm.$store.__s('coinInfo'),
     c_coinProtocol: vm => vm.$store.__s('coinProtocol'),
@@ -166,9 +189,6 @@ export default {
     })
   },
   methods: {
-    createRawData(data) {
-      return new Transaction(data).serialize().toString('hex')
-    },
     zoomOut() {
       this.d_zoom = this.d_safeLow
     },
@@ -179,7 +199,7 @@ export default {
       this.d_clickAll = false
     },
     sendAllBalance() {
-      this.d_txOut[0].amount = UnitHelper(this.c_utxoTotal.minus(this.c_totalFees), 'wei_eth')
+      this.d_txOut[0].amount = UnitHelper(this.c_utxoTotal, 'wei_eth').toString(10)
       if (this.c_utxoTotal.toNumber() === 0) {
         this.$message.error(this.$t('Balance is empty!'))
         return
@@ -202,7 +222,7 @@ export default {
     },
     async getUtxoList() {
       const address = await this.ethGetAddress()
-      const result = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/address/${address}?details=basic`)
+      const result = await Axios.get(`https://api.abckey.com/eth/address/${address}?details=basic`)
       if (result.status === 200 && !result.error) {
         this.d_utxoList.push({ amount: result?.data?.balance ? result?.data?.balance : 0, address: result?.data?.address, nonce: result.data.nonce })
       } else {
@@ -222,12 +242,34 @@ export default {
           this.$message.error(this.$t('Please enter a valid quantity'))
           return false
         }
-        if (!AddressHelper.test(output.address, this.c_coinInfo.symbol)) {
+        if (!AddressHelper.test(output.address, 'eth')) {
           this.$message.error(this.$t('Please enter a valid Address'))
           return false
         }
       }
       return true
+    },
+    // check the eth and usdt balance
+    checkBalance() {
+      // usdt
+      if (
+        UnitHelper(this.d_txOut[0].amount)
+          .times(1000000)
+          .gt(this.eth.balance)
+      ) {
+        this.$message.error(this.$t('Your USDT account balance is insufficient!'))
+        return false
+      }
+      // eth
+      if (UnitHelper(this.c_utxoTotal).lt(this.c_totalFees)) {
+        this.$message.error(this.$t('Ethereum address does not have sufficient balance!'))
+        return false
+      }
+      return true
+    },
+    errorBroadcast(error) {
+      this.d_error = true
+      this.d_errorReason = error
     },
     closeBordercast(type, transactionHash) {
       if (type === 'auto') {
@@ -272,6 +314,10 @@ export default {
         this.$store.__s('pageLoading', false)
         return
       }
+      if (!this.checkBalance()) {
+        this.$store.__s('pageLoading', false)
+        return
+      }
       await this.signTx()
       try {
       } catch (e) {
@@ -280,69 +326,31 @@ export default {
       }
       this.$store.__s('pageLoading', false)
     },
-    toHex(num) {
-      let res = UnitHelper(num).toString(16)
-      if (res.length % 2 !== 0) res = `0${res}`
-      return String(res)
-    },
-    toHex1(num) {
-      const res = UnitHelper(num).toString(16)
-      return '0x' + res
-    },
+
     /**
      * 签名交易
      */
     async signTx() {
-      let value = this.c_totalAmounts.toString(16)
-      if (value.length % 2 !== 0) {
-        value = `0${value}`
-      }
       // Organize output data
       const txParams = {
-        address_n: [(44 | 0x80000000) >>> 0, (this.c_coinInfo.slip44 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.eth.account],
-        nonce: Buffer.from(this.toHex(Number(this.d_utxoList[0].nonce)), 'hex'),
-        gas_price: Buffer.from(
-          this.toHex(
-            UnitHelper(1, 'gwei_wei')
-              .times(this.d_zoom)
-              .toString(10)
-          ),
-          'hex'
-        ),
-        gas_limit: Buffer.from(this.toHex(this.d_gasLimit), 'hex'),
+        bip32_path: "m/44'/60'/0'/0/0",
+        erc20: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+        nonce: this.d_utxoList[0].nonce,
+        gas_price: UnitHelper(1, 'gwei_wei')
+          .times(this.d_zoom)
+          .toString(10),
+        gas_limit: this.d_gasLimit,
         to: this.d_txOut[0].address,
         chain_id: 1,
-        value: Buffer.from(value, 'hex')
+        value: UnitHelper(this.d_txOut[0].amount)
+          .times(1000000)
+          .toString(10)
       }
 
-      const result = await this.$usb.cmd('EthereumSignTx', txParams)
-      console.log(result)
-
-      // const serializedTx = tx.serialize().toString('hex')
-      if (result?.data?.signature_r) {
-        const signatureR = Buffer.from(result.data.signature_r, 'base64').toString('hex')
-        const signatureS = Buffer.from(result.data.signature_s, 'base64').toString('hex')
-        // 广播授权
-        const txData = {
-          nonce: AbcUtils.eth.addHexPrefix(this.toHex(this.d_utxoList[0].nonce)),
-          gasPrice: AbcUtils.eth.addHexPrefix(
-            this.toHex(
-              UnitHelper(1, 'gwei_wei')
-                .times(this.d_zoom)
-                .toString(10)
-            )
-          ),
-          gasLimit: AbcUtils.eth.addHexPrefix(this.toHex(this.d_gasLimit)),
-          to: AbcUtils.eth.addHexPrefix(this.d_txOut[0].address),
-          // value: AbcUtils.eth.addHexPrefix(this.toHex(this.c_totalAmounts.toString())),
-          value: '0x' + value,
-          r: AbcUtils.eth.addHexPrefix(signatureR),
-          s: AbcUtils.eth.addHexPrefix(signatureS),
-          v: AbcUtils.eth.addHexPrefix(this.toHex(result.data.signature_v))
-        }
-        console.log('txData', txData)
-        const serializedTx = this.createRawData(txData)
-        this.d_signHash = `0x${serializedTx}`
+      const result = await this.$usb.signETH(txParams)
+      if (result?.data?.raw) {
+        const serializedTx = result.data.raw
+        this.d_signHash = serializedTx
         this.d_bordercastShow = true
       } else {
         this.$message.error(this.$t('Transaction signature failed!'))
@@ -360,6 +368,9 @@ export default {
   i18n: {
     messages: {
       zhCN: {
+        'Available Balance': '可用余额',
+        'Ethereum address does not have sufficient balance!': '以太坊地址没有足够的余额',
+        'Your USDT account balance is insufficient!': '你的USDT账户余额不足',
         'Balance is empty!': '账户余额为空',
         'Transaction Fee': '交易手续费',
         'All Balances': '发送所有余额',

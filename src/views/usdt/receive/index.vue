@@ -26,7 +26,7 @@
                     <td class="text-left">{{ address.index }}</td>
                     <td class="text-left d-flex flex-row justify-start align-center" style="cursor:pointer">
                       <span class="s-address caption pl-2 pr-2" :class="d_selectedId === index ? 'highlight' : ''">
-                        <i class="icon" style="font-size:12px;" v-html="d_selectedId === index ? '&#xe804;' : '&#xe9cf;'" @click="copyAddress(index)"></i>
+                        <i class="icon mr-2" style="font-size:20px;" v-html="d_selectedId === index ? '&#xe804;' : '&#xe9cf;'" @click="copyAddress(index)"></i>
                         <span v-text="d_selectedId === index ? address.newAddress : address.hideAddress"></span>
                       </span>
                     </td>
@@ -78,12 +78,10 @@
 </template>
 
 <script>
-import UnitHelper from '@abckey/unit-helper'
 import QRCode from 'qrcodejs2'
 import { mapState } from 'vuex'
 import { getMousePos, copyText } from '@/utils/common'
 import UsbMixin from '@/mixins/usb'
-import Axios from 'axios'
 export default {
   name: 'Receive',
   mixins: [UsbMixin],
@@ -114,6 +112,9 @@ export default {
       }
     }
   },
+  created() {
+    this.getAddr()
+  },
   watch: {
     c_chooseType(newV) {
       if (newV) {
@@ -121,13 +122,7 @@ export default {
       }
     }
   },
-  created() {
-    this.getUsedTokens()
-  },
   methods: {
-    receiveCoin(coin) {
-      return UnitHelper(coin, `sat_${this.c_coinInfo.symbol}`).toString()
-    },
     clickAddress(index, e) {
       if (this.d_overlay) {
       } else {
@@ -136,7 +131,6 @@ export default {
     },
     async _showOverlay(index, e) {
       this.d_selectedId = index
-      console.log(this.d_addressList[this.d_selectedId].newAddress)
       this._qrcode(this.d_addressList[this.d_selectedId].newAddress)
       const coordinate = getMousePos(e)
       this.d_overlay = true
@@ -145,7 +139,7 @@ export default {
 
       await this.$usb.cmd('EthereumGetAddress', {
         // coin_name: this.c_coinInfo.name,
-        address_n: [(this.c_protocol | 0x80000000) >>> 0, (this.coinInfo.slip44 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, 0],
+        address_n: [(44 | 0x80000000) >>> 0, (60 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, 0],
         // script_type: this.c_protocol === 49 ? 'SPENDP2SHWITNESS' : 'SPENDADDRESS',
         show_display: true
       })
@@ -177,21 +171,6 @@ export default {
         this.showAlert(this.$t('Copy failed!'))
       }
     },
-    async getUsedTokens() {
-      this.$store.__s('pageLoading', true)
-      let result = null
-      try {
-        result = await Axios({ method: 'get', url: `https://api.abckey.com/${this.coinInfo.symbol}/xpub/${this.usb.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`, timeout: 1000 * 10 })
-      } catch (error) {
-        this.$store.__s('pageLoading', false)
-        this.$message.error(this.$t('Network Error!'))
-      }
-      this.d_receiveList = result.data.tokens ? result.data.tokens : []
-      this.d_currentInex = '0'
-      this.d_currentAddress = 0
-      this.getAddr()
-      this.$store.__s('pageLoading', false)
-    },
     async getAddr() {
       if (this.d_addressList.length > this.d_maxReceiveAddress) {
         this.showAlert(this.$t('Payment address cannot exceed 20 Each'))
@@ -201,7 +180,7 @@ export default {
       try {
         const result = await this.$usb.cmd('EthereumGetAddress', {
           // coin_name: this.c_coinInfo.name,
-          address_n: [(this.c_protocol | 0x80000000) >>> 0, (this.coinInfo.slip44 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, 0],
+          address_n: [(44 | 0x80000000) >>> 0, (60 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, 0],
           // script_type: this.c_protocol === 49 ? 'SPENDP2SHWITNESS' : 'SPENDADDRESS',
           show_display: false
         })
@@ -259,6 +238,10 @@ export default {
 }
 .s-address {
   width: 380px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   color: rgba(0, 0, 0, 0.2);
   border-radius: 2px;

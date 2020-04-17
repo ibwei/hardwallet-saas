@@ -27,7 +27,11 @@
             <v-icon :class="['ml-1', d_loading.upBalance && 'rotate']" size="16" color="primary">mdi-cached</v-icon>
           </v-btn>
           <div :class="['mt-1', d_loading.upBalance && 'blur']">
-            <span class="title font-weight-bold">{{ UnitHelper(d_balance, 'wei_eth').toString(10) }}</span>
+            <span class="title font-weight-bold">{{
+              UnitHelper(this.$store.__s('eth.balance'))
+                .div(1000000)
+                .toString(10)
+            }}</span>
             <span class="text-uppercase caption">&nbsp;{{ coin }}</span>
           </div>
         </v-col>
@@ -38,8 +42,9 @@
           </v-btn>
           <div :class="['mt-1', (d_loading.upBalance || d_loading.upRate) && 'blur']">
             <span class="title font-weight-bold">{{
-              UnitHelper(d_balance, 'wei_eth')
-                .times(d_rate)
+              UnitHelper(this.$store.__s('eth.balance'))
+                .div(1000000)
+                .times(this.d_rate)
                 .toString(10)
             }}</span>
             <span class="text-uppercase caption">&nbsp;{{ cash }}</span>
@@ -65,25 +70,49 @@
             <template v-slot:default>
               <tbody>
                 <tr>
-                  <td class="caption">{{ $t('Address Count') }}</td>
+                  <td class="caption">{{ $t('Total Received') }}</td>
                   <td class="text-right">
                     <span :class="[d_loading.upBalance && 'blur']">
-                      <b>{{ d_addressCount ? d_addressCount : 0 }}</b>
+                      <b
+                        >{{
+                          summary.received
+                            ? UnitHelper(summary.received)
+                                .div(1000000)
+                                .toString(10)
+                            : 0
+                        }}
+                      </b>
+                      <span class="text-uppercase caption grey--text">&nbsp;{{ coin }}</span>
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td class="caption">{{ $t('Unconfirmed Balance') }}</td>
+                  <td class="caption">{{ $t('Total Spent') }}</td>
                   <td class="text-right">
                     <v-tooltip :disabled="!d_unconfirmedBalance" top>
                       <template v-slot:activator="{ on }">
                         <span v-on="on" :class="[d_loading.upBalance && 'blur']">
-                          <b>{{ btc2str(d_unconfirmedBalance) }}</b>
+                          <b
+                            >{{
+                              summary.spent
+                                ? UnitHelper(summary.spent)
+                                    .div(1000000)
+                                    .toString(10)
+                                : 0
+                            }}
+                          </b>
                           <span class="text-uppercase caption grey--text">&nbsp;{{ coin }}</span>
                         </span>
                       </template>
                       <span>
-                        <b>{{ btc2cash(d_unconfirmedBalance, d_rate) }}</b>
+                        <b>{{
+                          summary.spent
+                            ? UnitHelper(summary.spent)
+                                .div(1000000)
+                                .times(d_rate)
+                                .toString(10)
+                            : 0
+                        }}</b>
                         <span class="text-uppercase caption">&nbsp;{{ cash }}</span>
                       </span>
                     </v-tooltip>
@@ -98,18 +127,18 @@
             <template v-slot:default>
               <tbody>
                 <tr>
-                  <td class="caption">{{ $t('Transaction Count') }}</td>
-                  <td class="text-right">
+                  <td class="caption">{{ $t('Last Seen Receiving') }}</td>
+                  <td class="text-right caption font-weight-light">
                     <span :class="[d_loading.upBalance && 'blur']">
-                      <b>{{ d_transactionCount }}</b>
+                      <b>{{ summary.last_seen_receiving ? summary.last_seen_receiving : '0000-00-00 00:00:00' }}</b>
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td class="caption">{{ $t('Unconfirmed Txs') }}</td>
-                  <td class="text-right">
+                  <td class="caption">{{ $t('Last Seen Spending') }}</td>
+                  <td class="text-right  caption font-weight-light">
                     <span :class="[d_loading.upBalance && 'blur']">
-                      <b>{{ d_unconfirmedTxs }}</b>
+                      <b>{{ summary.last_seen_spending ? summary.last_seen_spending : '0000-00-00 00:00:00' }}</b>
                     </span>
                   </td>
                 </tr>
@@ -135,20 +164,26 @@
         <v-expansion-panel-header>
           <v-row align="center" no-gutters>
             <v-col cols="4">
-              <span class="caption grey--text">{{ unix2utc(item.blockTime) }}</span>
+              <span class="caption grey--text">{{ item.time }}</span>
             </v-col>
             <v-col cols="4">
-              <v-tooltip :disabled="!item.valueChanged" top>
+              <v-tooltip :disabled="!item.value" top>
                 <template v-slot:activator="{ on }">
-                  <v-chip v-on="on" :color="item.valueChanged < 0 ? 'red' : 'green'" small label outlined>
-                    <v-icon left size="18">{{ item.valueChanged > 0 ? 'mdi-plus' : 'mdi-minus' }}</v-icon>
-                    <span>{{ btc2str(Math.abs(item.valueChanged)) }}</span>
+                  <v-chip v-on="on" :color="item.sender === c_address.toLowerCase() ? 'red' : 'green'" small label outlined>
+                    <v-icon left size="18">{{ item.sender !== c_address.toLowerCase() ? 'mdi-plus' : 'mdi-minus' }}</v-icon>
+                    <span>{{ item.value }}</span>
                     <span class="text-uppercase caption ml-1">{{ coin }}</span>
                   </v-chip>
                 </template>
                 <span>
-                  <span>{{ item.valueChanged > 0 ? $t('Received') : $t('Spent') }}</span>
-                  <b>&nbsp;{{ btc2cash(Math.abs(item.valueChanged), d_rate) }}</b>
+                  <span>{{ item.sender !== c_address.toLowerCase() ? $t('Received') : $t('Spent') }}</span>
+                  <b
+                    >&nbsp;{{
+                      UnitHelper(item.value)
+                        .times(d_rate)
+                        .toString(10)
+                    }}</b
+                  >
                   <span class="text-uppercase caption">&nbsp;{{ cash }}</span>
                 </span>
               </v-tooltip>
@@ -158,13 +193,20 @@
                 <template v-slot:activator="{ on }">
                   <v-chip v-on="on" small label outlined>
                     <v-icon left color="grey" size="22">mdi-wallet-outline</v-icon>
-                    <span>{{ btc2str(item.value) }}</span>
+                    <span>{{ UnitHelper(item.value).toString(10) }}</span>
                     <span class="text-uppercase caption ml-1">{{ coin }}</span>
                   </v-chip>
                 </template>
                 <span>
                   <span>{{ $t('Balance') }}</span>
-                  <b>&nbsp;{{ btc2cash(item.value, d_rate) }}</b>
+                  <b
+                    >&nbsp;{{
+                      UnitHelper($store.__s('eth.balance'))
+                        .times(d_rate)
+                        .div(1000000)
+                        .toString(10)
+                    }}</b
+                  >
                   <span class="text-uppercase caption">&nbsp;{{ cash }}</span>
                 </span>
               </v-tooltip>
@@ -182,39 +224,34 @@
                       <template v-slot:activator="{ on }">
                         <span class="number" v-on="on">
                           <!--  {{ item.txid.replace(/^(.......).+(.......)$/g, '$1 ######### $2') }} -->
-                          {{ item.txid }}
+                          {{ item.transaction_hash }}
                         </span>
                       </template>
                       <span>
-                        <span>{{ item.txid }}</span>
+                        <span>{{ item.transaction_hash }}</span>
                       </span>
                     </v-tooltip>
                   </td>
                 </tr>
                 <tr>
                   <td class="caption">{{ $t('Block') }}</td>
-                  <td>{{ item.blockHeight }}</td>
+                  <td>{{ item.block_id }}</td>
                 </tr>
                 <tr>
-                  <td class="caption">{{ $t('Confirmations') }}</td>
-                  <td>{{ item.confirmations }}</td>
+                  <td class="caption">{{ $t('Time') }}</td>
+                  <td>{{ item.time }}</td>
                 </tr>
                 <tr>
-                  <td class="caption">{{ $t('Fees') }}</td>
-                  <td>
-                    <v-tooltip top>
-                      <template v-slot:activator="{ on }">
-                        <span v-on="on">
-                          <span>{{ btc2str(item.fees) }}</span>
-                          <span class="text-uppercase caption">&nbsp;{{ coin }}</span>
-                        </span>
-                      </template>
-                      <span>
-                        <b>{{ btc2cash(item.fees, d_rate) }}</b>
-                        <span class="text-uppercase caption">&nbsp;{{ cash }}</span>
-                      </span>
-                    </v-tooltip>
-                  </td>
+                  <td class="caption">{{ $t('Token Address') }}</td>
+                  <td>{{ item.token_address }}</td>
+                </tr>
+                <tr>
+                  <td class="caption">{{ $t('Token Name') }}</td>
+                  <td>{{ item.token_name }}</td>
+                </tr>
+                <tr>
+                  <td class="caption">{{ $t('Value') }}</td>
+                  <td>{{ item.value }} USDT</td>
                 </tr>
               </tbody>
             </template>
@@ -225,28 +262,32 @@
                 <template v-slot:default>
                   <thead>
                     <tr>
-                      <th class="text-left">{{ $t('Input') }}({{ item.vin.length }})</th>
+                      <th class="text-left">{{ $t('Input') }}</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item, i) in item.vin" :key="i">
+                    <tr>
                       <td class="caption number">
                         <span v-if="item.value">
                           <v-icon size="16" color="blue">mdi-key</v-icon>
-                          <span>&nbsp;{{ item.addresses[0] }}</span>
+                          <span>&nbsp;{{ item.sender }}</span>
                         </span>
                         <v-tooltip top v-else>
                           <template v-slot:activator="{ on }">
-                            <span :class="[item.own && 'blue--text']" v-on="on">
+                            <span v-on="on">
                               <v-icon size="16" color="blue">mdi-key</v-icon>
-                              <span>&nbsp;{{ item.addresses[0] }}</span>
+                              <span>&nbsp;{{ item.sender }}</span>
                             </span>
                           </template>
                           <span>
                             <b>{{ item.value }}</b>
                             <span class="text-uppercase caption">&nbsp;{{ coin }}</span>
                             <span>&nbsp;≈&nbsp;</span>
-                            <b>{{ btc2cash(item.value, d_rate) }}</b>
+                            <b>{{
+                              UnitHelper(item.value)
+                                .times(this.d_rate)
+                                .toString(10)
+                            }}</b>
                             <span class="text-uppercase caption">&nbsp;{{ cash }}</span>
                           </span>
                         </v-tooltip>
@@ -261,27 +302,14 @@
                 <template v-slot:default>
                   <thead>
                     <tr>
-                      <th class="text-left">{{ $t('Output') }}({{ item.vout.length }})</th>
+                      <th class="text-left">{{ $t('Output') }}</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item, i) in item.vout" :key="i">
+                    <tr>
                       <td class="caption number">
-                        <v-tooltip top>
-                          <template v-slot:activator="{ on }">
-                            <span :class="[item.own && 'blue--text']" v-on="on">
-                              <v-icon size="16" color="blue">mdi-key</v-icon>
-                              <span>&nbsp;{{ item.addresses[0] }}</span>
-                            </span>
-                          </template>
-                          <span v-if="item.own">
-                            <b>{{ item.value }}</b>
-                            <span class="text-uppercase caption">&nbsp;{{ coin }}</span>
-                            <span>&nbsp;≈&nbsp;</span>
-                            <b>{{ btc2cash(item.value, d_rate) }}</b>
-                            <span class="text-uppercase caption">&nbsp;{{ cash }}</span>
-                          </span>
-                        </v-tooltip>
+                        <v-icon size="16" color="blue">mdi-key</v-icon>
+                        <span>&nbsp;{{ item.recipient }}</span>
                       </td>
                     </tr>
                   </tbody>
@@ -327,6 +355,13 @@ export default {
     UnitHelper,
     d_balance: 0,
     d_rate: 0,
+    summary: {
+      spent: 0,
+      received: 0,
+      last_seen_spending: '',
+      last_seen_receive: ''
+    },
+    transactions: [],
     d_totalReceived: 0,
     d_totalSent: 0,
     d_unconfirmedBalance: 0,
@@ -363,7 +398,7 @@ export default {
     for (;;) {
       if (this.$route.path !== path) break
       this.upAll()
-      await new Promise(resolve => setTimeout(resolve, 77 * 1000))
+      await new Promise(resolve => setTimeout(resolve, 7700 * 1000))
     }
   },
   methods: {
@@ -373,9 +408,13 @@ export default {
     async getEthResult() {
       this.d_address = await this.ethGetAddress()
       this.$store.__s('eth.address', this.d_address)
-      const r = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/address/${this.d_address}?page=1&pageSize=1000&details=txs`)
-      return r
+      const { data } = await Axios.get(`https://api.blockchair.com/ethereum/erc-20/${this.c_coinInfo.contract}/dashboards/address/${this.c_address}`)
+      this.summary = data.data[this.c_address.toLowerCase()].address
+      this.transactions = data.data[this.c_address.toLowerCase()].transactions
+      this.$store.__s('eth.balance', this.summary.balance ? this.summary.balance : 0)
+      return data.context
     },
+
     upAll() {
       this.upBalance()
       this.upRate()
@@ -383,18 +422,14 @@ export default {
     async upBalance() {
       this.d_loading.upBalance = true
       const result = await this.getEthResult()
-      if (result.error) return
-      const data = result.data
-      this.d_balance = data.balance
-      this.d_unconfirmedBalance = data.unconfirmedBalance
-      this.d_unconfirmedTxs = data.unconfirmedTxs
-      this.d_transactionCount = data.txs
+      if (result.code !== 200) return
+      this.d_balance = this.balance
       this.d_loading.upBalance = false
-      this._fixTxs(data.transactions)
+      this._fixTxs(this.transactions)
     },
     async upRate() {
       this.d_loading.upRate = true
-      const { data } = await Axios.get(`https://api.abckey.com/market/${this.coin.toLowerCase()}/${this.cash.toLowerCase()}&t=${new Date().getTime()}`)
+      const { data } = await Axios.get(`https://api.abckey.com/market/usdt/${this.cash.toLowerCase()}&t=${new Date().getTime()}`)
       if (data.error) return
       this.d_rate = data
       this.d_loading.upRate = false
@@ -418,20 +453,11 @@ export default {
         .toFormat(),
     unix2utc: time => new Date(time * 1000).toLocaleString(),
     _fixTxs(txs) {
-      if (!txs) return
+      if (!txs.length) return
       for (let i = 0; i < txs?.length; i++) {
-        const oldValue = i + 1 === txs.length ? 0 : txs[i + 1].value
-        txs[i].valueChanged = UnitHelper(txs[i].value - oldValue, 'wei_eth').toString(10)
-        txs[i].value = UnitHelper(txs[i].value, 'wei_eth').toString(10)
-        txs[i].fees = UnitHelper(txs[i].fees, 'wei_eth').toString(10)
-        for (let x = 0; x < txs[i]?.vin?.length; x++) {
-          txs[i].vin[x].value = UnitHelper(txs[i].vin[x].value, 'wei_eth').toString(10)
-          txs[i].vin[x].own = false
-        }
-        for (let y = 0; y < txs[i]?.vout?.length; y++) {
-          txs[i].vout[y].value = UnitHelper(txs[i].vout[y].value, 'wei_eth').toString(10)
-          txs[i].vout[y].own = true
-        }
+        txs[i].value = UnitHelper(txs[i].value)
+          .div(1000000)
+          .toString(10)
       }
       this.d_txs = txs
     },
@@ -442,16 +468,22 @@ export default {
   i18n: {
     messages: {
       zhCN: {
+        'Last Seen Receiving': '最近接收',
+        'Last Seen Spending': '最近发送',
         'Tips:Currently only supports a single account': '目前仅支持单一账户,多用户尚未开放',
         Change: '切换账号',
         'Current Account': '当前账号',
         Balance: '余额',
         Convert: '折合',
+        Hash: '交易哈希',
+        Block: '区块ID',
+        Time: '时间',
         Rate: '汇率',
+        'Token Address': '合约地址',
+        'Token Name': '代币名',
+        Value: '数量',
         Received: '收入',
         Spent: '花费',
-        Hash: '哈希',
-        Block: '区块',
         Confirmations: '确认',
         Fees: '费用',
         Input: '输入',

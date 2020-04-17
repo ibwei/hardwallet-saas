@@ -1,11 +1,19 @@
 <template>
   <v-container class="pa-0 send-wrap" fluid>
-    <bordercast :show="d_bordercastShow" v-if="d_bordercastShow" @close-dialog="closeBordercast" :signHash="d_signHash" />
+    <bordercast :show="d_bordercastShow" v-if="d_bordercastShow" @close-dialog="closeBordercast" @error-broadcast="errorBroadcast" :signHash="d_signHash" />
     <v-snackbar v-model="d_snackbar" top color="success" :timeout="0">
       <v-icon color="white" class="mr-4">mdi-cast</v-icon>
       <span class="subtitle-2  mr-1">{{ $t('TX Hash') }} : </span>
       <span class="subtitle-1"> {{ this.d_transactionHash }}</span>
       <v-btn color="#fff" text @click="d_snackbar = close" class="mr-2 ml-2">
+        {{ $t('Close') }}
+      </v-btn>
+    </v-snackbar>
+    <v-snackbar v-model="d_error" top color="error" :timeout="0">
+      <v-icon color="white" class="mr-4">mdi-wifi-off</v-icon>
+      <span class="subtitle-2  mr-1">{{ $t('Error') }} : </span>
+      <span class="subtitle-1"> {{ this.d_errorReason }}</span>
+      <v-btn color="#fff" text @click="d_error = close" class="mr-2 ml-2">
         {{ $t('Close') }}
       </v-btn>
     </v-snackbar>
@@ -95,11 +103,9 @@
 import Axios from 'axios'
 import clipboard from 'clipboard-polyfill'
 import UnitHelper from '@abckey/unit-helper'
-import AbcUtils from 'abc-utils'
 import AddressHelper from '@abckey/address-helper'
-import Bordercast from './components/Bordercast'
+import Bordercast from '../../components/Bordercast'
 import ETH from '@/mixins/eth'
-import { Transaction } from 'ethereumjs-tx'
 export default {
   name: 'Send',
   components: {
@@ -108,6 +114,8 @@ export default {
   mixins: [ETH],
   data() {
     return {
+      d_error: false,
+      d_errorReason: '',
       d_media: 0,
       d_alarm: 0,
       d_zoom: 5,
@@ -168,9 +176,6 @@ export default {
     })
   },
   methods: {
-    createRawData(data) {
-      return new Transaction(data).serialize().toString('hex')
-    },
     zoomOut() {
       this.d_zoom = this.d_safeLow
     },
@@ -231,6 +236,10 @@ export default {
       }
       return true
     },
+    errorBroadcast(error) {
+      this.d_error = true
+      this.d_errorReason = error
+    },
     closeBordercast(type, transactionHash) {
       if (type === 'auto') {
         this.d_snackbar = true
@@ -282,64 +291,26 @@ export default {
       }
       this.$store.__s('pageLoading', false)
     },
-    toHex(num) {
-      let res = UnitHelper(num).toString(16)
-      if (res.length % 2 !== 0) res = `0${res}`
-      return res
-    },
+
     /**
      * 签名交易
      */
     async signTx() {
-      let value = this.c_totalAmounts.toString(16)
-      if (value.length % 2 !== 0) {
-        value = `0${value}`
-      }
       // Organize output data
       const txParams = {
-        address_n: [(44 | 0x80000000) >>> 0, (this.c_coinInfo.slip44 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.eth.account],
-        nonce: Buffer.from(this.toHex(Number(this.d_utxoList[0].nonce)), 'hex'),
-        gas_price: Buffer.from(
-          this.toHex(
-            UnitHelper(1, 'gwei_wei')
-              .times(this.d_zoom)
-              .toString(10)
-          ),
-          'hex'
-        ),
-        gas_limit: Buffer.from(this.toHex(this.d_gasLimit), 'hex'),
+        bip32_path: "m/44'/60'/0'/0/0",
+        nonce: this.d_utxoList[0].nonce,
+        gas_price: UnitHelper(1, 'gwei_wei')
+          .times(this.d_zoom)
+          .toString(10),
+        gas_limit: this.d_gasLimit,
         to: this.d_txOut[0].address,
         chain_id: 1,
-        value: Buffer.from(value, 'hex')
+        value: UnitHelper(this.d_txOut[0].amount, 'eth_wei').toString(10)
       }
-
-      const result = await this.$usb.cmd('EthereumSignTx', txParams)
-      console.log(result)
-
-      // const serializedTx = tx.serialize().toString('hex')
-      if (result?.data?.signature_r) {
-        const signatureR = Buffer.from(result.data.signature_r, 'base64').toString('hex')
-        const signatureS = Buffer.from(result.data.signature_s, 'base64').toString('hex')
-        // 广播授权
-        const txData = {
-          nonce: AbcUtils.eth.addHexPrefix(this.toHex(this.d_utxoList[0].nonce)),
-          gasPrice: AbcUtils.eth.addHexPrefix(
-            this.toHex(
-              UnitHelper(1, 'gwei_wei')
-                .times(this.d_zoom)
-                .toString(10)
-            )
-          ),
-          gasLimit: AbcUtils.eth.addHexPrefix(this.toHex(this.d_gasLimit)),
-          to: AbcUtils.eth.addHexPrefix(this.d_txOut[0].address),
-          // value: AbcUtils.eth.addHexPrefix(this.toHex(this.c_totalAmounts.toString())),
-          value: '0x' + value,
-          r: AbcUtils.eth.addHexPrefix(signatureR),
-          s: AbcUtils.eth.addHexPrefix(signatureS),
-          v: AbcUtils.eth.addHexPrefix(this.toHex(result.data.signature_v))
-        }
-        console.log('txData', txData)
-        const serializedTx = this.createRawData(txData)
+      const result = await this.$usb.signETH(txParams)
+      if (result?.data?.raw) {
+        const serializedTx = result.data.raw
         this.d_signHash = `0x${serializedTx}`
         this.d_bordercastShow = true
       } else {

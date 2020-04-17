@@ -1,4 +1,5 @@
 export default {
   account: 0,
-  address: ''
+  address: '',
+  balance: 0
 }

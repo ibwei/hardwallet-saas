@@ -16,15 +16,23 @@ export default {
   name: 'LoadData',
   mixins: [UsbMixin, ETH],
   async created() {
-    if (this.coinInfo.symbol === 'eth') {
-      await this.ethGetPublicKey()
-    } else {
-      await this.m_getPublickKey()
-    }
+    this.initPublickey()
     if (this.$route.path !== `/${this.coinInfo.symbol}/wallet/account`) this.$router.push({ path: `/${this.coinInfo.symbol}/wallet/account` })
   },
   computed: {
     ...mapState(['brand', 'coinInfo'])
+  },
+  methods: {
+    async initPublickey() {
+      switch (this.coinInfo.symbol) {
+        case 'usdt':
+        case 'eth':
+          await this.ethGetPublicKey()
+          break
+        default:
+          await this.m_getPublickKey()
+      }
+    }
   },
   i18n: {
     message: {

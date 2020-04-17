@@ -274,7 +274,7 @@ export default {
 }
 .icon {
   font-size: 20px;
-  font-weight: bold;
+  font-weight: 300;
 }
 .reverse {
   transform: rotate(180deg);

@@ -2,6 +2,8 @@ export default {
   zhCN: {
     name: '中文（简体）',
     Close: '关闭',
+    Error: '错误',
+    ERROR: '错误',
     Save: '保存',
     home: {},
     app: {
