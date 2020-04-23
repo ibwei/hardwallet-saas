@@ -92,12 +92,16 @@ export default {
           briefName: 'ETH'
         },
         {
+          name: 'Tether USD',
+          briefName: 'USDT'
+        },
+        {
           name: 'Litecoin',
           briefName: 'LTC'
         },
         {
-          name: 'Tether USD',
-          briefName: 'USDT'
+          name: 'Dogecoin',
+          briefName: 'DOGE'
         }
         /*  {
           name: 'Bitcoin Cash',
@@ -114,10 +118,6 @@ export default {
         {
           name: 'Digibyte',
           briefName: 'DGB'
-        },
-        {
-          name: 'Dogecoin',
-          briefName: 'DOGE'
         },
         {
           name: 'Namecoin',
@@ -204,7 +204,7 @@ export default {
     m_confirm() {
       const coinName = this.d_selectType.toLowerCase()
       if (!coinbook[coinName]?.bip) {
-        this.$message.error('暂时不支持该币种!')
+        this.$message.error({ message: this.$t('The currency is temporarily not supported!!'), duration: -1 })
         return
       }
       this.$store.__s('coinType', this.d_selectType)
@@ -221,6 +221,7 @@ export default {
   i18n: {
     messages: {
       zhCN: {
+        'The currency is temporarily not supported!': '暂时不支持该币种',
         Selected: '已选中',
         'Choose A Coin Type': '代币选择',
         'Enter Keywords to Search': '搜索关键词'

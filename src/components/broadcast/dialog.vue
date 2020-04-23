@@ -1,7 +1,10 @@
 <template>
   <v-dialog v-model="d_show" max-width="500" persistent>
     <v-card>
-      <v-card-title class="headline">{{ $t('Transaction signed successfully') }}</v-card-title>
+      <v-card-title class="headline d-flex justify-space-between"
+        >{{ $t('Transaction signed successfully') }}
+        <v-icon @click="_close('mannual')">mdi-close</v-icon>
+      </v-card-title>
       <v-divider />
       <v-card-text class="mt-6">
         {{ $props.signHash }}
@@ -10,7 +13,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="grey darken-1" text @click="copyAndColse">
-          {{ $t('Copy signatur') }}
+          {{ $t('Copy signature') }}
         </v-btn>
         <v-btn color="green darken-1" text @click="autoBordercast">
           {{ $t('Broadcast now') }}
@@ -38,6 +41,11 @@ export default {
   created() {
     this.d_show = this.$props.show
   },
+  watch: {
+    show(newV) {
+      this.d_show = newV
+    }
+  },
   computed: {
     c_coinInfo: vm => vm.$store.__s('coinInfo')
   },
@@ -46,7 +54,6 @@ export default {
       try {
         clipboard.writeText(this.$props.signHash)
         this.$message.success(this.$t('Copy successfully'))
-        this.$message.success('复制成功')
       } catch (error) {
         this.$message.error(this.$t('Copy failed'))
       }
@@ -60,11 +67,10 @@ export default {
         if (res.data.result) {
           this._close('auto', res.data.result)
         } else {
-          // this.$message.error(this.$t('Unable to broadcast : ') + res.data.error)
           this.$emit('error-broadcast', res.data.error)
         }
       } catch (e) {
-        this.$message.error(this.$t('Network error,manual broadcast is recommended!'))
+        this.$message.error({ message: this.$t('Network error,manual broadcast is recommended!'), duration: -1 })
       }
     },
     _close(type, transactionHash) {

@@ -1,27 +1,8 @@
 <template>
   <v-container class="pa-0 send-wrap" fluid>
-    <bordercast :show="d_bordercastShow" v-if="d_bordercastShow" @close-dialog="closeBordercast" @error-broadcast="errorBroadcast" :signHash="d_signHash" />
-    <v-snackbar v-model="d_snackbar" :vertical="true" :multi-line="true" top color="success" :timeout="0">
-      <div class="d-flex flex-row align-center flex-wrap justify-center ma-2 pa-4">
-        <v-icon color="white" class="mr-4">mdi-cast</v-icon>
-        <v-divider vertical class="mr-3" />
-        <div class="subtitle-1  pr-3 d-flex flex-column" style="word-wrap:break-word;">
-          <span class="subtitle-2  mr-1">{{ $t('TX Hash') }} : </span>
-          <div style="width:500px;height:auto;">{{ this.d_transactionHash }}</div>
-          <v-btn color="#fff" outlined line text @click="d_snackbar = false" class="">
-            {{ $t('Close') }}
-          </v-btn>
-        </div>
-      </div>
-    </v-snackbar>
-    <v-snackbar v-model="d_error" top color="error" :timeout="0">
-      <v-icon color="white" class="mr-4">mdi-wifi-off</v-icon>
-      <span class="subtitle-2  mr-1">{{ $t('Error') }} : </span>
-      <span class="subtitle-1"> {{ this.d_errorReason }}</span>
-      <v-btn color="#fff" text @click="d_error = false" class="mr-2 ml-2">
-        {{ $t('Close') }}
-      </v-btn>
-    </v-snackbar>
+    <broadcast-dialog :show="d_bordercastShow" @close-dialog="closeBordercast" @error-broadcast="errorBroadcast" :signHash="d_signHash" />
+    <broadcast-success :show="d_snackbar" :transactionHash="d_transactionHash" :coinType="c_coinInfo.symbol" @close="d_snackbar = false" />
+    <broadcast-error :show="d_error" :reason="this.d_errorReason" @update-nonce="updateNonce" @close="d_error = false" />
     <v-card class="pa-3">
       <div class="table">
         <div class="table-header px-3 app-secondary-bg">
@@ -96,10 +77,10 @@
             <div class="subtitle-2 text-left mb-4">{{ $t('Transaction Fee') }}</div>
             <v-slider thumb-label v-model="d_zoom" ticks="always" persistent-hint :max="d_fastest" :min="d_safeLow">
               <template v-slot:prepend>
-                <span class="subtitle-2" @click="zoomOut">low</span>
+                <span class="subtitle-2" @click="zoomOut">{{ $t('Low') }}</span>
               </template>
               <template v-slot:append>
-                <span @click="zoomIn" class="subtitle-2">hight</span>
+                <span @click="zoomIn" class="subtitle-2">{{ $t('High') }}</span>
               </template>
             </v-slider>
           </v-col>
@@ -117,13 +98,9 @@ import Axios from 'axios'
 import clipboard from 'clipboard-polyfill'
 import UnitHelper from '@abckey/unit-helper'
 import AddressHelper from '@abckey/address-helper'
-import Bordercast from '../../components/Bordercast'
 import ETH from '@/mixins/eth'
 export default {
   name: 'Send',
-  components: {
-    Bordercast
-  },
   mixins: [ETH],
   data() {
     return {
@@ -245,10 +222,20 @@ export default {
       const address = await this.ethGetAddress()
       const result = await Axios.get(`https://api.abckey.com/eth/address/${address}?details=basic`)
       if (result.status === 200 && !result.error) {
+        console.log('以获取到nonce')
         this.d_utxoList.push({ amount: result?.data?.balance ? result?.data?.balance : 0, address: result?.data?.address, nonce: result.data.nonce })
       } else {
         this.$message.error(this.$t('The network breakdown!'))
       }
+    },
+    async updateNonce() {
+      this.d_utxoList = []
+      this.$store.__s('pageLoading', true)
+      this.d_error = false
+      this.d_bordercastShow = false
+      await this.getUtxoList()
+      this.$store.__s('pageLoading', false)
+      this.$message.success(this.$t('Update nonce successfully!'))
     },
     /**
      *  @method - get fee satoshi/byte from internet
@@ -389,7 +376,6 @@ export default {
   i18n: {
     messages: {
       zhCN: {
-        'Available Balance': '可用余额',
         'Ethereum address does not have sufficient balance!': '以太坊地址没有足够的余额',
         'Your USDT account balance is insufficient!': '你的USDT账户余额不足',
         'Balance is empty!': '账户余额为空',

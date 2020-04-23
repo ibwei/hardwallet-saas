@@ -1,5 +1,24 @@
 <template>
   <v-container class="pa-0 text-left" fluid>
+    <v-card class="px-3 mb-3">
+      <v-row justify="center" align="center">
+        <v-col cols="2" class="text-center">
+          <span class="subtitle-2">{{ $t('Public Key') }}</span>
+        </v-col>
+        <v-col cols="1">
+          <v-divider vertical style="height:30px;" />
+        </v-col>
+        <v-col cols="6" @click="showXpub">
+          <v-sheet class="subtitle-2 text--disabled xpub">{{ d_showXpub ? xpub : hideXpub(xpub) }}</v-sheet>
+        </v-col>
+        <v-col cols="1">
+          <v-divider vertical style="height:30px;" />
+        </v-col>
+        <v-col cols="2" class="">
+          <v-btn class="subtitle-2" color="primary" text @click="changeOldAccount">{{ c_addressType === 'new' ? $t('Old Account') : $t('New Account') }}</v-btn>
+        </v-col>
+      </v-row>
+    </v-card>
     <v-card class="px-3">
       <v-row>
         <v-col class="text-center">
@@ -303,7 +322,7 @@
     <p class="mt-3 mb-7 grey--text text-center">
       <span class="caption">
         {{ $t('Only the latest 1000 data is displayed.') }}
-        <a :href="`https://blockchair.com/${coin}/xpub/${xpub}`" target="_blank">{{ $t('See more') }}</a>
+        <a :href="`https://blockchair.com/${c_coinInfo.name.toLowerCase()}/xpub/${xpub}`" target="_blank">{{ $t('See more') }}</a>
       </span>
     </p>
   </v-container>
@@ -312,8 +331,10 @@
 <script>
 import Axios from 'axios'
 import BN from 'bignumber.js'
+import usb from '@/mixins/usb'
 
 export default {
+  mixins: [usb],
   props: {
     coin: {
       default: 'btc',
@@ -329,6 +350,7 @@ export default {
     }
   },
   data: () => ({
+    d_showXpub: false,
     d_balance: 0,
     d_rate: 0,
     d_totalReceived: 0,
@@ -358,10 +380,10 @@ export default {
   },
   computed: {
     c_coinInfo: vm => vm.$store.__s('coinInfo'),
-    c_protocol: vm => vm.$store.__s('coinProtocol')
+    c_protocol: vm => vm.$store.__s('coinProtocol'),
+    c_addressType: vm => vm.$store.__s('addressType')
   },
   async created() {
-    console.log(this.cash)
     const path = this.$route.path
     for (;;) {
       if (this.$route.path !== path) break
@@ -370,6 +392,27 @@ export default {
     }
   },
   methods: {
+    async showXpub() {
+      if (this.d_showXpub === true) {
+        this.$message.info({ message: this.$t('The public key is displayed.') })
+        return false
+      }
+      await this.btcGetPublickKey(true)
+      this.d_showXpub = true
+      this.$message.info({ message: this.$t('The public key is displayed.') })
+    },
+    changeOldAccount() {
+      if (this.c_addressType === 'new') {
+        this.$store.__s('addressType', 'old')
+      } else {
+        this.$store.__s('addressType', 'new')
+      }
+      this.$store.__s('usb.xpub', '')
+    },
+    hideXpub(xpub) {
+      const len = xpub.length
+      return xpub.slice(0, 4) + new Array(len - 8).fill('*').join('') + xpub.slice(len - 8 + 4)
+    },
     async getEthResult() {
       const result = await this.$usb.cmd('EthereumGetAddress', {
         address_n: [(this.c_protocol | 0x80000000) >>> 0, (this.c_coinInfo.slip44 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, 0],
@@ -377,7 +420,6 @@ export default {
       })
       this.d_address = result.data.address
       const r = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/address/${this.d_address}?page=1&pageSize=1000&details=txs`)
-      console.log('r', r)
       return r
     },
     upAll() {
@@ -392,10 +434,8 @@ export default {
       } else {
         result = await Axios.get(`https://api.abckey.com/${this.coin.toLowerCase()}/xpub/${this.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
       }
-      console.log(result)
       if (result.error) return
       const data = result.data
-      console.log('data', data)
       this.d_balance = this.sat2btc(data.balance)
       this.d_totalReceived = this.sat2btc(data.totalReceived)
       this.d_totalSent = this.sat2btc(data.totalSent)
@@ -432,7 +472,7 @@ export default {
         .toFormat(),
     unix2utc: time => new Date(time * 1000).toLocaleString(),
     _fixTxs(txs, tokens) {
-      if (!txs) return
+      if (!txs.length) return
       for (let i = 0; i < txs.length; i++) {
         const oldValue = i + 1 === txs.length ? 0 : txs[i + 1].value
         txs[i].valueChanged = this.sat2btc(txs[i].value - oldValue)
@@ -451,7 +491,7 @@ export default {
     },
     _isOwnAddr(addr, tokens) {
       let result = false
-      for (let i = 0; i < tokens.length; i++) {
+      for (let i = 0; i < tokens?.length; i++) {
         if (addr === tokens[i].name) {
           result = true
           break
@@ -463,6 +503,11 @@ export default {
   i18n: {
     messages: {
       zhCN: {
+        'The public key is displayed.': '公钥已显示',
+        'Your public key is : ': '你的公钥是 ：',
+        'New Account': '切换新账户',
+        'Old Account': '切换旧账户',
+        'Public Key': '公钥',
         Balance: '余额',
         Convert: '折合',
         Rate: '汇率',
@@ -498,5 +543,11 @@ export default {
 
 .blur {
   filter: blur(2px);
+}
+.xpub {
+  cursor: pointer;
+}
+.xpub-info {
+  white-space: pre-wrap;
 }
 </style>

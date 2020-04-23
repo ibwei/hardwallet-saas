@@ -140,8 +140,8 @@
             <v-col cols="4">
               <v-tooltip :disabled="!item.valueChanged" top>
                 <template v-slot:activator="{ on }">
-                  <v-chip v-on="on" :color="item.valueChanged < 0 ? 'red' : 'green'" small label outlined>
-                    <v-icon left size="18">{{ item.valueChanged > 0 ? 'mdi-plus' : 'mdi-minus' }}</v-icon>
+                  <v-chip v-on="on" :color="item.vin[0].addresses.includes(c_address) ? 'red' : 'green'" small label outlined>
+                    <v-icon left size="18">{{ !item.vin[0].addresses.includes(c_address) ? 'mdi-plus' : 'mdi-minus' }}</v-icon>
                     <span>{{ btc2str(Math.abs(item.valueChanged)) }}</span>
                     <span class="text-uppercase caption ml-1">{{ coin }}</span>
                   </v-chip>
@@ -296,7 +296,7 @@
     <p class="mt-3 mb-7 grey--text text-center">
       <span class="caption">
         {{ $t('Only the latest 1000 data is displayed.') }}
-        <a :href="`https://blockchair.com/${coin}/xpub/${xpub}`" target="_blank">{{ $t('See more') }}</a>
+        <a :href="`https://blockchair.com/${c_coinInfo.name.toLowerCase()}/address/${c_address}`" target="_blank">{{ $t('See more') }}</a>
       </span>
     </p>
   </v-container>
@@ -386,6 +386,7 @@ export default {
       if (result.error) return
       const data = result.data
       this.d_balance = data.balance
+      this.$store.__s('eth.balance', data.balance)
       this.d_unconfirmedBalance = data.unconfirmedBalance
       this.d_unconfirmedTxs = data.unconfirmedTxs
       this.d_transactionCount = data.txs
@@ -426,17 +427,18 @@ export default {
         txs[i].fees = UnitHelper(txs[i].fees, 'wei_eth').toString(10)
         for (let x = 0; x < txs[i]?.vin?.length; x++) {
           txs[i].vin[x].value = UnitHelper(txs[i].vin[x].value, 'wei_eth').toString(10)
-          txs[i].vin[x].own = false
+          txs[i].vin[x].own = this._isOwnAddr(txs[i].vin[x].addresses[0])
         }
         for (let y = 0; y < txs[i]?.vout?.length; y++) {
           txs[i].vout[y].value = UnitHelper(txs[i].vout[y].value, 'wei_eth').toString(10)
-          txs[i].vout[y].own = true
+          txs[i].vout[y].own = this._isOwnAddr(txs[i].vout[y].addresses[0])
         }
       }
       this.d_txs = txs
     },
-    _isOwnAddr() {
-      return true
+    _isOwnAddr(address) {
+      console.log(address.toLowerCase() === this.c_address.toLowerCase())
+      return address.toLowerCase() === this.c_address.toLowerCase()
     }
   },
   i18n: {

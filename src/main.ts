@@ -7,8 +7,6 @@ import vuetify from './plugins/vuetify'
 import '@/components'
 import './plugins'
 import App from './App.vue'
-import Message from '@/views/components/message/index'
-Vue.use(Message)
 
 Vue.config.productionTip = false
 

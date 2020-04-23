@@ -105,13 +105,7 @@ export default {
     ...mapState(['usb', 'pageLoading']),
     c_coinInfo: vm => vm.$store.__s('coinInfo'),
     c_chooseType: vm => vm.$store.__s('dialog.chooseType'),
-    c_protocol() {
-      if (Reflect.has(this.c_coinInfo.bip, '49')) {
-        return 49
-      } else {
-        return 44
-      }
-    }
+    c_protocol: vm => vm.$store.__s('coinProtocol')
   },
   watch: {
     c_chooseType(newV) {
@@ -135,12 +129,10 @@ export default {
     },
     async _showOverlay(index, e) {
       this.d_selectedId = index
-      console.log(this.d_addressList[this.d_selectedId].newAddress)
       this._qrcode(this.d_addressList[this.d_selectedId].newAddress)
       const coordinate = getMousePos(e)
       this.d_overlay = true
       document.getElementsByClassName('qr')[0].style.top = coordinate.y - 60 + 'px'
-      console.log(this.c_protocol)
 
       await this.$usb.cmd('GetAddress', {
         coin_name: this.c_coinInfo.name,
@@ -182,7 +174,6 @@ export default {
       try {
         result = await Axios({ method: 'get', url: `https://api.abckey.com/${this.coinInfo.symbol}/xpub/${this.usb.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`, timeout: 1000 * 10 })
       } catch (error) {
-        console.log(error)
         this.$store.__s('pageLoading', false)
         this.$message.error(this.$t('Network Error!'))
       }

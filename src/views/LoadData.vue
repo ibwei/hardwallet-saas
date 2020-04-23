@@ -30,7 +30,7 @@ export default {
           await this.ethGetPublicKey()
           break
         default:
-          await this.m_getPublickKey()
+          await this.btcGetPublickKey()
       }
     }
   },

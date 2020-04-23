@@ -1,27 +1,8 @@
 <template>
   <v-container class="pa-0 send-wrap" fluid>
-    <bordercast :show="d_bordercastShow" v-if="d_bordercastShow" @close-dialog="closeBordercast" :signHash="d_signHash" />
-    <v-snackbar v-model="d_snackbar" :vertical="true" :multi-line="true" top color="success" :timeout="0">
-      <div class="d-flex flex-row align-center flex-wrap justify-center ma-2 pa-4">
-        <v-icon color="white" class="mr-4">mdi-cast</v-icon>
-        <v-divider vertical class="mr-3" />
-        <div class="subtitle-1  pr-3 d-flex flex-column" style="word-wrap:break-word;">
-          <span class="subtitle-2  mr-1">{{ $t('TX Hash') }} : </span>
-          <div style="width:500px;height:auto;">{{ this.d_transactionHash }}</div>
-          <v-btn color="#fff" outlined line text @click="d_snackbar = false" class="">
-            {{ $t('Close') }}
-          </v-btn>
-        </div>
-      </div>
-    </v-snackbar>
-    <v-snackbar v-model="d_error" top color="error" :timeout="0">
-      <v-icon color="white" class="mr-4">mdi-wifi-off</v-icon>
-      <span class="subtitle-2  mr-1">{{ $t('Error') }} : </span>
-      <span class="subtitle-1"> {{ this.d_errorReason }}</span>
-      <v-btn color="#fff" text @click="d_error = close" class="mr-2 ml-2">
-        {{ $t('Close') }}
-      </v-btn>
-    </v-snackbar>
+    <broadcast-dialog :show="d_bordercastShow" @close-dialog="closeBordercast" @error-broadcast="errorBroadcast" :signHash="d_signHash" />
+    <broadcast-success :show="d_snackbar" :transactionHash="d_transactionHash" :coinType="c_coinInfo.symbol" @close="d_snackbar = false" />
+    <broadcast-error :show="d_error" :reason="this.d_errorReason" @close="d_error = false" />
     <v-card class="pa-3">
       <div class="table">
         <div class="table-header px-3 app-secondary-bg">
@@ -65,7 +46,8 @@
       </div>
       <div class="form">
         <div class="left">
-          <v-btn rounded class="plus-btn" color="primary" @click="addRecipient()">
+          <div class="subtitle-2" :class="c_utxoTotal.toString(10) !== '0' ? 'primary--text' : 'red--text'">{{ $t('Available Balance') }}：{{ UnitHelper(c_utxoTotal, 'sat_btc').toString(10) }} {{ c_coinInfo.symbol.toUpperCase() }}</div>
+          <v-btn rounded class="plus-btn mt-4" color="primary" :disabled="c_total.toNumber() > c_utxoTotal.toNumber()" @click="addRecipient()">
             <v-icon size="16">mdi-plus</v-icon>
             {{ $t('Add recipient') }}
           </v-btn>
@@ -114,7 +96,7 @@
             </v-combobox>
           </v-col>
           <v-col cols="3" class="text-sm-right pa-0 mt-3">
-            <v-btn color="success" rounded @click="checkAndSend()">{{ $t('Check and send') }}</v-btn>
+            <v-btn color="success" rounded @click="checkAndSend()" :disabled="!d_utxoList.length">{{ $t('Check and send') }}</v-btn>
           </v-col>
         </v-row>
       </div>
@@ -128,12 +110,8 @@ import clipboard from 'clipboard-polyfill'
 import BN from 'bignumber.js'
 import UnitHelper from '@abckey/unit-helper'
 import AddressHelper from '@abckey/address-helper'
-import Bordercast from '../../components/Bordercast'
 export default {
   name: 'Send',
-  components: {
-    Bordercast
-  },
   data() {
     return {
       d_error: false,
@@ -142,6 +120,7 @@ export default {
       d_snackbar: false,
       d_feeUrl: 'https://bitcoinfees.earn.com/api/v1/fees/recommended',
       d_utxoList: [],
+      d_txidList: [],
       d_maxPaidIndex: 0,
       d_needFee: false,
       d_endUtxo: false,
@@ -213,6 +192,27 @@ export default {
     })
   },
   methods: {
+    transferTxid(raw) {
+      const target = {}
+      target.version = raw.version
+      target.lock_time = raw.locktime
+      target.hash = raw.txid
+      target.inputs = raw.vin.map(item => {
+        const newItem = {}
+        newItem.prev_index = item.vout
+        newItem.sequence = item.sequence
+        newItem.prev_hash = item.txid
+        newItem.script_sig = item.scriptSig.hex
+        return newItem
+      })
+      target.bin_outputs = raw.vout.map(item => {
+        const newItem = {}
+        newItem.amount = UnitHelper(item.value, 'btc_sat').toString()
+        newItem.script_pubkey = item.scriptPubKey.hex
+        return newItem
+      })
+      return target
+    },
     showAllIcon() {
       this.d_clickAll = false
     },
@@ -228,7 +228,6 @@ export default {
         }
       }
       preListCount = preListCount.times(100000000)
-      console.log('prelistcount', preListCount)
       this.d_maxPaidIndex = this.d_utxoList.length - 1
       this.d_txOut.splice(index, 1, { ...this.d_txOut[index], amount: UnitHelper(this.c_utxoTotal.minus(this.c_totalFees.plus(preListCount)).toNumber(), 'sat_btc') })
       this.d_clickAll = true
@@ -249,26 +248,23 @@ export default {
       }
       this.d_feeList = [result.data.fastestFee, result.data.halfHourFee, result.data.hourFee]
       this.d_fee = this.d_feeList[0]
-      for (let i = 0; i < 3; i++) {
-        if (i === 0) {
-          this.d_feeHelpList[this.d_feeList[i]] = {
-            text: this.$t('high')
-          }
-        } else if (i === 1) {
-          this.d_feeHelpList[this.d_feeList[i]] = {
-            text: this.$t('middle')
-          }
-        } else {
-          this.d_feeHelpList[this.d_feeList[i]] = {
-            text: this.$t('low')
-          }
-        }
+      this.d_feeHelpList[this.d_feeList[0]] = {
+        text: this.$t('high')
+      }
+      this.d_feeHelpList[this.d_feeList[1]] = {
+        text: this.$t('middle')
+      }
+      this.d_feeHelpList[this.d_feeList[2]] = {
+        text: this.$t('low')
       }
     },
     async getUtxoList() {
       const result = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/utxo/${this.c_xpub}?confirme=true`)
       if (result.status === 200) {
         this.d_utxoList = result.data
+        if (this.d_utxoList.length === 0) {
+          this.$message.error({ message: this.$t('The available balance is 0 and no transactions can be sent!'), duration: -1 })
+        }
       } else {
         this.$message.error(this.$t('The network breakdown!'))
       }
@@ -283,11 +279,11 @@ export default {
       for (let i = 0; i < len; i++) {
         const output = this.d_txOut[i]
         if (!pattern.test(output.amount) || !output.amount) {
-          this.$message.error(this.$t('Please enter a valid quantity'))
+          this.$message.error({ message: this.$t('Please enter a valid quantity'), duration: -1 })
           return false
         }
         if (!AddressHelper.test(output.address, this.c_coinInfo.symbol)) {
-          this.$message.error(this.$t('Please enter a valid Address'))
+          this.$message.error({ message: this.$t('Please enter a valid Address'), duration: -1 })
           return false
         }
       }
@@ -297,14 +293,13 @@ export default {
       if (type === 'auto') {
         this.d_snackbar = true
         this.d_transactionHash = transactionHash
+        this.d_txOut = []
+        this.d_txOut.push({
+          address: '',
+          amount: 0
+        })
       }
       this.d_bordercastShow = false
-      this.d_txOut = [
-        {
-          amount: '',
-          address: ''
-        }
-      ]
     },
     /**
      * @method - get the input index of utxoList
@@ -364,7 +359,7 @@ export default {
         await this.signTx()
       } catch (e) {
         console.log('错误原因：', e)
-        this.$message.error(this.$t('Unknown Error!'))
+        this.$message.error({ message: this.$t('The transfer is abnormal, please check the data before sending.'), duration: -1 })
       }
       this.$store.__s('pageLoading', false)
     },
@@ -385,7 +380,6 @@ export default {
         outItem.address = item.address
         outputs.push(outItem)
       }
-      console.log('输出地址', outputs)
       // Organize input data and calculate change
       const inputs = []
       let prePaidCount = BN(0)
@@ -402,22 +396,7 @@ export default {
         prePaidCount = prePaidCount.plus(this.d_utxoList[i].value)
         inputs.push(item)
       }
-      console.log('输入地址', inputs)
       change = prePaidCount.minus(this.c_totalAmounts.plus(this.c_totalFees))
-      /*   if (prePaidCount.eq(this.c_totalAmounts.plus(this.c_totalFees))) {
-        this.d_extraFee = 0
-      } else if (
-        BN('0.0001')
-          .times('100000000')
-          .gt(change)
-      ) {
-        // need extra fees
-        this.$message.info(this.$t('If the payment is too fragmentary, additional 0.0001 currency handling fee will be paid'))
-        this.d_extraFee = BN('0.0001').times('100000000')
-        change = prePaidCount.minus(this.c_totalAmounts.plus(this.c_totalFees))
-      } */
-
-      // get change address
       const res = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/xpub/${this.c_usb.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
       const usedTokens = res.data.usedTokens ? res.data.usedTokens : '0'
       const changeObject = {
@@ -429,18 +408,29 @@ export default {
       if (changeObject.amount) {
         outputs.push(changeObject)
       }
-      const result = await this.$usb.signTx({
+
+      const params = {
         coin_name: this.c_coinInfo.name,
         inputs,
         outputs
-      })
-      console.log('signTx', result)
+      }
+      // 如果是非隔离见证，需要添加utxo
+      if (this.c_coinProtocol === 44) {
+        this.d_txidList = []
+        for (let i = 0; i <= this.d_maxPaidIndex; i++) {
+          const { data } = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/tx-specific/${this.d_utxoList[i].txid}`)
+          this.d_txidList.push(this.transferTxid(data))
+        }
+        params.utxo = this.d_txidList
+      }
+      console.log('rawData', JSON.stringify(params))
+      const result = await this.$usb.signBTC(params)
       const signText = result?.data?.serialized_tx
       if (signText) {
         this.d_signHash = signText
         this.d_bordercastShow = true
       } else {
-        this.$message.error(this.$t('Transaction signature failed!'))
+        this.$message.error({ message: this.$t('Transaction signature failed!'), duration: -1 })
       }
     }
   },
@@ -455,6 +445,7 @@ export default {
   i18n: {
     messages: {
       zhCN: {
+        'The transfer is abnormal, please check the data before sending.': '转账异常，请检查数据后再发送',
         'All Balances': '发送所有余额',
         'Transaction signature failed': '签名交易失败',
         'Transaction signature success': '签名交易成功',

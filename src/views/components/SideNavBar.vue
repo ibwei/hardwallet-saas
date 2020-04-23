@@ -17,12 +17,11 @@
         </div>
       </v-col>
     </v-row>
-    <v-divider class="ma-0 pa-0" />
     <v-row class="ma-0">
       <div class="side-navbar">
         <v-list dense class="nav-area">
-          <v-list-item-group class="pa-0 ma-0">
-            <v-list-item v-for="(item, index) in d_routerList" :key="index" link class="pa-0" :class="[item.id === d_selectedId ? 'blue lighten-4 text---primary' : 'text--secondary']">
+          <v-list-item-group class="pa-0 ma-0" style="border-top:1px solid rgba(0,0,0,0.1)">
+            <v-list-item v-for="(item, index) in d_routerList" :key="index" link class="pa-0" :class="[item.id === d_selectedId ? 'blue lighten-3' : 'text--secondary']">
               <v-list-item-content @click="menuClick(item.id)">
                 <div class="pt-1 pb-1" :class="[item.id === d_selectedId ? 'text---primary' : 'darken-2--text', c_fold ? 'flex-colomn' : 'flexrow  pl-4']">
                   <div class="dot mr-4" :class="item.id === d_selectedId ? 'blue' : 'white'" v-if="!c_fold"></div>

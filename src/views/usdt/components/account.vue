@@ -328,7 +328,7 @@
     <p class="mt-3 mb-7 grey--text text-center">
       <span class="caption">
         {{ $t('Only the latest 1000 data is displayed.') }}
-        <a :href="`https://blockchair.com/${coin}/xpub/${xpub}`" target="_blank">{{ $t('See more') }}</a>
+        <a :href="`https://blockchair.com/${c_coinInfo.name.toLowerCase()}/address/${c_address}`" target="_blank">{{ $t('See more') }}</a>
       </span>
     </p>
   </v-container>

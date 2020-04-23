@@ -61,3 +61,8 @@ $app-secondary:rgba(44, 115, 210, 0.6);
 .app-secondary-bg {
   background-color: $app-secondary;
 }
+
+.left {
+  text-align-last: left;
+  width          : 100%;
+}

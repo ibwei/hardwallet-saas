@@ -9,6 +9,7 @@
     <v-card>
       <v-tabs v-model="d_tab" class="pa-6 pb-3">
         <v-tab>{{ $t('New Address') }}</v-tab>
+        <v-tab>{{ $t('Old Address') }}</v-tab>
       </v-tabs>
       <v-tabs-items v-model="d_tab">
         <v-tab-item>
@@ -26,7 +27,7 @@
                     <td class="text-left">{{ address.index }}</td>
                     <td class="text-left d-flex flex-row justify-start align-center" style="cursor:pointer">
                       <span class="s-address caption pl-2 pr-2" :class="d_selectedId === index ? 'highlight' : ''">
-                        <i class="icon mr-2" style="font-size:18px;" v-html="d_selectedId === index ? '&#xe804;' : '&#xe9cf;'" @click="copyAddress(index)"></i>
+                        <i class="icon mr-2" style="font-size:20px;" v-html="d_selectedId === index ? '&#xe804;' : '&#xe9cf;'" @click="copyAddress(index)"></i>
                         <span v-text="d_selectedId === index ? address.newAddress : address.hideAddress"></span>
                       </span>
                     </td>
@@ -37,8 +38,10 @@
                 </tbody>
               </template>
             </v-simple-table>
-            <v-divider></v-divider>
-            <span class="d-flex mt-4 ml-2 mr-2 body-2 text-start">{{ $t('PS: For the USDT currency, only fixed address collection is currently supported. In subsequent versions, we will support obtaining multiple address collections.') }}</span>
+            <v-btn medium rounded color="primary" class="d-flex mt-4" style="width:auto;max-width:180px;" @click="getAddr">
+              <i class="icon" style="font-size:20px;">&#xe612;</i>
+              <span>{{ $t('More Address') }}</span>
+            </v-btn>
           </v-card>
         </v-tab-item>
         <v-tab-item>
@@ -74,6 +77,8 @@
 </template>
 
 <script>
+import UnitHelper from '@abckey/unit-helper'
+import Axios from 'axios'
 import QRCode from 'qrcodejs2'
 import { mapState } from 'vuex'
 import { getMousePos, copyText } from '@/utils/common'
@@ -108,9 +113,6 @@ export default {
       }
     }
   },
-  created() {
-    this.getAddr()
-  },
   watch: {
     c_chooseType(newV) {
       if (newV) {
@@ -118,7 +120,13 @@ export default {
       }
     }
   },
+  created() {
+    this.getUsedTokens()
+  },
   methods: {
+    receiveCoin(coin) {
+      return UnitHelper(coin, `sat_${this.c_coinInfo.symbol}`).toString()
+    },
     clickAddress(index, e) {
       if (this.d_overlay) {
       } else {
@@ -127,16 +135,17 @@ export default {
     },
     async _showOverlay(index, e) {
       this.d_selectedId = index
+      console.log(this.d_addressList[this.d_selectedId].newAddress)
       this._qrcode(this.d_addressList[this.d_selectedId].newAddress)
       const coordinate = getMousePos(e)
       this.d_overlay = true
       document.getElementsByClassName('qr')[0].style.top = coordinate.y - 60 + 'px'
       console.log(this.c_protocol)
 
-      await this.$usb.cmd('EthereumGetAddress', {
-        // coin_name: this.c_coinInfo.name,
-        address_n: [(44 | 0x80000000) >>> 0, (60 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, 0],
-        // script_type: this.c_protocol === 49 ? 'SPENDP2SHWITNESS' : 'SPENDADDRESS',
+      await this.$usb.cmd('GetAddress', {
+        coin_name: this.c_coinInfo.name,
+        address_n: [(this.c_protocol | 0x80000000) >>> 0, (this.coinInfo.slip44 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.d_addressList[this.d_selectedId].index],
+        script_type: this.c_protocol === 49 ? 'SPENDP2SHWITNESS' : 'SPENDADDRESS',
         show_display: true
       })
       this._hideOverlay()
@@ -167,6 +176,23 @@ export default {
         this.showAlert(this.$t('Copy failed!'))
       }
     },
+    async getUsedTokens() {
+      this.$store.__s('pageLoading', true)
+      let result = null
+      try {
+        result = await Axios({ method: 'get', url: `https://api.abckey.com/${this.coinInfo.symbol}/xpub/${this.usb.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`, timeout: 1000 * 10 })
+      } catch (error) {
+        console.log(error)
+        this.$store.__s('pageLoading', false)
+        this.$message.error(this.$t('Network Error!'))
+      }
+
+      this.d_receiveList = result.data.tokens ? result.data.tokens : []
+      this.d_currentInex = result.data.usedTokens ? result.data.usedTokens : '0'
+      this.d_currentAddress = this.d_currentInex
+      this.getAddr()
+      this.$store.__s('pageLoading', false)
+    },
     async getAddr() {
       if (this.d_addressList.length > this.d_maxReceiveAddress) {
         this.showAlert(this.$t('Payment address cannot exceed 20 Each'))
@@ -174,16 +200,13 @@ export default {
         return
       }
       try {
-        const result = await this.$usb.cmd('EthereumGetAddress', {
-          // coin_name: this.c_coinInfo.name,
-          address_n: [(44 | 0x80000000) >>> 0, (60 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, 0],
-          // script_type: this.c_protocol === 49 ? 'SPENDP2SHWITNESS' : 'SPENDADDRESS',
+        const result = await this.$usb.cmd('GetAddress', {
+          coin_name: this.c_coinInfo.name,
+          address_n: [(this.c_protocol | 0x80000000) >>> 0, (this.coinInfo.slip44 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, this.d_currentInex],
+          script_type: this.c_protocol === 49 ? 'SPENDP2SHWITNESS' : 'SPENDADDRESS',
           show_display: false
         })
         this.d_currentAddress = result.data.address
-        // const r = await Axios.get(`https://api.abckey.com/${this.coinInfo.symbol}/address/${this.d_currentAddress}?page=1&pageSize=1000&details=tokenBalances`)
-        // const r = await Axios.get(`https://api.abckey.com/${this.coinInfo.symbol}/address/${this.d_currentAddress}?page=1&pageSize=1000&details=basic`)
-        // console.log('r', r)
         const len = this.d_currentAddress.length
         const hideAddress = this.d_currentAddress.slice(0, 4) + new Array(len - 8).fill('#').join('') + this.d_currentAddress.slice(len - 8 + 4)
         const newAddress = {
@@ -192,8 +215,7 @@ export default {
           hideAddress
         }
         this.d_addressList.push(newAddress)
-      } catch (e) {
-        console.log(e)
+      } catch {
         this.showAlert(this.$t('Get device address error'))
       }
     },
@@ -208,7 +230,6 @@ export default {
   i18n: {
     messages: {
       zhCN: {
-        'PS: For the USDT currency, only fixed address collection is currently supported. In subsequent versions, we will support obtaining multiple address collections.': '备注：针对USDT币种，当前仅支持固定地址收款，后续版本我们将支持获取多个地址收款。',
         'Copy failed!': '复制失败',
         'Payment address cannot exceed 20 Each': '收款地址不能超过20个',
         'Address has been copied to clipboard': '地址已经复制到剪贴板',
@@ -233,7 +254,7 @@ export default {
   margin: 20px auto;
 }
 .s-address {
-  width: 380px;
+  width: 300px;
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;

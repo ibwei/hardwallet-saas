@@ -9,6 +9,8 @@ export default {
   },
   computed: {
     ...mapState(['coinInfo', 'brand']),
+    c_addressType: vm => vm.$store.__s('addressType'),
+    c_coinProtocol: vm => vm.$store.__s('coinProtocol'),
     c_addressN() {
       const address_n = []
       const path = this.c_path.match(/\/[0-9]+('|H)?/g)
@@ -21,33 +23,41 @@ export default {
     },
     c_path() {
       try {
-        const coinIndex = this.coinInfo.slip44
-        return `m/${this.c_purpose}'/${coinIndex}'/0'`
+        return `m/${this.c_purpose}'/${this.coinInfo.slip44}'/0'`
       } catch (error) {
-        console.log('get coin type is error!', error)
         this.$router.push({ path: process.env.NODE === 'production' ? this.brand.buildPath : '/' })
       }
     },
     c_purpose() {
       if (Reflect.has(this.coinInfo.bip, '49')) {
-        this.d_scriptType = 'SPENDP2SHWITNESS'
-        return 49
+        if (this.c_addressType === 'new') {
+          this.$store.__s('coinProtocol', 49)
+          this.d_scriptType = 'SPENDP2SHWITNESS'
+          return 49
+        } else {
+          this.d_scriptType = 'SPENDADDRESS'
+          this.$store.__s('coinProtocol', 44)
+          return 44
+        }
       } else {
         this.d_scriptType = 'SPENDADDRESS'
+        this.$store.__s('coinProtocol', 44)
         return 44
       }
     }
   },
   methods: {
-    async m_getPublickKey() {
-      if (!this.c_addressN) return (this.d_response = 'path error')
+    async btcGetPublickKey(showDisplay = false) {
+      if (!this.c_addressN) {
+        this.$message.error({ message: this.$t('Initializer failed'), duration: -1 })
+        return
+      }
       const proto = {
         coin_name: this.coinInfo.name,
         address_n: this.c_addressN,
         script_type: this.d_scriptType,
-        show_display: this.d_showDisplay
+        show_display: showDisplay
       }
-      console.log(proto)
       await this.$usb.cmd('GetPublicKey', proto, true)
     },
     async m_recoveryDevice() {
@@ -81,6 +91,13 @@ export default {
     },
     async m_initialize() {
       await this.$usb.cmd('Initialize')
+    }
+  },
+  i18n: {
+    messages: {
+      zhCN: {
+        'Initializer failed': '初始化程序失败'
+      }
     }
   }
 }
