@@ -394,7 +394,6 @@ export default {
   methods: {
     async showXpub() {
       if (this.d_showXpub === true) {
-        this.$message.info({ message: this.$t('The public key is displayed.') })
         return false
       }
       await this.btcGetPublickKey(true)
@@ -411,7 +410,7 @@ export default {
     },
     hideXpub(xpub) {
       const len = xpub.length
-      return xpub.slice(0, 4) + new Array(len - 8).fill('*').join('') + xpub.slice(len - 8 + 4)
+      return xpub.slice(0, 4) + new Array(50).fill('*').join('') + xpub.slice(len - 8 + 4)
     },
     async getEthResult() {
       const result = await this.$usb.cmd('EthereumGetAddress', {

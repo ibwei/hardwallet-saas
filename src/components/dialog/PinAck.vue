@@ -1,33 +1,32 @@
 <template>
   <v-dialog v-model="d_show" max-width="333" persistent scrollable>
-
-      <v-layout class="d-flex justify-center align-center text-center">
-        <div>
-          <v-card width="333">
-            <v-card-title class="headline">{{ $t(d_title) }}</v-card-title>
-            <v-card-text>
-              <div class="input">
-                <v-btn @click="deletePin()" outlined block large>
-                  <v-icon v-for="n in d_pin.length" :key="n">mdi-lock</v-icon>
-                </v-btn>
-                <v-btn class="backspace" @click.stop="deletePin()" color="error" icon>
-                  <v-icon>mdi-backspace</v-icon>
-                </v-btn>
-              </div>
-              <div class="btns mt-3">
-                <v-btn class="btn" v-for="(value, index) in 9" :key="index" @click="inputPin(value)" :disabled="d_pin.length > 8" outlined large>
-                  <v-icon>mdi-key</v-icon>
-                </v-btn>
-              </div>
-              <v-btn class="mt-3" @click="enterPin()" color="primary" :disabled="!d_pin.length" large depressed block>{{ $t('Enter') }}</v-btn>
-              <v-btn class="mt-3" @click="cancel()" color="secondary" large depressed block>{{ $t('Cancel') }}</v-btn>
-            </v-card-text>
-          </v-card>
-          <v-overlay :value="d_loading" z-index="99">
-            <v-progress-circular indeterminate size="64"></v-progress-circular>
-          </v-overlay>
-        </div>
-      </v-layout>
+    <v-layout class="d-flex justify-center align-center text-center">
+      <div>
+        <v-card width="333">
+          <v-card-title class="headline">{{ $t(d_title) }}</v-card-title>
+          <v-card-text>
+            <div class="input">
+              <v-btn @click="deletePin()" outlined block large>
+                <v-icon v-for="n in d_pin.length" :key="n">mdi-lock</v-icon>
+              </v-btn>
+              <v-btn class="backspace" @click.stop="deletePin()" color="error" icon>
+                <v-icon>mdi-backspace</v-icon>
+              </v-btn>
+            </div>
+            <div class="btns mt-3">
+              <v-btn class="btn" v-for="(value, index) in d_pinList" :key="index" @click="inputPin(value)" :disabled="d_pin.length > 8" outlined large>
+                <v-icon>mdi-key</v-icon>
+              </v-btn>
+            </div>
+            <v-btn class="mt-3" @click="enterPin()" color="primary" :disabled="!d_pin.length" large depressed block>{{ $t('Enter') }}</v-btn>
+            <v-btn class="mt-3" @click="cancel()" color="secondary" large depressed block>{{ $t('Cancel') }}</v-btn>
+          </v-card-text>
+        </v-card>
+        <v-overlay :value="d_loading" z-index="99">
+          <v-progress-circular indeterminate size="64"></v-progress-circular>
+        </v-overlay>
+      </div>
+    </v-layout>
   </v-dialog>
 </template>
 
@@ -37,7 +36,8 @@ export default {
     d_title: 'PIN',
     d_loading: false,
     d_show: false,
-    d_pin: ''
+    d_pin: '',
+    d_pinList: ['7', '8', '9', '4', '5', '6', '1', '2', '3']
   }),
   computed: {
     c_msg: vm => vm.$store.__s('usb.msg')

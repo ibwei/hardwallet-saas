@@ -437,7 +437,6 @@ export default {
       this.d_txs = txs
     },
     _isOwnAddr(address) {
-      console.log(address.toLowerCase() === this.c_address.toLowerCase())
       return address.toLowerCase() === this.c_address.toLowerCase()
     }
   },
