@@ -8,7 +8,7 @@
     <div class="content">
       <div class="d-flex flex-column justify-center align-center">
         <img :src="c_logo" height="90" />
-        <h1 class="title">{{ c_brand.name === 'abckey' ? $t('Please Connect ABCKEY') : $t('Please Connect DF_UKey...') }}</h1>
+        <h1 class="title mt-3">{{ c_brand.name === 'ABCKEY' ? $t('Please Connect ABCKEY') : $t('Please Connect DF_UKey...') }}</h1>
       </div>
       <v-btn dark rounded color="primary" :disabled="d_usb ? false : true" @click="connect" class="mt-6">
         <v-icon size="20" color="#fff">mdi-usb</v-icon>
