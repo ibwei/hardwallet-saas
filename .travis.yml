@@ -15,7 +15,7 @@ after_success:
   - git config --global user.email "${U_EMAIL}"
   - git add .
   - git commit -m "Automatically update from travis-ci"
-  - git push --quiet --force  "https://${GITHUB_TOKEN}@${GH_REF}" master
+  - git push --quiet --force  "https://${GITHUB_TOKEN}@${GH_REF}" master:gh-pages
 os: osx
 deploy:
   provider: pages
@@ -23,7 +23,6 @@ deploy:
   deployment_file: true
   github_token: $GITHUB_TOKEN # Set in the settings page of your repository, as a secure variable
   keep_history: true
-  target-branch: gh-pages
   on:
     branch: master
   verbose: true
