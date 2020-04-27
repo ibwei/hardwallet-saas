@@ -6,7 +6,7 @@
       <v-card-text class="subtitle-2">{{ $t(this.d_msg) }}</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn @click="d_show = false">{{ $t('Close') }}</v-btn>
+        <v-btn @click="close">{{ $t('Close') }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -37,7 +37,14 @@ export default {
       }
     }
   },
-  methods: {},
+  methods: {
+    close() {
+      if (this.d_msg === 'PIN invalid') {
+        window.location.reload()
+      }
+      this.d_show = false
+    }
+  },
   i18n: {
     messages: {
       zhCN: {

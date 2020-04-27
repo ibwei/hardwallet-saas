@@ -1,0 +1,29 @@
+language: node_js
+node_js: stable
+cache:
+  directories:
+    - node_modules
+before_install:
+  - export TZ='Asia/Shanghai'
+install:
+  - npm install
+script: npm run build
+after_success:
+  - cd ./dist
+  - git init
+  - git config --global user.name "${U_NAME}"
+  - git config --global user.email "${U_EMAIL}"
+  - git add .
+  - git commit -m "Automatically update from travis-ci"
+  - git push --quiet --force  "https://${GITHUB_TOKEN}@${GH_REF}" master
+os: osx
+deploy:
+  provider: pages
+  skip_cleanup: true
+  deployment_file: true
+  github_token: $GITHUB_TOKEN # Set in the settings page of your repository, as a secure variable
+  keep_history: true
+  target-branch: gh-pages
+  on:
+    branch: master
+  verbose: true

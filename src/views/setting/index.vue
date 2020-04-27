@@ -17,6 +17,7 @@
       <v-card-text class="d-flex">
         <v-btn rounded color="primary" @click="setPin">{{ $t('Modify PIN') }}</v-btn>
         <v-btn rounded class="ml-5" :color="c_passphraseProtection ? 'error' : 'success'" @click="setPassphrase">{{ c_passphraseProtection ? $t('Disabled Passphrase') : $t('Enable Passphrase') }}</v-btn>
+        <v-btn rounded class="ml-5" color="error" @click="closePin">{{ $t('Close Pin') }}</v-btn>
         <v-btn rounded class="ml-5" color="primary" @click="checkSeed">{{ $t('Verification Mnemonics') }}</v-btn>
         <v-btn rounded class="ml-5" color="error" @click="wipeDevice">{{ $t('Wipe Device') }}</v-btn>
       </v-card-text>
@@ -65,6 +66,12 @@ export default {
     },
     async setPin() {
       const proto = {}
+      await this.$usb.cmd('ChangePin', proto)
+    },
+    async closePin() {
+      const proto = {
+        remove: true
+      }
       await this.$usb.cmd('ChangePin', proto)
     },
     async checkSeed() {
