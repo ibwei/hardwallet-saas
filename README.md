@@ -1,5 +1,3 @@
-# abckey-webusb-pro
-
 ## Project setup
 ```
 yarn install
