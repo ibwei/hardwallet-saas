@@ -220,7 +220,7 @@ export default {
     },
     async getUtxoList() {
       const address = await this.ethGetAddress()
-      const result = await Axios.get(`https://api.abckey.com/eth/address/${address}?details=basic`)
+      const result = await Axios.get(`https://api.abckey.com/eth/address/${address}?details=basic$t=${new Date().getTime()}`)
       if (result.status === 200 && !result.error) {
         this.d_utxoList.push({ amount: result?.data?.balance ? result?.data?.balance : 0, address: result?.data?.address, nonce: result.data.nonce })
       } else {

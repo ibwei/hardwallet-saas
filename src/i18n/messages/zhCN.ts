@@ -12,6 +12,7 @@ export default {
       name: '钱包',
       language: 'zh-CN'
     },
+    Unconfirmations: '暂未确认',
     device: '设备',
     Cancel: '取消',
     Confirm: '确认',

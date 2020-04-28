@@ -45,6 +45,7 @@
               UnitHelper(this.$store.__s('eth.balance'))
                 .div(1000000)
                 .times(this.d_rate)
+                .toFixed(8)
                 .toString(10)
             }}</span>
             <span class="text-uppercase caption">&nbsp;{{ cash }}</span>
@@ -160,7 +161,10 @@
           </span>
         </v-expansion-panel-header>
       </v-expansion-panel>
-      <v-expansion-panel v-for="(item, i) in d_txs" :key="i">
+      <v-expansion-panel v-for="(item, i) in d_txs" :key="i" :disabled="item.status === -1">
+        <v-overlay :value="item.status === -1" absolute>
+          <span class="caption">{{ $t('Unconfirmations') }}</span>
+        </v-overlay>
         <v-expansion-panel-header>
           <v-row align="center" no-gutters>
             <v-col cols="4">
@@ -273,14 +277,14 @@
                     <tr>
                       <td class="caption number">
                         <span v-if="item.value">
-                          <v-icon size="16" color="blue">mdi-key</v-icon>
-                          <span>&nbsp;{{ item.sender }}</span>
+                          <v-icon size="16" :color="item.sender.toLowerCase() === c_address.toLowerCase() ? 'blue' : 'gray'">mdi-key</v-icon>
+                          <span :class="item.sender.toLowerCase() === c_address.toLowerCase() ? 'blue--text' : 'gray--text'">&nbsp;{{ item.sender }}</span>
                         </span>
                         <v-tooltip top v-else>
                           <template v-slot:activator="{ on }">
                             <span v-on="on">
-                              <v-icon size="16" color="blue">mdi-key</v-icon>
-                              <span>&nbsp;{{ item.sender }}</span>
+                              <v-icon size="16" :color="item.sender.toLowerCase() === c_address.toLowerCase() ? 'blue' : 'gray'">mdi-key</v-icon>
+                              <span :class="item.sender.toLowerCase() === c_address.toLowerCase() ? 'blue--text' : 'gray--text'">&nbsp;{{ item.sender }}</span>
                             </span>
                           </template>
                           <span>
@@ -312,8 +316,8 @@
                   <tbody>
                     <tr>
                       <td class="caption number">
-                        <v-icon size="16" color="blue">mdi-key</v-icon>
-                        <span>&nbsp;{{ item.recipient }}</span>
+                        <v-icon size="16" :color="item.recipient.toLowerCase() === c_address.toLowerCase() ? 'blue' : 'gray'">mdi-key</v-icon>
+                        <span :class="item.recipient.toLowerCase() === c_address.toLowerCase() ? 'blue--text' : 'gray--text'">&nbsp;{{ item.recipient }}</span>
                       </td>
                     </tr>
                   </tbody>

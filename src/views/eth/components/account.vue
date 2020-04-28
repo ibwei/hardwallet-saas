@@ -27,7 +27,11 @@
             <v-icon :class="['ml-1', d_loading.upBalance && 'rotate']" size="16" color="primary">mdi-cached</v-icon>
           </v-btn>
           <div :class="['mt-1', d_loading.upBalance && 'blur']">
-            <span class="title font-weight-bold">{{ UnitHelper(d_balance, 'wei_eth').toString(10) }}</span>
+            <span class="title font-weight-bold">{{
+              UnitHelper(d_balance, 'wei_eth')
+                .toFixed(8)
+                .toString(10)
+            }}</span>
             <span class="text-uppercase caption">&nbsp;{{ coin }}</span>
           </div>
         </v-col>
@@ -40,6 +44,7 @@
             <span class="title font-weight-bold">{{
               UnitHelper(d_balance, 'wei_eth')
                 .times(d_rate)
+                .toFixed(8)
                 .toString(10)
             }}</span>
             <span class="text-uppercase caption">&nbsp;{{ cash }}</span>
@@ -131,11 +136,15 @@
           </span>
         </v-expansion-panel-header>
       </v-expansion-panel>
-      <v-expansion-panel v-for="(item, i) in d_txs" :key="i">
+      <v-expansion-panel v-for="(item, i) in d_txs" :key="i" :disabled="item.status === -1">
+        <v-overlay :value="item.status === -1" absolute>
+          <span class="caption">{{ $t('Unconfirmations') }}</span>
+        </v-overlay>
         <v-expansion-panel-header>
           <v-row align="center" no-gutters>
             <v-col cols="4">
               <span class="caption grey--text">{{ unix2utc(item.blockTime) }}</span>
+              <span class="ml-2 caption grey--text">nonce:{{ item.nonce }}</span>
             </v-col>
             <v-col cols="4">
               <v-tooltip :disabled="!item.valueChanged" top>
@@ -196,6 +205,18 @@
                   <td>{{ item.blockHeight }}</td>
                 </tr>
                 <tr>
+                  <td class="caption">{{ $t('Gas Price') }}</td>
+                  <td>{{ UnitHelper(item.gasPrice, 'wei_eth').toString(10) }} ETH</td>
+                </tr>
+                <tr>
+                  <td class="caption">{{ $t('Gas Limit') }}</td>
+                  <td>{{ item.gasLimit }}</td>
+                </tr>
+                <tr>
+                  <td class="caption">{{ $t('Gas Used') }}</td>
+                  <td>{{ item.gasUsed }}</td>
+                </tr>
+                <tr>
                   <td class="caption">{{ $t('Confirmations') }}</td>
                   <td>{{ item.confirmations }}</td>
                 </tr>
@@ -232,14 +253,14 @@
                     <tr v-for="(item, i) in item.vin" :key="i">
                       <td class="caption number">
                         <span v-if="item.value">
-                          <v-icon size="16" color="blue">mdi-key</v-icon>
-                          <span>&nbsp;{{ item.addresses[0] }}</span>
+                          <v-icon size="16" :color="item.addresses[0].toLowerCase() === c_address.toLowerCase() ? 'bluet' : 'grey'">mdi-key</v-icon>
+                          <span :class="item.addresses[0].toLowerCase() === c_address.toLowerCase() ? 'blue--text' : 'grey--text'">&nbsp;{{ item.addresses[0] }}</span>
                         </span>
                         <v-tooltip top v-else>
                           <template v-slot:activator="{ on }">
                             <span :class="[item.own && 'blue--text']" v-on="on">
-                              <v-icon size="16" color="blue">mdi-key</v-icon>
-                              <span>&nbsp;{{ item.addresses[0] }}</span>
+                              <v-icon size="16" :color="item.addresses[0].toLowerCase() === c_address.toLowerCase() ? 'bluet' : 'grey'">mdi-key</v-icon>
+                              <span :class="item.addresses[0].toLowerCase() === c_address.toLowerCase() ? 'blue--text' : 'grey--text'">&nbsp;{{ item.addresses[0] }}</span>
                             </span>
                           </template>
                           <span>
@@ -270,8 +291,8 @@
                         <v-tooltip top>
                           <template v-slot:activator="{ on }">
                             <span :class="[item.own && 'blue--text']" v-on="on">
-                              <v-icon size="16" color="blue">mdi-key</v-icon>
-                              <span>&nbsp;{{ item.addresses[0] }}</span>
+                              <v-icon size="16" :color="item.addresses[0].toLowerCase() === c_address.toLowerCase() ? 'blue' : 'grey'">mdi-key</v-icon>
+                              <span :class="item.addresses[0].toLowerCase() === c_address.toLowerCase() ? 'blue--text' : 'grey--text'">&nbsp;{{ item.addresses[0] }}</span>
                             </span>
                           </template>
                           <span v-if="item.own">
@@ -373,7 +394,7 @@ export default {
     async getEthResult() {
       this.d_address = await this.ethGetAddress()
       this.$store.__s('eth.address', this.d_address)
-      const r = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/address/${this.d_address}?page=1&pageSize=1000&details=txs`)
+      const r = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/address/${this.d_address}?page=1&pageSize=1000&details=txs&t=${new Date().getTime()}`)
       return r
     },
     upAll() {
@@ -422,6 +443,11 @@ export default {
       if (!txs) return
       for (let i = 0; i < txs?.length; i++) {
         const oldValue = i + 1 === txs.length ? 0 : txs[i + 1].value
+        txs[i].nonce = txs[i].ethereumSpecific.nonce
+        txs[i].gasLimit = txs[i].ethereumSpecific.gasLimit
+        txs[i].gasPrice = txs[i].ethereumSpecific.gasPrice
+        txs[i].gasUsed = txs[i].ethereumSpecific.gasUsed
+        txs[i].status = txs[i].ethereumSpecific.status
         txs[i].valueChanged = UnitHelper(txs[i].value - oldValue, 'wei_eth').toString(10)
         txs[i].value = UnitHelper(txs[i].value, 'wei_eth').toString(10)
         txs[i].fees = UnitHelper(txs[i].fees, 'wei_eth').toString(10)
