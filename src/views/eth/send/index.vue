@@ -192,7 +192,6 @@ export default {
       this.d_gasLimit = limit
     },
     setDefaultGasLimit() {
-      // ETH转智能合约地址，在批量数>3后，每多一笔，增加60000
       const len = this.d_txOut.length
       if (len > 3) {
         this.d_gasLimit = UnitHelper(len)
@@ -315,29 +314,20 @@ export default {
      * @method - checkRules and banlance ,then send
      */
     async checkAndSend() {
-      /*  const web3 = new Web3(Web3.givenProvider || 'http://localhost:8545')
-      const code1 = web3.eth.getCode('0xAEc6B4896bCCa877653a9E0df13FE085c3fafef2')
-      console.log(code1)
-      const code2 = web3.eth.getCode('0xb53e5b7c1888e0e60571205e6803030d8dadcb31')
-      console.log(code2)
-      return */
       this.$store.__s('pageLoading', true)
       if (!this.checkTxOutRules()) {
         this.$store.__s('pageLoading', false)
         return
       }
-      await this.signTx()
       try {
+        await this.getUtxoList()
+        await this.signTx()
       } catch (e) {
-        console.log('错误原因：', e)
         this.$message.error(this.$t('Unknown Error!'))
       }
       this.$store.__s('pageLoading', false)
     },
 
-    /**
-     * 签名交易
-     */
     async signTx() {
       // Organize output data
       this.d_gasLimit = this.d_sendType === 'normal' ? '21000' : this.d_gasLimit

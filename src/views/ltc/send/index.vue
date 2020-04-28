@@ -359,14 +359,10 @@ export default {
       try {
         await this.signTx()
       } catch (e) {
-        console.log('错误原因：', e)
         this.$message.error({ message: this.$t('The transfer is abnormal, please check the data before sending.'), duration: -1 })
       }
       this.$store.__s('pageLoading', false)
     },
-    /**
-     * 签名交易
-     */
     async signTx() {
       // Organize output data
       const outputs = []
@@ -381,7 +377,6 @@ export default {
         outItem.address = item.address
         outputs.push(outItem)
       }
-      console.log('输出地址', outputs)
       // Organize input data and calculate change
       const inputs = []
       let prePaidCount = BN(0)
@@ -398,7 +393,6 @@ export default {
         prePaidCount = prePaidCount.plus(this.d_utxoList[i].value)
         inputs.push(item)
       }
-      console.log('输入地址', inputs)
       change = prePaidCount.minus(this.c_totalAmounts.plus(this.c_totalFees))
       const res = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/xpub/${this.c_usb.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`)
       const usedTokens = res.data.usedTokens ? res.data.usedTokens : '0'
@@ -407,7 +401,6 @@ export default {
         amount: change.toNumber(),
         script_type: this.c_coinProtocol === 49 ? 'PAYTOP2SHWITNESS' : 'PAYTOADDRESS'
       }
-      // 零钱地址
       if (changeObject.amount) {
         outputs.push(changeObject)
       }
@@ -417,22 +410,15 @@ export default {
         inputs,
         outputs
       }
-      // 如果是非隔离见证，需要添加utxo
       if (this.c_coinProtocol === 44) {
         this.d_txidList = []
         for (let i = 0; i <= this.d_maxPaidIndex; i++) {
           const { data } = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/tx/${this.d_utxoList[i].txid}`)
-          console.log(data)
           this.d_txidList.push(this.transferTxid(data))
         }
         params.utxo = this.d_txidList
       }
-
-      console.log(this.d_txidList)
-      console.log('---------', JSON.stringify(params))
       const result = await this.$usb.signBTC(params)
-
-      console.log('signTx', result)
       const signText = result?.data?.serialized_tx
       if (signText) {
         this.d_signHash = signText

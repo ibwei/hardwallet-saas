@@ -55,7 +55,8 @@ export default {
         'exceeds block gas limit': '没有足够的余额，不会广播给他矿工',
         'already known': '该笔交易数据已经发送，正在确认中，请耐心等待...',
         'nonce too low': '上一笔交易已经确认，为了获取最新随机数，请点击立即更新nonce，并重新发送交易请求。',
-        'Reason for unsuccessful broadcast:': '广播未成功的原因:'
+        'Reason for unsuccessful broadcast:': '广播未成功的原因:',
+        'replacement transaction underpriced': '上笔交易未确认，并且当前gas price不高于上笔交易的110%，如需覆盖上笔交易，建议增大手续费再次发起交易！'
       }
     }
   }

@@ -302,10 +302,10 @@ export default {
         }
       ]
     },
+
     /**
      * @method - get the input index of utxoList
      */
-
     getMaxPaidIndex() {
       let sum = BN('0')
       const len = this.d_utxoList.length
@@ -359,14 +359,10 @@ export default {
       try {
         await this.signTx()
       } catch (e) {
-        console.log('错误原因：', e)
         this.$message.error({ message: this.$t('The transfer is abnormal, please check the data before sending.'), duration: -1 })
       }
       this.$store.__s('pageLoading', false)
     },
-    /**
-     * 签名交易
-     */
     async signTx() {
       // Organize output data
       const outputs = []
@@ -405,7 +401,6 @@ export default {
         amount: change.toNumber(),
         script_type: this.c_coinProtocol === 49 ? 'PAYTOP2SHWITNESS' : 'PAYTOADDRESS'
       }
-      // 零钱地址
       if (changeObject.amount) {
         outputs.push(changeObject)
       }
@@ -415,7 +410,6 @@ export default {
         inputs,
         outputs
       }
-      // 如果是非隔离见证，需要添加utxo
       if (this.c_coinProtocol === 44) {
         this.d_txidList = []
         for (let i = 0; i <= this.d_maxPaidIndex; i++) {
@@ -424,7 +418,6 @@ export default {
         }
         params.utxo = this.d_txidList
       }
-      console.log('rawData', JSON.stringify(params))
       const result = await this.$usb.signBTC(params)
       const signText = result?.data?.serialized_tx
       if (signText) {

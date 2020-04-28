@@ -38,7 +38,6 @@ export function utc2Beijing(date) {
 }
 
 export function copyText(test) {
-  console.log('copy', test)
   const tag = document.createElement('input')
   tag.setAttribute('id', 'cp_input')
   tag.value = test
@@ -76,45 +75,6 @@ export function addFavorite(sURL, sTitle) {
     }
   }
 }
-// filter all url in currentPage
-export const websiteList = document.documentElement.outerHTML
-  .match(/(url\(|src=|href=)[\"\']*([^\"\'\(\)\<\>\[\] ]+)[\"\'\)]*|(http:\/\/[\w\-\.]+[^\"\'\(\)\<\>\[\] ]+)/gi)
-  .join('\r\n')
-  .replace(/^(src=|href=|url\()[\"\']*|[\"\'\>\) ]*$/gim, '')
-
-// dynamtic load script tag
-export function appendscript(src, text, reload, charset) {
-  const id = hash(src + text)
-  if (!reload && in_array(id, evalscripts)) return
-  if (reload && $(id)) {
-    $(id).parentNode.removeChild($(id))
-  }
-
-  evalscripts.push(id)
-  const scriptNode = document.createElement('script')
-  scriptNode.type = 'text/javascript'
-  scriptNode.id = id
-  scriptNode.charset = charset || (BROWSER.firefox ? document.characterSet : document.charset)
-  try {
-    if (src) {
-      scriptNode.src = src
-      scriptNode.onloadDone = false
-      scriptNode.onload = function() {
-        scriptNode.onloadDone = true
-        JSLOADED[src] = 1
-      }
-      scriptNode.onreadystatechange = function() {
-        if ((scriptNode.readyState == 'loaded' || scriptNode.readyState == 'complete') && !scriptNode.onloadDone) {
-          scriptNode.onloadDone = true
-          JSLOADED[src] = 1
-        }
-      }
-    } else if (text) {
-      scriptNode.text = text
-    }
-    document.getElementsByTagName('head')[0].appendChild(scriptNode)
-  } catch (e) {}
-}
 // back to top of window
 export function backTop(btnId) {
   const btn = document.getElementById(btnId)
@@ -135,7 +95,6 @@ export function backTop(btnId) {
     btn.style.display = d.scrollTop + b.scrollTop > 100 ? 'block' : 'none'
   }
 }
-
 // base64 encode
 export function base64_decode(data) {
   const b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
@@ -202,77 +161,6 @@ export function checkKey(iKey) {
   } /* num keyboard 2 */
   return false
 }
-
-// iCase
-export function chgCase(sStr, iCase) {
-  if (typeof sStr !== 'string' || sStr.length <= 0 || !(iCase === 0 || iCase == 1)) {
-    return sStr
-  }
-  let i
-  const oRs = []
-  let iCode
-  if (iCase) {
-    /* half - all */
-    for (i = 0; i < sStr.length; i += 1) {
-      iCode = sStr.charCodeAt(i)
-      if (iCode == 32) {
-        iCode = 12288
-      } else if (iCode < 127) {
-        iCode += 65248
-      }
-      oRs.push(String.fromCharCode(iCode))
-    }
-  } else {
-    /* all->half */
-    for (i = 0; i < sStr.length; i += 1) {
-      iCode = sStr.charCodeAt(i)
-      if (iCode == 12288) {
-        iCode = 32
-      } else if (iCode > 65280 && iCode < 65375) {
-        iCode -= 65248
-      }
-      oRs.push(String.fromCharCode(iCode))
-    }
-  }
-  return oRs.join('')
-}
-// compare version
-export function compareVersion(v1, v2) {
-  v1 = v1.split('.')
-  v2 = v2.split('.')
-
-  const len = Math.max(v1.length, v2.length)
-
-  while (v1.length < len) {
-    v1.push('0')
-  }
-
-  while (v2.length < len) {
-    v2.push('0')
-  }
-
-  for (let i = 0; i < len; i++) {
-    const num1 = parseInt(v1[i])
-    const num2 = parseInt(v2[i])
-
-    if (num1 > num2) {
-      return 1
-    } else if (num1 < num2) {
-      return -1
-    }
-  }
-  return 0
-}
-// compress css code
-export function compressCss(s) {
-  s = s.replace(/\/\*(.|\n)*?\*\//g, '')
-  s = s.replace(/\s*([\{\}\:\;\,])\s*/g, '$1')
-  s = s.replace(/\,[\s\.\#\d]*\{/g, '{')
-  s = s.replace(/;\s*;/g, ';')
-  s = s.match(/^\s*(\S+(\s+\S+)*)\s*$/)
-  return s == null ? '' : s[1]
-}
-
 // cross browser to delete events
 export function delEvt(obj, evt, fn) {
   if (!obj) {
@@ -293,32 +181,7 @@ export function getCookie(name) {
   if (arr != null) return unescape(arr[2])
   return null
 }
-// get params in url when method=GET
-// example:test.htm?t1=1&t2=2&t3=3, then:GET["t1"], GET["t2"], GET["t3"]
-export function getGet() {
-  querystr = window.location.href.split('?')
-  if (querystr[1]) {
-    GETs = querystr[1].split('&')
-    GET = []
-    for (i = 0; i < GETs.length; i++) {
-      tmp_arr = GETs.split('=')
-      key = tmp_arr[0]
-      GET[key] = tmp_arr[1]
-    }
-  }
-  return querystr[1]
-}
-// get mobile device's initial size
-export function getInitZoom() {
-  if (!this._initZoom) {
-    let screenWidth = Math.min(screen.height, screen.width)
-    if (this.isAndroidMobileDevice() && !this.isNewChromeOnAndroid()) {
-      screenWidth = screenWidth / window.devicePixelRatio
-    }
-    this._initZoom = screenWidth / document.body.offsetWidth
-  }
-  return this._initZoom
-}
+
 // get page height
 export function getPageHeight() {
   const g = document
@@ -327,16 +190,7 @@ export function getPageHeight() {
   const d = g.compatMode == 'BackCompat' ? a : g.documentElement
   return Math.max(f.scrollHeight, a.scrollHeight, d.clientHeight)
 }
-// get page scrollLeft
-export function getPageScrollLeft() {
-  const a = document
-  return a.documentElement.scrollLeft || a.body.scrollLeft
-}
-// get page scrollTop
-export function getPageScrollTop() {
-  const a = document
-  return a.documentElement.scrollTop || a.body.scrollTop
-}
+
 // get page view height
 export function getPageViewHeight() {
   const d = document
@@ -370,47 +224,12 @@ export function getScreenWidth() {
   return smallerSide
 }
 
-// is valid url
-export function getUrlState(URL) {
-  const xmlhttp = new ActiveXObject('microsoft.xmlhttp')
-  xmlhttp.Open('GET', URL, false)
-  try {
-    xmlhttp.Send()
-  } catch (e) {
-  } finally {
-    const result = xmlhttp.responseText
-    if (result) {
-      if (xmlhttp.Status == 200) {
-        return true
-      } else {
-        return false
-      }
-    } else {
-      return false
-    }
-  }
-}
-
 export function getViewSize() {
   const de = document.documentElement
   const db = document.body
   const viewW = de.clientWidth == 0 ? db.clientWidth : de.clientWidth
   const viewH = de.clientHeight == 0 ? db.clientHeight : de.clientHeight
   return [viewW, viewH]
-}
-
-export function getZoom() {
-  let screenWidth = Math.abs(window.orientation) === 90 ? Math.max(screen.height, screen.width) : Math.min(screen.height, screen.width)
-  if (this.isAndroidMobileDevice() && !this.isNewChromeOnAndroid()) {
-    screenWidth = screenWidth / window.devicePixelRatio
-  }
-  const FixViewPortsExperiment = rendererModel.runningExperiments.FixViewport || rendererModel.runningExperiments.fixviewport
-  const FixViewPortsExperimentRunning = FixViewPortsExperiment && (FixViewPortsExperiment === 'New' || FixViewPortsExperiment === 'new')
-  if (FixViewPortsExperimentRunning) {
-    return screenWidth / window.innerWidth
-  } else {
-    return screenWidth / document.body.offsetWidth
-  }
 }
 
 export function isAndroidMobileDevice() {
@@ -459,34 +278,21 @@ export const isIphonex = () => {
   }
   return false
 }
-// //判断是否移动设备
+
 export function isMobile() {
   if (typeof this._isMobile === 'boolean') {
     return this._isMobile
   }
   let screenWidth = this.getScreenWidth()
   const fixViewPortsExperiment = rendererModel.runningExperiments.FixViewport || rendererModel.runningExperiments.fixviewport
-  const fixViewPortsExperimentRunning = fixViewPortsExperiment && fixViewPortsExperiment.toLowerCase() === 'new'
   if (!fixViewPortsExperiment) {
     if (!this.isAppleMobileDevice()) {
       screenWidth = screenWidth / window.devicePixelRatio
     }
   }
   const isMobileScreenSize = screenWidth < 600
-  const isMobileUserAgent = false
   this._isMobile = isMobileScreenSize && this.isTouchScreen()
   return this._isMobile
-}
-
-export function isMobileNumber(e) {
-  const i = '134,135,136,137,138,139,150,151,152,157,158,159,187,188,147,182,183,184,178'
-  const n = '130,131,132,155,156,185,186,145,176'
-  const a = '133,153,180,181,189,177,173,170'
-  const o = e || ''
-  const r = o.substring(0, 3)
-  const d = o.substring(0, 4)
-  const s = !!/^1\d{10}$/.test(o) && (n.indexOf(r) >= 0 ? '联通' : a.indexOf(r) >= 0 ? '电信' : d == '1349' ? '电信' : i.indexOf(r) >= 0 ? '移动' : '未知')
-  return s
 }
 
 export function isMobileUserAgent() {
@@ -508,39 +314,8 @@ export function isTouchScreen() {
   return 'ontouchstart' in window || (window.DocumentTouch && document instanceof DocumentTouch)
 }
 
-export function isURL(strUrl) {
-  const regular = /^\b(((https?|ftp):\/\/)?[-a-z0-9]+(\.[-a-z0-9]+)*\.(?:com|edu|gov|int|mil|net|org|biz|info|name|museum|asia|coop|aero|[a-z][a-z]|((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]\d)|\d))\b(\/[-a-z0-9_:\@&?=+,.!\/~%\$]*)?)$/i
-  if (regular.test(strUrl)) {
-    return true
-  } else {
-    return false
-  }
-}
-
 export function isViewportOpen() {
   return !!document.getElementById('wixMobileViewport')
-}
-
-export function loadStyle(url) {
-  try {
-    document.createStyleSheet(url)
-  } catch (e) {
-    const cssLink = document.createElement('link')
-    cssLink.rel = 'stylesheet'
-    cssLink.type = 'text/css'
-    cssLink.href = url
-    const head = document.getElementsByTagName('head')[0]
-    head.appendChild(cssLink)
-  }
-}
-
-export function locationReplace(url) {
-  if (history.replaceState) {
-    history.replaceState(null, document.title, url)
-    history.go(0)
-  } else {
-    location.replace(url)
-  }
 }
 
 export function getOffset(e) {
@@ -571,53 +346,6 @@ export function getPageCoord(element) {
   return coord
 }
 
-export function openWindow(url, windowName, width, height) {
-  const x = parseInt(screen.width / 2.0) - width / 2.0
-  const y = parseInt(screen.height / 2.0) - height / 2.0
-  const isMSIE = navigator.appName == 'Microsoft Internet Explorer'
-  if (isMSIE) {
-    let p = 'resizable=1,location=no,scrollbars=no,width='
-    p = p + width
-    p = p + ',height='
-    p = p + height
-    p = p + ',left='
-    p = p + x
-    p = p + ',top='
-    p = p + y
-    retval = window.open(url, windowName, p)
-  } else {
-    const win = window.open(url, 'ZyiisPopup', 'top=' + y + ',left=' + x + ',scrollbars=' + scrollbars + ',dialog=yes,modal=yes,width=' + width + ',height=' + height + ',resizable=no')
-    eval('try { win.resizeTo(width, height); } catch(e) { }')
-    win.focus()
-  }
-}
-
-export const fnParams2Url = obj => {
-  const aUrl = []
-  const fnAdd = function(key, value) {
-    return key + '=' + value
-  }
-  for (const k in obj) {
-    aUrl.push(fnAdd(k, obj[k]))
-  }
-  return encodeURIComponent(aUrl.join('&'))
-}
-
-export function removeUrlPrefix(a) {
-  a = a
-    .replace(/：/g, ':')
-    .replace(/．/g, '.')
-    .replace(/／/g, '/')
-  while (
-    trim(a)
-      .toLowerCase()
-      .indexOf('http://') == 0
-  ) {
-    a = trim(a.replace(/http:\/\//i, ''))
-  }
-  return a
-}
-
 export function setCookie(name, value, Hours) {
   const d = new Date()
   const offset = 8
@@ -626,78 +354,6 @@ export function setCookie(name, value, Hours) {
   const exp = new Date(nd)
   exp.setTime(exp.getTime() + Hours * 60 * 60 * 1000)
   document.cookie = name + '=' + escape(value) + ';path=/;expires=' + exp.toGMTString() + ';domain=360doc.com;'
-}
-
-export function setSort() {
-  const text = K1.value
-    .split(/[\r\n]/)
-    .sort()
-    .join('\r\n')
-  const test = K1.value
-    .split(/[\r\n]/)
-    .sort()
-    .reverse()
-    .join('\r\n')
-  K1.value = K1.value != text ? text : test
-}
-
-export function* sleepGenerator(time) {
-  yield new Promise(function(resolve, reject) {
-    setTimeout(resolve, time)
-  })
-}
-
-export function sleep(time) {
-  return new Promise(resolve => setTimeout(resolve, time))
-}
-
-export function timeFormat(time) {
-  const date = new Date(time)
-  const curDate = new Date()
-  const year = date.getFullYear()
-  const month = date.getMonth() + 10
-  const day = date.getDate()
-  const hour = date.getHours()
-  const minute = date.getMinutes()
-  const curYear = curDate.getFullYear()
-  const curHour = curDate.getHours()
-  let timeStr
-
-  if (year < curYear) {
-    timeStr = year + '年' + month + '月' + day + '日 ' + hour + ':' + minute
-  } else {
-    const pastTime = curDate - date
-    const pastH = pastTime / 3600000
-
-    if (pastH > curHour) {
-      timeStr = month + '月' + day + '日 ' + hour + ':' + minute
-    } else if (pastH >= 1) {
-      timeStr = '今天 ' + hour + ':' + minute + '分'
-    } else {
-      const pastM = curDate.getMinutes() - minute
-      if (pastM > 1) {
-        timeStr = pastM + '分钟前'
-      } else {
-        timeStr = '刚刚'
-      }
-    }
-  }
-  return timeStr
-}
-
-export function toCDB(str) {
-  let result = ''
-  for (let i = 0; i < str.length; i++) {
-    code = str.charCodeAt(i)
-    if (code >= 65281 && code <= 65374) {
-      result += String.fromCharCode(str.charCodeAt(i) - 65248)
-    } else if (code == 12288) {
-      result += String.fromCharCode(str.charCodeAt(i) - 12288 + 32)
-    } else {
-      result += str.charAt(i)
-    }
-  }
-  return result
 }
 
 export function uniqueId(): number {
@@ -731,19 +387,4 @@ export function utf8_decode(str_data) {
     }
   }
   return tmp_arr.join('')
-}
-
-export function getFullNum(num) {
-  //处理非数字
-  if (isNaN(num)) {
-    return num
-  }
-
-  //处理不需要转换的数字
-  var str = '' + num
-  if (!/e/i.test(str)) {
-    return num
-  }
-
-  return num.toFixed(18).replace(/\.?0+$/, '')
 }

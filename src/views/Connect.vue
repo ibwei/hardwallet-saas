@@ -7,10 +7,10 @@
     </v-alert>
     <div class="content">
       <div class="d-flex flex-column justify-center align-center">
-        <img :src="c_logo" height="90" />
-        <h1 class="title mt-3">{{ c_brand.name === 'ABCKEY' ? $t('Please Connect ABCKEY') : $t('Please Connect DF_UKey...') }}</h1>
+        <img :src="c_logo" height="70" />
+        <h1 class="title mt-4">{{ $t('Please Connect ABCKEY...') }}</h1>
       </div>
-      <v-btn dark rounded color="primary" :disabled="d_usb ? false : true" @click="connect" class="mt-6">
+      <v-btn dark rounded color="primary" :disabled="d_usb ? false : true" @click="connect" class="mt-4" style="min-width:200px">
         <v-icon size="20" color="#fff">mdi-usb</v-icon>
         <span class="subtitle-2 pl-2">{{ $t('Check For Device') }}</span>
       </v-btn>
@@ -54,8 +54,7 @@ export default {
   i18n: {
     messages: {
       zhCN: {
-        'Please Connect ABCKEY...': '等待连接',
-        'Please Connect DF_UKey...': '迪富U盾未连接...',
+        'Please Connect ABCKEY...': '等待连接...',
         'Check For Device': '连接设备',
         'Please change Google Chrome, because the current browser does not support connecting devices': '当前浏览器不支持连接设备，建议使用谷歌浏览器打开！'
       }

@@ -46,7 +46,6 @@ export default {
     c_cashUnit: {
       set(val) {
         if (val !== undefined) {
-          console.log(val)
           this.$store.__s('cashUnit', val)
         }
       },
@@ -96,6 +95,7 @@ export default {
       zhCN: {
         General: '常规',
         Safe: '安全',
+        'Close Pin': '关闭PIN码',
         Version: '版本信息',
         'Edit Device Label': '修改设备标签',
         'Modify PIN': '修改 PIN 码',

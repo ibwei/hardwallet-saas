@@ -174,7 +174,6 @@ export default {
   },
   methods: {
     setDefaultGasLimit() {
-      // ETH代币费用88888，在批量数>3后，每多一笔，增加60000
       const len = this.d_txOut.length
       if (len > 3) {
         this.d_gasLimit = UnitHelper(len)
@@ -223,7 +222,6 @@ export default {
       const address = await this.ethGetAddress()
       const result = await Axios.get(`https://api.abckey.com/eth/address/${address}?details=basic`)
       if (result.status === 200 && !result.error) {
-        console.log('以获取到nonce')
         this.d_utxoList.push({ amount: result?.data?.balance ? result?.data?.balance : 0, address: result?.data?.address, nonce: result.data.nonce })
       } else {
         this.$message.error(this.$t('The network breakdown!'))
@@ -327,18 +325,15 @@ export default {
         this.$store.__s('pageLoading', false)
         return
       }
-      await this.signTx()
       try {
+        this.getUtxoList()
+        await this.signTx()
       } catch (e) {
-        console.log('错误原因：', e)
         this.$message.error(this.$t('Unknown Error!'))
       }
       this.$store.__s('pageLoading', false)
     },
 
-    /**
-     * 签名交易
-     */
     async signTx() {
       // Organize output data
       const txParams = {

@@ -37,10 +37,6 @@
                 </tbody>
               </template>
             </v-simple-table>
-            <!-- <v-btn medium rounded color="primary" class="d-flex mt-4" style="width:auto;max-width:180px;" @click="getAddr">
-              <i class="icon" style="font-size:20px;">&#xe612;</i>
-              <span>{{ $t('More Address') }}</span>
-            </v-btn> -->
             <v-divider></v-divider>
             <span class="d-flex mt-4 ml-2 mr-2 body-2 text-start">{{ $t('PS: For the ETH currency, only fixed address collection is currently supported. In subsequent versions, we will support obtaining multiple address collections.') }}</span>
           </v-card>
@@ -136,17 +132,12 @@ export default {
     },
     async _showOverlay(index, e) {
       this.d_selectedId = index
-      console.log(this.d_addressList[this.d_selectedId].newAddress)
       this._qrcode(this.d_addressList[this.d_selectedId].newAddress)
       const coordinate = getMousePos(e)
       this.d_overlay = true
       document.getElementsByClassName('qr')[0].style.top = coordinate.y - 60 + 'px'
-      console.log(this.c_protocol)
-
       await this.$usb.cmd('EthereumGetAddress', {
-        // coin_name: this.c_coinInfo.name,
         address_n: [(this.c_protocol | 0x80000000) >>> 0, (this.coinInfo.slip44 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, 0],
-        // script_type: this.c_protocol === 49 ? 'SPENDP2SHWITNESS' : 'SPENDADDRESS',
         show_display: true
       })
       this._hideOverlay()
@@ -200,15 +191,10 @@ export default {
       }
       try {
         const result = await this.$usb.cmd('EthereumGetAddress', {
-          // coin_name: this.c_coinInfo.name,
           address_n: [(this.c_protocol | 0x80000000) >>> 0, (this.coinInfo.slip44 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, 0],
-          // script_type: this.c_protocol === 49 ? 'SPENDP2SHWITNESS' : 'SPENDADDRESS',
           show_display: false
         })
         this.d_currentAddress = result.data.address
-        // const r = await Axios.get(`https://api.abckey.com/${this.coinInfo.symbol}/address/${this.d_currentAddress}?page=1&pageSize=1000&details=tokenBalances`)
-        // const r = await Axios.get(`https://api.abckey.com/${this.coinInfo.symbol}/address/${this.d_currentAddress}?page=1&pageSize=1000&details=basic`)
-        // console.log('r', r)
         const len = this.d_currentAddress.length
         const hideAddress = this.d_currentAddress.slice(0, 4) + new Array(len - 8).fill('#').join('') + this.d_currentAddress.slice(len - 8 + 4)
         const newAddress = {
@@ -218,7 +204,6 @@ export default {
         }
         this.d_addressList.push(newAddress)
       } catch (e) {
-        console.log(e)
         this.showAlert(this.$t('Get device address error'))
       }
     },

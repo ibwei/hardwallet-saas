@@ -10,7 +10,6 @@ export default {
         address_n: this.c_addressN,
         show_display: this.d_showDisplay
       }
-      console.log(proto)
       await this.$usb.cmd('EthereumGetPublicKey', proto, true)
     },
     async ethGetAddress() {

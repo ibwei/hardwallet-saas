@@ -131,12 +131,9 @@ export default {
       const coordinate = getMousePos(e)
       this.d_overlay = true
       document.getElementsByClassName('qr')[0].style.top = coordinate.y - 60 + 'px'
-      console.log(this.c_protocol)
 
       await this.$usb.cmd('EthereumGetAddress', {
-        // coin_name: this.c_coinInfo.name,
         address_n: [(44 | 0x80000000) >>> 0, (60 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, 0],
-        // script_type: this.c_protocol === 49 ? 'SPENDP2SHWITNESS' : 'SPENDADDRESS',
         show_display: true
       })
       this._hideOverlay()
@@ -175,15 +172,10 @@ export default {
       }
       try {
         const result = await this.$usb.cmd('EthereumGetAddress', {
-          // coin_name: this.c_coinInfo.name,
           address_n: [(44 | 0x80000000) >>> 0, (60 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, 0],
-          // script_type: this.c_protocol === 49 ? 'SPENDP2SHWITNESS' : 'SPENDADDRESS',
           show_display: false
         })
         this.d_currentAddress = result.data.address
-        // const r = await Axios.get(`https://api.abckey.com/${this.coinInfo.symbol}/address/${this.d_currentAddress}?page=1&pageSize=1000&details=tokenBalances`)
-        // const r = await Axios.get(`https://api.abckey.com/${this.coinInfo.symbol}/address/${this.d_currentAddress}?page=1&pageSize=1000&details=basic`)
-        // console.log('r', r)
         const len = this.d_currentAddress.length
         const hideAddress = this.d_currentAddress.slice(0, 4) + new Array(len - 8).fill('#').join('') + this.d_currentAddress.slice(len - 8 + 4)
         const newAddress = {
@@ -193,7 +185,6 @@ export default {
         }
         this.d_addressList.push(newAddress)
       } catch (e) {
-        console.log(e)
         this.showAlert(this.$t('Get device address error'))
       }
     },
