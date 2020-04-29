@@ -22,7 +22,6 @@ const webusb: any = new UsbDevice({
  * @method onAdd - add device
  */
 webusb.onAdd(e => {
-  console.log('You have add devices', e)
   webusb.syncVuex(e)
 })
 
@@ -30,24 +29,20 @@ webusb.onAdd(e => {
  * @method onConnect - device has reconnected
  */
 webusb.onConnect(e => {
-  console.log('You have already connect devices', e)
   Store.__s('usb.connect', e.data.connect)
-  // webusb.syncVuex(e)
 })
 
 /**
  * @method onErr - device has something wrong
  */
 webusb.onErr(e => {
-  console.log('something wrong with usb device', e)
-  webusb.syncVuex()
+  Store.__s('usb.err', e)
 })
 
 /**
  * @method onMsg - when device send message
  */
 webusb.onMsg(e => {
-  console.log('onMsg', e)
   Store.__s('usb.msg', JSON.parse(JSON.stringify(e)))
   if (e.type === 'Features') {
     Store.__s('usb.majorVersion', e.data.major_version)

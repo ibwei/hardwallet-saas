@@ -1,12 +1,13 @@
 <template>
   <v-dialog v-model="d_show" max-width="450" persistent scrollable>
     <v-card>
-      <v-card-title class="subtitle-1">{{ $t('Failure') }}</v-card-title>
+      <v-card-title class="subtitle-1"> <v-icon left>mdi-alert-circle-outline</v-icon>{{ $t('Failure') }}</v-card-title>
       <v-divider></v-divider>
-      <v-card-text class="subtitle-2">{{ $t(this.d_msg) }}</v-card-text>
+      <div class="d-flex justify-center align-center subtitle-2" style="min-height:50px">{{ $t(this.d_msg) }}</div>
+      <v-divider></v-divider>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn @click="close">{{ $t('Close') }}</v-btn>
+        <v-btn @click="close" color="primary" text>{{ $t('Close') }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -22,7 +23,8 @@ export default {
     }
   },
   computed: {
-    c_msg: vm => vm.$store.__s('usb.msg')
+    c_msg: vm => vm.$store.__s('usb.msg'),
+    c_err: vm => vm.$store.__s('usb.err')
   },
   watch: {
     c_msg(msg) {
@@ -35,6 +37,11 @@ export default {
           }
         })
       }
+    },
+    c_err(err) {
+      if (!err) return
+      this.d_show = true
+      this.d_msg = err.message
     }
   },
   methods: {
@@ -58,7 +65,9 @@ export default {
         'Device not initialized': '设备未初始化。',
         'Unknown message': '未知消息。',
         'Device disconnected': '设备已断开',
-        'Action cancelled by user': '操作已取消。'
+        'Action cancelled by user': '操作已取消。',
+        'Device is already initialized. Use Wipe first.': '设备已初始化。',
+        'Unable to claim interface.': '请检查设备是否被其他网页所占用。'
       }
     }
   }

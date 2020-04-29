@@ -24,10 +24,9 @@ files.keys().forEach(key => {
 })
 
 const current = Store.__s('app.language')
-console.log(current)
 
 interface TranslateItem {
-  [key: string]: string
+  [key: string]: string;
 }
 
 /**

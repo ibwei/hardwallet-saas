@@ -47,6 +47,7 @@
       <div class="form">
         <div class="left">
           <div class="subtitle-2" :class="eth.balance ? 'primary--text' : 'red--text'">{{ $t('Available Balance') }}：{{ UnitHelper(eth.balance, 'wei_eth').toString(10) }} {{ c_coinInfo.symbol.toUpperCase() }}</div>
+          <div class="subtitle-2">nonce:{{ d_utxoList[0].nonce ? d_utxoList[0].nonce : $t('Requesting the latest nonce...') }}</div>
           <v-row class="mt-4">
             <v-col cols="10">
               <div class="subtitle-2 text-left">{{ $t('Transaction Fee') }}</div>
@@ -127,7 +128,13 @@ export default {
       // d_gasUrl: 'https://ethgasstation.info/api/ethgasAPI.json?api-key=1f1087b62ec4dc2e2f80a991426c26f9380b2a8d25821836da5bb65ed8ce',
       d_gasUrl: 'https://api.abckey.com/fees/eth',
       d_gasLimit: '88888',
-      d_utxoList: [],
+      d_utxoList: [
+        {
+          nonce: '0',
+          amount: '',
+          address: ''
+        }
+      ],
       d_maxPaidIndex: 0,
       UnitHelper,
       d_clickAll: false,
@@ -238,7 +245,7 @@ export default {
       const address = await this.ethGetAddress()
       const result = await Axios.get(`https://api.abckey.com/${this.c_coinInfo.symbol}/address/${address}?details=basic`)
       if (result.status === 200 && !result.error) {
-        this.d_utxoList.push({ amount: result?.data?.balance ? result?.data?.balance : 0, address: result?.data?.address, nonce: result.data.nonce })
+        this.d_utxoList.splice(0, 1, { amount: result?.data?.balance ? result?.data?.balance : 0, address: result?.data?.address, nonce: result.data.nonce })
       } else {
         this.$message.error(this.$t('The network breakdown!'))
       }
@@ -276,7 +283,6 @@ export default {
       this.d_bordercastShow = false
     },
     async updateNonce() {
-      this.d_utxoList = []
       this.$store.__s('pageLoading', true)
       this.d_error = false
       this.d_bordercastShow = false

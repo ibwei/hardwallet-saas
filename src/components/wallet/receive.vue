@@ -348,7 +348,7 @@ export default {
     c_xpub: vm => vm.$store.__s('xpub')
   },
   watch: {
-    ['d_upBalance.page'](val) {
+    'd_upBalance.page'(val) {
       this.upBalance(val)
     },
     xpub(e) {

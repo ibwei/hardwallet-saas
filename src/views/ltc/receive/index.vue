@@ -160,7 +160,7 @@ export default {
         colorDark: '#000',
         colorLight: '#fff'
       })
-      console.log(qr)
+      return qr
     },
     copyAddress() {
       if (!this.d_overlay) {
@@ -179,7 +179,6 @@ export default {
       try {
         result = await Axios({ method: 'get', url: `https://api.abckey.com/${this.coinInfo.symbol}/xpub/${this.usb.xpub}?details=txs&tokens=used&t=${new Date().getTime()}`, timeout: 1000 * 10 })
       } catch (error) {
-        console.log(error)
         this.$store.__s('pageLoading', false)
         this.$message.error(this.$t('Network Error!'))
       }

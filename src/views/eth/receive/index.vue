@@ -155,7 +155,7 @@ export default {
         colorDark: '#000',
         colorLight: '#fff'
       })
-      console.log(qr)
+      return qr
     },
     copyAddress() {
       if (!this.d_overlay) {

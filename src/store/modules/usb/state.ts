@@ -16,5 +16,6 @@ export default {
   label: '',
   passphraseProtection: false,
   initialized: true,
-  needsBackup: null
+  needsBackup: null,
+  err: null
 }

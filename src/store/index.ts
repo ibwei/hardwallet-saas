@@ -9,12 +9,12 @@ import state from './state'
 import VuexPersistedState from 'vuex-persistedstate'
 
 export type MagicMethod = {
-  __s?: (type: string, msg: string) => any
-  __d?: (type: string, msg: string) => any
-  __g?: (type: string, msg: string) => any
-  commit: Commit
-  dispatch: Dispatch
-  getters: any
+  __s?: (type: string, msg: string) => any;
+  __d?: (type: string, msg: string) => any;
+  __g?: (type: string, msg: string) => any;
+  commit: Commit;
+  dispatch: Dispatch;
+  getters: any;
 }
 
 Vue.use(Vuex)

@@ -37,7 +37,7 @@ export default {
   i18n: {
     message: {
       zhCN: {
-        'Loading ABCKEY': `ABCKEY 加载中`
+        'Loading ABCKEY': 'ABCKEY 加载中'
       }
     }
   }

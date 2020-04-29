@@ -55,6 +55,7 @@
             }}
             USDT
           </div>
+          <div class="subtitle-2">nonce:{{ d_utxoList[0].nonce ? d_utxoList[0].nonce : $t('Requesting the latest nonce...') }}</div>
         </div>
 
         <div class="right body-2">
@@ -118,7 +119,13 @@ export default {
       // d_gasUrl: 'https://ethgasstation.info/api/ethgasAPI.json?api-key=1f1087b62ec4dc2e2f80a991426c26f9380b2a8d25821836da5bb65ed8ce',
       d_gasUrl: 'https://api.abckey.com/fees/eth',
       d_gasLimit: '88888',
-      d_utxoList: [],
+      d_utxoList: [
+        {
+          nonce: '0',
+          amount: '',
+          address: ''
+        }
+      ],
       d_maxPaidIndex: 0,
       UnitHelper,
       d_clickAll: false,
@@ -222,13 +229,12 @@ export default {
       const address = await this.ethGetAddress()
       const result = await Axios.get(`https://api.abckey.com/eth/address/${address}?details=basic$t=${new Date().getTime()}`)
       if (result.status === 200 && !result.error) {
-        this.d_utxoList.push({ amount: result?.data?.balance ? result?.data?.balance : 0, address: result?.data?.address, nonce: result.data.nonce })
+        this.d_utxoList.splice(0, 1, { amount: result?.data?.balance ? result?.data?.balance : 0, address: result?.data?.address, nonce: result.data.nonce })
       } else {
         this.$message.error(this.$t('The network breakdown!'))
       }
     },
     async updateNonce() {
-      this.d_utxoList = []
       this.$store.__s('pageLoading', true)
       this.d_error = false
       this.d_bordercastShow = false

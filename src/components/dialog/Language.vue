@@ -2,7 +2,7 @@
   <v-row justify="center">
     <v-dialog v-if="c_show" :value="true" max-width="333" persistent scrollable>
       <v-card>
-        <v-card-title>{{ $t('Languages') }}</v-card-title>
+        <v-card-title><v-icon left>mdi-translate</v-icon>{{ $t('Languages') }}</v-card-title>
         <v-divider></v-divider>
         <v-card-text style="height: 300px;">
           <v-radio-group v-model="d_language" column>
@@ -35,26 +35,26 @@ export default {
   computed: {
     c_language: vm => vm.$store.__s('app.language'),
     c_show: {
-      get () {
+      get() {
         return this.$store.__s('dialog.language')
       },
-      set (val) {
+      set(val) {
         this.$store.__s('dialog.language', val)
       }
     }
   },
   watch: {
-    c_show (val) {
+    c_show(val) {
       if (val) this.d_language = this.c_language
     }
   },
   methods: {
-    lang () {
+    lang() {
       setLang(this.d_language)
       this.setVuetifyLang(TranslateTable[this.d_language])
       this.c_show = false
     },
-    setVuetifyLang (language) {
+    setVuetifyLang(language) {
       this.$vuetify.lang.current = language
     }
   },

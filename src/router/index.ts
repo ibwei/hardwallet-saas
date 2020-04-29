@@ -14,7 +14,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: '',
-    component: import(`@/views/Connect.vue`)
+    component: import('@/views/Connect.vue')
   },
   ...modules
 ]

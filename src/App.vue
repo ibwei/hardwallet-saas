@@ -70,7 +70,10 @@ export default {
       window.document.title = this.$route.meta.title ? this.$route.meta.title : this.c_brand.name
     },
     async c_isConnect(value) {
-      if (value === true) await this.$usb.cmd('Initialize')
+      if (value === true) {
+        this.$message.success(this.$t('Device is connected'))
+        await this.$usb.cmd('Initialize')
+      }
     },
     c_msg(msg) {
       if (msg.data.message === 'Device successfully initialized' || msg.data.message === 'Device recovered') {
@@ -82,6 +85,7 @@ export default {
   i18n: {
     messages: {
       zhCN: {
+        'Device is connected': '设备连接成功',
         'Your device is not backed up. To ensure the safety of your funds, please backup immediately!': '您的设备未备份。 为了确保您的资金安全，请立即备份！',
         'Backup Now': ' 立即备份 '
       }
