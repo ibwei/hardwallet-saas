@@ -21,10 +21,10 @@
       <div class="side-navbar">
         <v-list dense class="nav-area">
           <v-list-item-group class="pa-0 ma-0" style="border-top:1px solid rgba(0,0,0,0.1)">
-            <v-list-item v-for="(item, index) in d_routerList" :key="index" link class="pa-0" :class="[item.id === d_selectedId ? 'blue lighten-3' : 'text--secondary']">
+            <v-list-item v-for="(item, index) in d_routerList" :key="index" link class="pa-0" :class="[item.id === d_selectedId ? 'active-menu' : 'text--secondary']">
               <v-list-item-content @click="menuClick(item.id)">
-                <div class="pt-1 pb-1" :class="[item.id === d_selectedId ? 'text---primary' : 'darken-2--text', c_fold ? 'flex-colomn' : 'flexrow  pl-4']">
-                  <div class="dot mr-4" :class="item.id === d_selectedId ? 'blue' : 'white'" v-if="!c_fold"></div>
+                <div class="pt-1 pb-1" :class="[item.id === d_selectedId ? 'active-menu' : 'inactive-menu', c_fold ? 'flex-colomn' : 'flexrow  pl-4']">
+                  <div class="dot mr-4" :class="item.id === d_selectedId ? 'inactive-menu' : 'white'" v-if="!c_fold"></div>
                   <i class="icon pr-2" v-html="item.icon"></i>
                   <div class="body-2" v-if="!c_fold">{{ $t(item.name) }}</div>
                   <div class="icon text-right flex-grow-1 pr-4">
@@ -298,5 +298,12 @@ export default {
 .logo-picture {
   height: 30px;
   width: auto;
+}
+.active-menu {
+  background-color: rgba(44, 115, 210, 1);
+  color: #fff;
+}
+.inactive-menu {
+  background-color: #fff;
 }
 </style>

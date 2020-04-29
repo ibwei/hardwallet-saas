@@ -24,6 +24,7 @@ export default {
   },
   methods: {
     async initPublickey() {
+      console.log('hahah')
       switch (this.coinInfo.symbol) {
         case 'usdt':
         case 'eth':

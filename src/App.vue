@@ -4,7 +4,7 @@
       <connect v-if="!c_usb.connect" />
       <first-guide v-else-if="!c_usb.initialized" />
       <load-data v-else-if="!c_usb.xpub" />
-      <v-content v-else class="blue lighten-5" style="min-height:100vh;">
+      <v-content v-else class="app-content" style="min-height:100vh;">
         <top-bar />
         <v-container fluid class="pa-0">
           <side-navbar />
@@ -71,8 +71,9 @@ export default {
     },
     async c_isConnect(value) {
       if (value === true) {
-        this.$message.success(this.$t('Device is connected'))
-        await this.$usb.cmd('Initialize')
+        this.$message.success(this.$t('Device connected'))
+      } else {
+        this.$message.success(this.$t('Device disconnected'))
       }
     },
     c_msg(msg) {
@@ -85,7 +86,8 @@ export default {
   i18n: {
     messages: {
       zhCN: {
-        'Device is connected': '设备连接成功',
+        'Device connected': '设备连接成功',
+        'Device disconnected': '设备断开连接',
         'Your device is not backed up. To ensure the safety of your funds, please backup immediately!': '您的设备未备份。 为了确保您的资金安全，请立即备份！',
         'Backup Now': ' 立即备份 '
       }
@@ -93,3 +95,8 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.app-content {
+  background: #f5f5f5;
+}
+</style>

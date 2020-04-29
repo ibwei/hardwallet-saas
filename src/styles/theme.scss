@@ -1,8 +1,8 @@
 @font-face {
   font-family: 'iconfont';
   /* project id 1690112 */
-  src: url('//at.alicdn.com/t/font_1690112_h61tawwax0h.eot');
-  src: url('//at.alicdn.com/t/font_1690112_h61tawwax0h.eot?#iefix') format('embedded-opentype'),
+  src        : url('//at.alicdn.com/t/font_1690112_h61tawwax0h.eot');
+  src        : url('//at.alicdn.com/t/font_1690112_h61tawwax0h.eot?#iefix') format('embedded-opentype'),
     url('//at.alicdn.com/t/font_1690112_h61tawwax0h.woff2') format('woff2'),
     url('//at.alicdn.com/t/font_1690112_h61tawwax0h.woff') format('woff'),
     url('//at.alicdn.com/t/font_1690112_h61tawwax0h.ttf') format('truetype'),
@@ -47,15 +47,15 @@
 }
 
 .text---primary {
-  color: #2c73d2;
+  color: rgba(44, 115, 210, 1);
 }
 
 
-$app-primary  :rgba(44, 115, 210, 0.8);
-$app-secondary:rgba(44, 115, 210, 0.6);
+$app-primary  :rgba(44, 115, 210, 1);
+$app-secondary:rgba(44, 115, 210, 1);
 
 .app-primary-bg {
-  background-color: $app-primary;
+  background-color: $app-secondary;
 }
 
 .app-secondary-bg {

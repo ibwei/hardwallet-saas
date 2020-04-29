@@ -1,15 +1,15 @@
 <template>
-  <div class="top-bar app-primary-bg">
+  <div class="top-bar shadow app-primary-bg">
     <div class="d-flex flex-row justify-space align-center pt-1 pb-1" style="width:100%;">
-      <v-btn class="icon-area ml-4" icon @click="changeNavFold">
-        <i class="icon menu-icon">&#xe647;</i>
+      <v-btn class="pl-2" text x-large icon @click="changeNavFold">
+        <v-icon color="white">mdi-menu-open</v-icon>
       </v-btn>
       <div class="brand-button pa-1 pl-4 pr-4 mt-2   d-flex flex-row justify-between align-center">
         <v-menu offset-y>
           <template v-slot:activator="{ on }">
-            <v-btn rounded color="#E4F2FD" v-on="on">
-              <div class="body-2 text--secondary">{{ c_deviceName }}</div>
-              <i class="icon pl-2">&#xe606;</i>
+            <v-btn rounded color="#fff" text v-on="on">
+              <div class="body-2  text--white">{{ c_deviceName }}</div>
+              <v-icon class="boyd-2 text--white" large>mdi-menu-down</v-icon>
             </v-btn>
           </template>
           <v-list>
@@ -74,7 +74,7 @@ export default {
 
 <style lang="scss" scoped>
 .shadow {
-  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
 }
 .top-bar {
   width: 100%;

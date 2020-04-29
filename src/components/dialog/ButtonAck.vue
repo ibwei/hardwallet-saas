@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="d_show" max-width="450" persistent scrollable>
     <v-card>
-      <v-card-title class="subtitle-1">{{ $t('ButtonAck') }}</v-card-title>
+      <v-card-title class="subtitle-1"><v-icon class="mr-2">mdi-gesture-tap-button</v-icon>{{ $t('ButtonAck') }}</v-card-title>
       <v-divider></v-divider>
       <v-card-text class="subtitle-2 card-text">{{ $t('Confirm the action on your device!') }}</v-card-text>
     </v-card>
