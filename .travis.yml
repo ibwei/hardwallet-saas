@@ -15,8 +15,11 @@ after_script:
   - git push --quiet --force  "https://${GH_TOKEN}@${GH_REF}" master:gh-pages
 deploy:
   provider: pages
+  skip_cleanup: true
   github_token: $GH_TOKEN
   keep_history: true
+  on:
+    branch: master
 branches:
   only:
     - master
