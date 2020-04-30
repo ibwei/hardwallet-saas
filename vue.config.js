@@ -35,7 +35,7 @@ const BUILD = webpackConfig => {
 }
 
 module.exports = {
-  publicPath: IS_DEV ? '/' : '/key',
+  publicPath: IS_DEV ? '/' : '/',
   outputDir: 'dist',
   assetsDir: 'static',
   productionSourceMap: IS_DEV,
