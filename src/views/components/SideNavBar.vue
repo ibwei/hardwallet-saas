@@ -10,9 +10,9 @@
             <span class="subtitle-1">{{ coinInfo.symbol.toUpperCase() }}</span>
             <v-btn small rounded color="primary" class="ml-4 caption" @click="$store.__s('dialog.chooseType', true)">{{ $t('Change') }}</v-btn>
           </div>
-          <div class="caption font-weight-medium">
-            <span>{{ coinInfo.name }}</span>
-            <span></span>
+          <div class="caption font-weight-medium pt-1 d-flex align-center">
+            <v-icon small left>mdi-wallet-outline</v-icon>
+            <span class="caption">{{ c_balance }}{{ coinInfo.symbol.toUpperCase() }} </span>
           </div>
         </div>
       </v-col>
@@ -20,21 +20,21 @@
     <v-row class="ma-0">
       <div class="side-navbar">
         <v-list dense class="nav-area">
-          <v-list-item-group class="pa-0 ma-0" style="border-top:1px solid rgba(0,0,0,0.1)">
-            <v-list-item v-for="(item, index) in d_routerList" :key="index" link class="pa-0" :class="[item.id === d_selectedId ? 'active-menu' : 'text--secondary']">
+          <v-list-item-group class="pa-0 ma-0" style="border-top:1px solid  rgba(44, 115, 210, 0.2)">
+            <v-list-item v-for="(item, index) in d_routerList" :key="index" link class="pa-0" :class="[item.id === d_selectedId ? 'active-menu' : 'text--white']">
               <v-list-item-content @click="menuClick(item.id)">
-                <div class="pt-1 pb-1" :class="[item.id === d_selectedId ? 'active-menu' : 'inactive-menu', c_fold ? 'flex-colomn' : 'flexrow  pl-4']">
+                <div class="pt-1 pb-1" :class="[item.id === d_selectedId ? 'active-menu' : 'inactive-menu text--black', c_fold ? 'flex-colomn' : 'flexrow  pl-4']">
                   <div class="dot mr-4" :class="item.id === d_selectedId ? 'inactive-menu' : 'white'" v-if="!c_fold"></div>
                   <i class="icon pr-2" v-html="item.icon"></i>
-                  <div class="body-2" v-if="!c_fold">{{ $t(item.name) }}</div>
+                  <div class="body-2 text--white" v-if="!c_fold">{{ $t(item.name) }}</div>
                   <div class="icon text-right flex-grow-1 pr-4">
-                    <i class="icon text-right" style="font-size:26px;" :class="item.id == c_currentRootLevel ? '' : 'darken-2--text'" v-if="item.children" v-html="item.id === c_currentRootLevel ? '&#xe625;' : '&#xe664;'"></i>
+                    <i class="icon text-right" style="font-size:26px;" :class="item.id == c_currentRootLevel ? '' : 'white--text'" v-if="item.children" v-html="item.id === c_currentRootLevel ? '&#xe625;' : '&#xe664;'"></i>
                   </div>
                 </div>
                 <transition-group name="fade">
                   <template v-if="index == c_currentRootLevel">
-                    <div v-for="(child, childId) in d_routerList[index].children" :key="childId" @click="menuClick(child.id)" class="d-flex justify-start align-center pt-3 pb-3 pl-6" :class="child.id === d_selectedId ? 'blue lighten-4 text---primary ' : 'daken-2--text'">
-                      <div class="dot mr-4" :class="child.id === d_selectedId ? 'blue' : 'white'"></div>
+                    <div v-for="(child, childId) in d_routerList[index].children" :key="childId" @click="menuClick(child.id)" class="d-flex justify-start align-center pt-3 pb-3 pl-6" :class="child.id === d_selectedId ? 'active-menu text---primary ' : 'white'">
+                      <div class="dot mr-4" :class="child.id === d_selectedId ? 'text-primary' : 'white'"></div>
                       <i class="icon pr-3" v-html="child.icon"></i>
                       <div class="body-2">{{ child.name }}</div>
                     </div>
@@ -106,6 +106,7 @@ export default {
     c_currentRootLevel() {
       return this.d_selectedId.split('-')[0]
     },
+    c_balance: vm => vm.$store.__s('balance'),
     c_coinPicture() {
       const pictureName = this.c_coinType.toUpperCase()
       return require(`../../assets/cointype/${pictureName}.png`)
@@ -305,5 +306,6 @@ export default {
 }
 .inactive-menu {
   background-color: #fff;
+  color: #000;
 }
 </style>

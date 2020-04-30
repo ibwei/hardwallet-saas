@@ -7,5 +7,6 @@ export default {
   cashUnitItems: ['CNY', 'USD'],
   cashUnit: 'CNY',
   pageLoading: false,
-  navbarFold: true
+  navbarFold: false,
+  balance: ''
 }

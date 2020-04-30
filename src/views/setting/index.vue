@@ -1,31 +1,40 @@
 <template>
   <div class="setting-wrap">
-    <!-- {{c_cashUnitIndex}} -->
-    <v-card min-width="900">
-      <v-card-title>{{ $t('General') }}</v-card-title>
-      <v-divider></v-divider>
+    <v-card class="pa-3">
+      <v-card-title>
+        <div class="d-flex align-center">
+          <v-icon color="#333" class="mr-2">mdi-settings-outline</v-icon>
+          <span>{{ $t('General') }} </span>
+        </div>
+      </v-card-title>
       <v-card-text class="d-flex">
         <v-btn rounded color="primary" @click="$store.__s('dialog.setLabel', true)">{{ $t('Edit Device Label') }}</v-btn>
         <v-sheet :max-width="$store.__s('app.language') === 'zhCN' ? 180 : 250">
           <v-select class="ml-5" v-model="c_cashUnit" :items="c_cashUnitItems" :label="$t('Switch Fiat Unit')" dense outlined />
         </v-sheet>
       </v-card-text>
-    </v-card>
-    <v-card min-width="900" class="mt-5">
-      <v-card-title>{{ $t('Safe') }}</v-card-title>
       <v-divider></v-divider>
-      <v-card-text class="d-flex">
+      <v-card-title>
+        <div class="d-flex align-center">
+          <v-icon color="#333" class="mr-2">mdi-security</v-icon>
+          <span>{{ $t('Safe') }} </span>
+        </div>
+      </v-card-title>
+      <v-card-text class="d-flex  flex-row align-center  justify-start">
         <v-btn rounded color="primary" @click="setPin">{{ $t('Modify PIN') }}</v-btn>
         <v-btn rounded class="ml-5" :color="c_passphraseProtection ? 'error' : 'success'" @click="setPassphrase">{{ c_passphraseProtection ? $t('Disabled Passphrase') : $t('Enable Passphrase') }}</v-btn>
         <v-btn rounded class="ml-5" color="error" @click="closePin">{{ $t('Close Pin') }}</v-btn>
         <v-btn rounded class="ml-5" color="primary" @click="checkSeed">{{ $t('Verification Mnemonics') }}</v-btn>
         <v-btn rounded class="ml-5" color="error" @click="wipeDevice">{{ $t('Wipe Device') }}</v-btn>
       </v-card-text>
-    </v-card>
-    <v-card min-width="900" class="mt-5">
-      <v-card-title>{{ $t('Version') }}</v-card-title>
       <v-divider></v-divider>
-      <v-card-text class="d-flex">
+      <v-card-title
+        ><div class="d-flex align-center">
+          <v-icon color="#333" class="mr-2">mdi-update</v-icon>
+          <span>{{ $t('Version') }} </span>
+        </div></v-card-title
+      >
+      <v-card-text class="d-flex subtitle-2">
         <div>{{ $t('Firmware Version') }}: {{ c_firmVersion }}</div>
         <div class="ml-10">{{ $t('Software Version') }}: {{ app.version }}</div>
       </v-card-text>
@@ -114,7 +123,8 @@ export default {
 
 <style lang="scss" scoped>
 .setting-wrap {
-  background: transparent;
+  background: #fff;
+  width: auto;
   max-width: 960px;
   margin: 20px auto;
 }

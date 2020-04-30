@@ -422,6 +422,12 @@ export default {
       this.summary = data.data[this.c_address.toLowerCase()].address
       this.transactions = data.data[this.c_address.toLowerCase()].transactions
       this.$store.__s('eth.balance', this.summary.balance ? this.summary.balance : 0)
+      this.$store.__s(
+        'balance',
+        UnitHelper(this.summary.balance)
+          .div(1000000)
+          .toString()
+      )
       return data.context
     },
 

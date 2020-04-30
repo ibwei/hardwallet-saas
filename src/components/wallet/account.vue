@@ -436,6 +436,7 @@ export default {
       if (result.error) return
       const data = result.data
       this.d_balance = this.sat2btc(data.balance)
+      this.$store.__s('balance', `${this.d_balance}`)
       this.d_totalReceived = this.sat2btc(data.totalReceived)
       this.d_totalSent = this.sat2btc(data.totalSent)
       this.d_unconfirmedBalance = this.sat2btc(data.unconfirmedBalance)

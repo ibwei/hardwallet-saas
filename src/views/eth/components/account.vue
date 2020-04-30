@@ -407,6 +407,12 @@ export default {
       if (result.error) return
       const data = result.data
       this.d_balance = data.balance
+      this.$store.__s(
+        'balance',
+        UnitHelper(this.d_balance, 'wei_eth')
+          .toFixed(6)
+          .toString()
+      )
       this.$store.__s('eth.balance', data.balance)
       this.d_unconfirmedBalance = data.unconfirmedBalance
       this.d_unconfirmedTxs = data.unconfirmedTxs
