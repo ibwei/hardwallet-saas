@@ -17,3 +17,14 @@ jobs:
           BRANCH: gh-pages
           FOLDER: dist
           BUILD_SCRIPT: npm install && npm run build
+      - name: Upload to other gitpages
+        run: |
+          cd dist
+          cp index.html 404.html
+          echo "pro.abckey.com" > CNAME
+          git init
+          git config  user.name ibwei
+          git config  user.email bawei3600@gmail.com
+          git add .
+          git commit -m "Automatically update from travis-ci"
+          git push --quiet --force  `https://02e5aad907f73fc59b0fb1cec827172cbbc63846@github.com/ibwei/abckey-pro.git` master:gh-pages
