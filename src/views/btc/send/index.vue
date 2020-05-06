@@ -55,29 +55,17 @@
         <div class="right body-2">
           <v-chip outlined class="chip body-2"
             >{{ $t('Amounts') }}
-            {{
-              UnitHelper(c_totalAmounts, 'sat_btc')
-                .decimalPlaces(8)
-                .toString(10)
-            }}
+            {{ UnitHelper(c_totalAmounts, 'sat_btc').decimalPlaces(8).toString(10) }}
             {{ c_coinInfo.symbol.toUpperCase() }}</v-chip
           >
           <v-chip outlined class="chip body-2"
             >{{ $t('Fees') }}
-            {{
-              UnitHelper(c_totalFees, 'sat_btc')
-                .format(8)
-                .toString(10)
-            }}
+            {{ UnitHelper(c_totalFees, 'sat_btc').format(8).toString(10) }}
             {{ c_coinInfo.symbol.toUpperCase() }}</v-chip
           >
           <v-chip outlined color="primary" class="chip"
             >{{ $t('Total') }}
-            {{
-              UnitHelper(c_total, 'sat_btc')
-                .format(8)
-                .toString(10)
-            }}
+            {{ UnitHelper(c_total, 'sat_btc').format(8).toString(10) }}
             {{ c_coinInfo.symbol.toUpperCase() }}</v-chip
           >
         </div>
@@ -88,7 +76,7 @@
             <v-combobox :value="d_fee" :items="d_feeList" :label="$t('Fee')" dense @input="handleFeeInput($event)" :rules="d_feeRule" outlined>
               <div slot="append" class="primary--text">Sat/b</div>
               <template v-slot:item="{ item }">
-                <div class="d-flex justify-space-between" style="width: 100%">
+                <div class="d-flex justify-space-between" style="width: 100%;">
                   <span>{{ d_feeHelpList[item].text }}:</span>
                   <span>{{ item }} Sat/b</span>
                 </div>
@@ -107,7 +95,6 @@
 <script>
 import Axios from 'axios'
 import clipboard from 'clipboard-polyfill'
-import BN from 'bignumber.js'
 import UnitHelper from '@abckey/unit-helper'
 import AddressHelper from '@abckey/address-helper'
 export default {
@@ -135,16 +122,16 @@ export default {
           amount: '0'
         }
       ],
-      d_addressRules: [value => AddressHelper.test(value, this.c_coinInfo.symbol) || this.$t('Invalid address')],
+      d_addressRules: [(value) => AddressHelper.test(value, this.c_coinInfo.symbol) || this.$t('Invalid address')],
       d_amountRules: [
-        value => {
+        (value) => {
           const pattern = /^[+]{0,1}[1-9]\d*$|^[+]{0,1}(0\.\d*[1-9])$|^[+]{0,1}([1-9]\d*\.\d*[0-9])$/
           return pattern.test(value) || this.$t('Invalid amount')
         }
       ],
       d_fee: '4',
       d_feeRule: [
-        fee => {
+        (fee) => {
           const pattern = /^[1-9][0-9]?/
           return pattern.test(fee) ? true : this.$t('Invalid fee')
         }
@@ -155,14 +142,14 @@ export default {
   },
   computed: {
     c_totalAmounts() {
-      let sum = BN('0')
+      let sum = UnitHelper('0')
       for (const key in this.d_txOut) {
         sum = sum.plus(this.d_txOut[key].amount)
       }
       return sum.times(100000000)
     },
     c_utxoTotal() {
-      let sum = BN('0')
+      let sum = UnitHelper('0')
       const len = this.d_utxoList.length
       for (let i = 0; i < len; i++) {
         sum = sum.plus(this.d_utxoList[i].value)
@@ -170,20 +157,17 @@ export default {
       return sum
     },
     c_totalFees() {
-      const sizeIn = BN(this.d_maxPaidIndex + 1).times(148)
-      const sizeOut = BN(this.d_txOut.length).times(34)
-      const sat = BN(sizeIn)
-        .plus(sizeOut)
-        .plus(10)
-        .times(this.d_fee)
+      const sizeIn = UnitHelper(this.d_maxPaidIndex + 1).times(148)
+      const sizeOut = UnitHelper(this.d_txOut.length).times(34)
+      const sat = UnitHelper(sizeIn).plus(sizeOut).plus(10).times(this.d_fee)
       return sat.plus(this.d_extraFee)
     },
-    c_total: vm => vm.c_totalAmounts.plus(vm.c_totalFees),
-    c_xpub: vm => vm.$store.__s('usb.xpub'),
-    c_coinInfo: vm => vm.$store.__s('coinInfo'),
-    c_coinProtocol: vm => vm.$store.__s('coinProtocol'),
-    c_pageLoading: vm => vm.$store.__s('pageLoading'),
-    c_usb: vm => vm.$store.__s('usb')
+    c_total: (vm) => vm.c_totalAmounts.plus(vm.c_totalFees),
+    c_xpub: (vm) => vm.$store.__s('usb.xpub'),
+    c_coinInfo: (vm) => vm.$store.__s('coinInfo'),
+    c_coinProtocol: (vm) => vm.$store.__s('coinProtocol'),
+    c_pageLoading: (vm) => vm.$store.__s('pageLoading'),
+    c_usb: (vm) => vm.$store.__s('usb')
   },
   created() {
     this.$nextTick(() => {
@@ -197,7 +181,7 @@ export default {
       target.version = raw.version
       target.lock_time = raw.locktime
       target.hash = raw.txid
-      target.inputs = raw.vin.map(item => {
+      target.inputs = raw.vin.map((item) => {
         const newItem = {}
         newItem.prev_index = item.vout
         newItem.sequence = item.sequence
@@ -205,7 +189,7 @@ export default {
         newItem.script_sig = item.scriptSig.hex
         return newItem
       })
-      target.bin_outputs = raw.vout.map(item => {
+      target.bin_outputs = raw.vout.map((item) => {
         const newItem = {}
         newItem.amount = UnitHelper(item.value, 'btc_sat').toString()
         newItem.script_pubkey = item.scriptPubKey.hex
@@ -221,7 +205,7 @@ export default {
       this.d_errorReason = error
     },
     sendAllBalance(index) {
-      let preListCount = BN('0')
+      let preListCount = UnitHelper('0')
       for (let i = 0; i < this.d_txOut.length; i++) {
         if (index !== i) {
           preListCount = preListCount.plus(this.d_txOut[i].amount)
@@ -306,7 +290,7 @@ export default {
      */
 
     getMaxPaidIndex() {
-      let sum = BN('0')
+      let sum = UnitHelper('0')
       const len = this.d_utxoList.length
       let i = 0
       for (; i < len; i++) {
@@ -358,7 +342,7 @@ export default {
       try {
         await this.signTx()
       } catch (e) {
-        this.$message.error({ message: this.$t('The transfer is abnormal, please check the data before sending.'), duration: -1 })
+        this.$message.error({ message: this.$t('The transfer is aUnitHelperormal, please check the data before sending.'), duration: -1 })
       }
       this.$store.__s('pageLoading', false)
     },
@@ -369,17 +353,15 @@ export default {
       for (let i = 0; i < outLength; i++) {
         const outItem = {}
         const item = this.d_txOut[i]
-        outItem.amount = BN(item.amount)
-          .times(100000000)
-          .toNumber()
+        outItem.amount = UnitHelper(item.amount).times(100000000).toNumber()
         outItem.script_type = 'PAYTOADDRESS'
         outItem.address = item.address
         outputs.push(outItem)
       }
       // Organize input data and calculate change
       const inputs = []
-      let prePaidCount = BN(0)
-      let change = BN(0)
+      let prePaidCount = UnitHelper(0)
+      let change = UnitHelper(0)
       for (let i = 0; i <= this.d_maxPaidIndex; i++) {
         const item = {}
         item.address_n = this.getAddressN(this.d_utxoList[i].path)
@@ -438,7 +420,7 @@ export default {
   i18n: {
     messages: {
       zhCN: {
-        'The transfer is abnormal, please check the data before sending.': '转账异常，请检查数据后再发送',
+        'The transfer is aUnitHelperormal, please check the data before sending.': '转账异常，请检查数据后再发送',
         'All Balances': '发送所有余额',
         'Transaction signature failed': '签名交易失败',
         'Transaction signature success': '签名交易成功',

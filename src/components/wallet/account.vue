@@ -6,13 +6,13 @@
           <span class="subtitle-2">{{ $t('Public Key') }}</span>
         </v-col>
         <v-col cols="1">
-          <v-divider vertical style="height:30px;" />
+          <v-divider vertical style="height: 30px;" />
         </v-col>
         <v-col cols="6" @click="showXpub">
           <v-sheet class="subtitle-2 text--disabled xpub">{{ d_showXpub ? xpub : hideXpub(xpub) }}</v-sheet>
         </v-col>
         <v-col cols="1">
-          <v-divider vertical style="height:30px;" />
+          <v-divider vertical style="height: 30px;" />
         </v-col>
         <v-col cols="2" class="">
           <v-btn class="subtitle-2" color="primary" text @click="changeOldAccount">{{ c_addressType === 'new' ? $t('Old Account') : $t('New Account') }}</v-btn>
@@ -330,8 +330,8 @@
 
 <script>
 import Axios from 'axios'
-import BN from 'bignumber.js'
 import usb from '@/mixins/usb'
+import UnitHelper from '@abckey/unit-helper'
 
 export default {
   mixins: [usb],
@@ -379,16 +379,16 @@ export default {
     }
   },
   computed: {
-    c_coinInfo: vm => vm.$store.__s('coinInfo'),
-    c_protocol: vm => vm.$store.__s('coinProtocol'),
-    c_addressType: vm => vm.$store.__s('addressType')
+    c_coinInfo: (vm) => vm.$store.__s('coinInfo'),
+    c_protocol: (vm) => vm.$store.__s('coinProtocol'),
+    c_addressType: (vm) => vm.$store.__s('addressType')
   },
   async created() {
     const path = this.$route.path
     for (;;) {
       if (this.$route.path !== path) break
       this.upAll()
-      await new Promise(resolve => setTimeout(resolve, 77 * 1000))
+      await new Promise((resolve) => setTimeout(resolve, 77 * 1000))
     }
   },
   methods: {
@@ -453,24 +453,11 @@ export default {
       this.d_rate = data
       this.d_loading.upRate = false
     },
-    sat2btc: sat =>
-      BN(sat)
-        .div(100000000)
-        .toNumber(),
-    btc2str: btc =>
-      BN(btc)
-        .dp(8, 1)
-        .toFormat(),
-    cash2str: num =>
-      BN(num)
-        .dp(8, 1)
-        .toFormat(),
-    btc2cash: (sat, rate) =>
-      BN(sat)
-        .times(rate)
-        .dp(2, 1)
-        .toFormat(),
-    unix2utc: time => new Date(time * 1000).toLocaleString(),
+    sat2btc: (sat) => UnitHelper(sat).div(100000000).toNumber(),
+    btc2str: (btc) => UnitHelper(btc).dp(8, 1).toFormat(),
+    cash2str: (num) => UnitHelper(num).dp(8, 1).toFormat(),
+    btc2cash: (sat, rate) => UnitHelper(sat).times(rate).dp(2, 1).toFormat(),
+    unix2utc: (time) => new Date(time * 1000).toLocaleString(),
     _fixTxs(txs, tokens) {
       if (!txs.length) return
       for (let i = 0; i < txs.length; i++) {

@@ -308,7 +308,7 @@
 
 <script>
 import Axios from 'axios'
-import BN from 'bignumber.js'
+import UnitHelper from '@abckey/unit-helper'
 
 export default {
   props: {
@@ -345,7 +345,7 @@ export default {
     }
   }),
   computed: {
-    c_xpub: vm => vm.$store.__s('xpub')
+    c_xpub: (vm) => vm.$store.__s('xpub')
   },
   watch: {
     'd_upBalance.page'(val) {
@@ -387,24 +387,11 @@ export default {
       this.d_rate = data[this.name][this.currency]
       this.d_loading.upRate = false
     },
-    sat2btc: sat =>
-      BN(sat)
-        .div(100000000)
-        .toNumber(),
-    btc2str: btc =>
-      BN(btc)
-        .dp(8, 1)
-        .toFormat(),
-    cash2str: num =>
-      BN(num)
-        .dp(2, 1)
-        .toFormat(2, 1),
-    btc2cash: (sat, rate) =>
-      BN(sat)
-        .times(rate)
-        .dp(2, 1)
-        .toFormat(),
-    unix2utc: time => new Date(time * 1000).toLocaleString(),
+    sat2btc: (sat) => UnitHelper(sat).div(100000000).toNumber(),
+    btc2str: (btc) => UnitHelper(btc).dp(8, 1).toFormat(),
+    cash2str: (num) => UnitHelper(num).dp(2, 1).toFormat(2, 1),
+    btc2cash: (sat, rate) => UnitHelper(sat).times(rate).dp(2, 1).toFormat(),
+    unix2utc: (time) => new Date(time * 1000).toLocaleString(),
     _fixTxs(txs, tokens) {
       for (let i = 0; i < txs.length; i++) {
         const oldValue = i + 1 === txs.length ? 0 : txs[i + 1].value

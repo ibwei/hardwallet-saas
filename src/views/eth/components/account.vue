@@ -6,13 +6,13 @@
           <span class="subtitle-2">{{ $t('Current Account') }}</span>
         </v-col>
         <v-col cols="1">
-          <v-divider vertical style="height:30px;" />
+          <v-divider vertical style="height: 30px;" />
         </v-col>
         <v-col cols="6">
           <span class="subtitle-2">{{ c_address }}</span>
         </v-col>
         <v-col cols="1">
-          <v-divider vertical style="height:30px;" />
+          <v-divider vertical style="height: 30px;" />
         </v-col>
         <v-col cols="2" class="">
           <v-btn class="subtitle-2" color="primary" text @click="changeAccount">{{ $t('Change') }}</v-btn>
@@ -27,11 +27,7 @@
             <v-icon :class="['ml-1', d_loading.upBalance && 'rotate']" size="16" color="primary">mdi-cached</v-icon>
           </v-btn>
           <div :class="['mt-1', d_loading.upBalance && 'blur']">
-            <span class="title font-weight-bold">{{
-              UnitHelper(d_balance, 'wei_eth')
-                .toFixed(8)
-                .toString(10)
-            }}</span>
+            <span class="title font-weight-bold">{{ UnitHelper(d_balance, 'wei_eth').toFixed(8).toString(10) }}</span>
             <span class="text-uppercase caption">&nbsp;{{ coin }}</span>
           </div>
         </v-col>
@@ -41,12 +37,7 @@
             <v-icon :class="['ml-1', (d_loading.upBalance || d_loading.upRate) && 'rotate']" size="16" color="primary">mdi-cached</v-icon>
           </v-btn>
           <div :class="['mt-1', (d_loading.upBalance || d_loading.upRate) && 'blur']">
-            <span class="title font-weight-bold">{{
-              UnitHelper(d_balance, 'wei_eth')
-                .times(d_rate)
-                .toFixed(8)
-                .toString(10)
-            }}</span>
+            <span class="title font-weight-bold">{{ UnitHelper(d_balance, 'wei_eth').times(d_rate).toFixed(8).toString(10) }}</span>
             <span class="text-uppercase caption">&nbsp;{{ cash }}</span>
           </div>
         </v-col>
@@ -325,7 +316,6 @@
 
 <script>
 import Axios from 'axios'
-import BN from 'bignumber.js'
 import ETH from '@/mixins/eth'
 import UnitHelper from '@abckey/unit-helper'
 
@@ -375,16 +365,16 @@ export default {
   },
   mixins: [ETH],
   computed: {
-    c_coinInfo: vm => vm.$store.__s('coinInfo'),
-    c_protocol: vm => vm.$store.__s('coinProtocol'),
-    c_address: vm => vm.$store.__s('eth.address')
+    c_coinInfo: (vm) => vm.$store.__s('coinInfo'),
+    c_protocol: (vm) => vm.$store.__s('coinProtocol'),
+    c_address: (vm) => vm.$store.__s('eth.address')
   },
   async created() {
     const path = this.$route.path
     for (;;) {
       if (this.$route.path !== path) break
       this.upAll()
-      await new Promise(resolve => setTimeout(resolve, 77 * 1000))
+      await new Promise((resolve) => setTimeout(resolve, 77 * 1000))
     }
   },
   methods: {
@@ -407,12 +397,7 @@ export default {
       if (result.error) return
       const data = result.data
       this.d_balance = data.balance
-      this.$store.__s(
-        'balance',
-        UnitHelper(this.d_balance, 'wei_eth')
-          .toFixed(6)
-          .toString()
-      )
+      this.$store.__s('balance', UnitHelper(this.d_balance, 'wei_eth').toFixed(6).toString())
       this.$store.__s('eth.balance', data.balance)
       this.d_unconfirmedBalance = data.unconfirmedBalance
       this.d_unconfirmedTxs = data.unconfirmedTxs
@@ -427,24 +412,11 @@ export default {
       this.d_rate = data
       this.d_loading.upRate = false
     },
-    sat2btc: sat =>
-      BN(sat)
-        .div(1000000000000000000)
-        .toNumber(),
-    btc2str: btc =>
-      BN(btc)
-        .dp(8, 1)
-        .toFormat(),
-    cash2str: num =>
-      BN(num)
-        .dp(8, 1)
-        .toFormat(),
-    btc2cash: (sat, rate) =>
-      BN(sat)
-        .times(rate)
-        .dp(2, 1)
-        .toFormat(),
-    unix2utc: time => new Date(time * 1000).toLocaleString(),
+    sat2btc: (sat) => UnitHelper(sat).div(1000000000000000000).toNumber(),
+    btc2str: (btc) => UnitHelper(btc).dp(8, 1).toFormat(),
+    cash2str: (num) => UnitHelper(num).dp(8, 1).toFormat(),
+    btc2cash: (sat, rate) => UnitHelper(sat).times(rate).dp(2, 1).toFormat(),
+    unix2utc: (time) => new Date(time * 1000).toLocaleString(),
     _fixTxs(txs) {
       if (!txs) return
       for (let i = 0; i < txs?.length; i++) {

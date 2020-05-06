@@ -222,7 +222,6 @@
 
 <script>
 import Axios from 'axios'
-import BN from 'bignumber.js'
 import ETH from '@/mixins/eth'
 import UnitHelper from '@abckey/unit-helper'
 import { utc2Beijing } from '../../../utils/common'
@@ -301,7 +300,6 @@ export default {
       this.d_address = await this.ethGetAddress()
       this.$store.__s('eth.address', this.d_address)
       const { data } = await Axios.get(`https://api.abckey.com/eth/address/${this.d_address}?details=txs&contract=${this.c_coinInfo.contract}&t=${new Date().getTime()}`)
-      console.log(data)
       this.summary = data.tokens[0]
       this.transactions = data.transactions
       this.$store.__s('eth.balance', this.summary.balance ? this.summary.balance : 0)
@@ -328,10 +326,10 @@ export default {
       this.d_rate = data
       this.d_loading.upRate = false
     },
-    sat2btc: (sat) => BN(sat).div(1000000000000000000).toNumber(),
-    btc2str: (btc) => BN(btc).dp(8, 1).toFormat(),
-    cash2str: (num) => BN(num).dp(8, 1).toFormat(),
-    btc2cash: (sat, rate) => BN(sat).times(rate).dp(2, 1).toFormat(),
+    sat2btc: (sat) => UnitHelper(sat).div(1000000000000000000).toNumber(),
+    btc2str: (btc) => UnitHelper(btc).dp(8, 1).toFormat(),
+    cash2str: (num) => UnitHelper(num).dp(8, 1).toFormat(),
+    btc2cash: (sat, rate) => UnitHelper(sat).times(rate).dp(2, 1).toFormat(),
     unix2utc: (time) => new Date(time * 1000).toLocaleString(),
     _fixTxs(txs) {
       this.d_txs = []
@@ -341,7 +339,6 @@ export default {
         txs[i].value = UnitHelper(txs[i].value).div(1000000).toString(10)
         this.d_txs.push(item)
       }
-      console.log(this.d_txs)
     },
     _isOwnAddr() {
       return true
