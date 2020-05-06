@@ -18,8 +18,11 @@ jobs:
           FOLDER: dist
           BUILD_SCRIPT: npm install && npm run build
       - name: deploy to target directory
-        uses: ./
+        uses: crazy-max/ghaction-github-pages@v1
         with:
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          remote_url: https://github.com/ibwei/abckey-pro.git
+          target_branch: gh-pages
+          build_dir: dist
+          repo: ibwei/abckey-pro
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_PAT: ${{secrets.MY_DEPLOY_KEY}}
