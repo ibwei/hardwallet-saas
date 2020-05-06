@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import wallet from '@/mixins/wallet'
 import ethAccount from '../components/account'
 export default {
   name: 'Account',
@@ -15,7 +14,10 @@ export default {
   },
   computed: {
     c_xpub: (vm) => vm.$store.__s('usb.xpub'),
-    c_cashUnit: (vm) => vm.$store.__s('cashUnit')
+    c_cashUnit: (vm) => vm.$store.__s('cashUnit'),
+    c_cashUnitItems: (vm) => vm.$store.__s('cashUnitItems'),
+    c_cashUnitIndex: (vm) => vm.$store.__s('cashUnitIndex'),
+    c_coinInfo: (vm) => vm.$store.__s('coinInfo')
   }
 }
 </script>
