@@ -20,8 +20,6 @@ jobs:
       - name: Upload to other gitpages
         run: |
           cd dist
-          cp index.html 404.html
-          echo "pro.abckey.com" > CNAME
           git init
           git config  user.name ibwei
           git config  user.email bawei3600@gmail.com
