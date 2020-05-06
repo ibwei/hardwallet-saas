@@ -8,7 +8,6 @@
 import ethAccount from '../components/account'
 export default {
   name: 'Account',
-  mixins: [wallet],
   components: {
     ethAccount
   },
