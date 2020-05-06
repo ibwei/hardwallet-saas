@@ -20,9 +20,9 @@ jobs:
       - name: Upload
         uses: peaceiris/actions-gh-pages@v3
         with:
-          deploy_key: ${{ secrets.MY_ACTION_TOKEN}}
+          deploy_key: ${{ secrets.MY_DEPLOY_KEY}}
           external_repository: ibwei/abckey-pro
-          publish_dir: ./public
+          publish_dir: ./dist
           force_orphan: true
           user_name: 'ibwei'
           user_email: 'bawei3600@gmail.com'
