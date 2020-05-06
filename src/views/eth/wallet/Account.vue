@@ -5,17 +5,17 @@
 </template>
 
 <script>
-import MixWallet from '@/mixins/wallet'
+import wallet from '@/mixins/wallet'
 import ethAccount from '../components/account'
 export default {
   name: 'Account',
-  mixins: [MixWallet],
+  mixins: [wallet],
   components: {
     ethAccount
   },
   computed: {
-    c_xpub: vm => vm.$store.__s('usb.xpub'),
-    c_cashUnit: vm => vm.$store.__s('cashUnit')
+    c_xpub: (vm) => vm.$store.__s('usb.xpub'),
+    c_cashUnit: (vm) => vm.$store.__s('cashUnit')
   }
 }
 </script>

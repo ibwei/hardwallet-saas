@@ -5,14 +5,14 @@
 </template>
 
 <script>
-import MixWallet from '@/mixins/wallet'
+import wallet from '@/mixins/wallet'
 
 export default {
   name: 'Account',
-  mixins: [MixWallet],
+  mixins: [wallet],
   computed: {
-    c_xpub: vm => vm.$store.__s('usb.xpub'),
-    c_cashUnit: vm => vm.$store.__s('cashUnit')
+    c_xpub: (vm) => vm.$store.__s('usb.xpub'),
+    c_cashUnit: (vm) => vm.$store.__s('cashUnit')
   }
 }
 </script>
