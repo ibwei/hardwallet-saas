@@ -23,6 +23,7 @@ jobs:
           deploy_key: ${{ secrets.MY_ACTION_TOKEN}}
           external_repository: ibwei/abckey-pro
           publish_dir: ./public
+          force_orphan: true
           user_name: 'ibwei'
           user_email: 'bawei3600@gmail.com'
           commit_message: ${{ github.event.head_commit.message }}
