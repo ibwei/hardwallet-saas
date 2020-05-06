@@ -1,0 +1,25 @@
+language: node_js
+node_js: stable
+install:
+  - yarn
+script: yarn build
+after_script:
+  - cd dist
+  - cp index.html 404.html
+  - echo "pro.abckey.com" > CNAME
+  - git init
+  - git config  user.name "${USER_NAME}"
+  - git config  user.email "${USER_EMAIL}"
+  - git add .
+  - git commit -m "Automatically update from travis-ci"
+  - git push --quiet --force  "https://${GH_TOKEN}@${GH_REF}" master:gh-pages
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GH_TOKEN
+  keep_history: true
+  on:
+    branch: master
+branches:
+  only:
+    - master
