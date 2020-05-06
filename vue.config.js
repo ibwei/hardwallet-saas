@@ -1,6 +1,6 @@
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 const IS_DEV = process.env.NODE_ENV !== 'production'
-const SERVER = webpackConfig => {
+const SERVER = (webpackConfig) => {
   webpackConfig.plugin('html').tap(([options]) => [
     Object.assign(options, {
       minify: false,
@@ -9,7 +9,7 @@ const SERVER = webpackConfig => {
     })
   ])
 }
-const BUILD = webpackConfig => {
+const BUILD = (webpackConfig) => {
   webpackConfig.plugin('html').tap(([options]) => [
     Object.assign(options, {
       minify: {
@@ -35,7 +35,7 @@ const BUILD = webpackConfig => {
 }
 
 module.exports = {
-  publicPath: IS_DEV ? '/' : '/',
+  publicPath: IS_DEV ? '/' : '/abckey-pro',
   outputDir: 'dist',
   assetsDir: 'static',
   productionSourceMap: IS_DEV,
@@ -61,7 +61,7 @@ module.exports = {
     }
   },
   transpileDependencies: ['vuetify'],
-  chainWebpack: webpackConfig => {
+  chainWebpack: (webpackConfig) => {
     IS_DEV ? SERVER(webpackConfig) : BUILD(webpackConfig)
   }
 }

@@ -7,7 +7,6 @@
 <script>
 export default {
   name: 'Account',
-  mixins: [wallet],
   computed: {
     c_xpub: (vm) => vm.$store.__s('usb.xpub'),
     c_cashUnit: (vm) => vm.$store.__s('cashUnit'),
