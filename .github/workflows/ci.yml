@@ -17,13 +17,9 @@ jobs:
           BRANCH: gh-pages
           FOLDER: dist
           BUILD_SCRIPT: npm install && npm run build
-      - name: Upload
-        uses: peaceiris/actions-gh-pages@v3
+      - name: deploy to target directory
+        uses: ./
         with:
-          deploy_key: ${{ secrets.MY_DEPLOY_KEY}}
-          external_repository: ibwei/abckey-pro
-          publish_dir: ./dist
-          force_orphan: true
-          user_name: 'ibwei'
-          user_email: 'bawei3600@gmail.com'
-          commit_message: ${{ github.event.head_commit.message }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          remote_url: https://github.com/ibwei/abckey-pro.git
