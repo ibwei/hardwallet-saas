@@ -20,7 +20,10 @@ jobs:
       - name: Upload
         uses: peaceiris/actions-gh-pages@v3
         with:
-          deploy_key: ${{ secrets.ACCESS_TOKEN}}
+          github_token: ${{ secrets.ACCESS_TOKEN}}
           external_repository: ibwei/abckey-pro
           publish_branch: master
           publish_dir: ./dist
+          user_name: 'ibwei'
+          user_email: 'bawei3600@gmail.com'
+          commit_message: ${{ github.event.head_commit.message }}
